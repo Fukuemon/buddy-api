@@ -6,6 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// HealthCheck godoc
+// @Summary      ヘルスチェック用エンドポイント
+// @Tags         Health
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  HealthResponse
+// @Router       /health [get]
 func HealthCheck(ctx *gin.Context) {
 	response := HealthResponse{
 		Status: "ok",
