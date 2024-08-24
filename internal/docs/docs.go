@@ -17,7 +17,6 @@ const docTemplate = `{
     "paths": {
         "/health": {
             "get": {
-                "description": "get the health status",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,9 +24,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "health"
+                    "Health"
                 ],
-                "summary": "Show the health status",
+                "summary": "ヘルスチェック用エンドポイント",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -53,11 +52,11 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
+	Version:          "2.0",
 	Host:             "localhost:8080",
 	BasePath:         "/v1",
 	Schemes:          []string{},
-	Title:            "buddy-api",
+	Title:            "Buddy-API",
 	Description:      "BuddyのAPIサーバー",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

@@ -1,10 +1,9 @@
 package main
 
-// @title       buddy-api
+// @title       Buddy-API
 // @version     1.0
 // @description BuddyのAPIサーバー
-
-// @host      localhost:8080
+// @host http://localhost:8080
 // @BasePath  /v1
 
 import (

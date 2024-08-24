@@ -9,14 +9,13 @@ host: localhost:8080
 info:
   contact: {}
   description: BuddyのAPIサーバー
-  title: buddy-api
-  version: "1.0"
+  title: Buddy-API
+  version: "2.0"
 paths:
   /health:
     get:
       consumes:
       - application/json
-      description: get the health status
       produces:
       - application/json
       responses:
@@ -24,7 +23,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/health_handler.HealthResponse'
-      summary: Show the health status
+      summary: ヘルスチェック用エンドポイント
       tags:
-      - health
+      - Health
 swagger: "2.0"

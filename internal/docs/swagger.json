@@ -2,16 +2,15 @@
     "swagger": "2.0",
     "info": {
         "description": "BuddyのAPIサーバー",
-        "title": "buddy-api",
+        "title": "Buddy-API",
         "contact": {},
-        "version": "1.0"
+        "version": "2.0"
     },
     "host": "localhost:8080",
     "basePath": "/v1",
     "paths": {
         "/health": {
             "get": {
-                "description": "get the health status",
                 "consumes": [
                     "application/json"
                 ],
@@ -19,9 +18,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "health"
+                    "Health"
                 ],
-                "summary": "Show the health status",
+                "summary": "ヘルスチェック用エンドポイント",
                 "responses": {
                     "200": {
                         "description": "OK",
