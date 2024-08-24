@@ -1,0 +1,81 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - ./internal/docs:/app/docs
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:5.7
+    container_name: buddy_db
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: ${DB_USER}
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: "Asia/Tokyo"
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-volume:/var/lib/mysql
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+    healthcheck:
+      test: "mysqladmin ping -h 127.0.0.1 -u ${DB_USER} -p${DB_PASS}"
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: buddy_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_ARBITRARY: 1
+      PMA_USER: ${DB_USER}
+      PMA_PASSWORD: ${DB_PASS}
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+
+  #APIドキュメントを更新するためのジョブ
+  update_api_docs:
+    image: golang:1.22
+    working_dir: /app
+    volumes:
+      - ./internal:/app
+      - ./internal/docs:/app/docs
+    command: >
+      sh -c "
+        ls &&
+        go mod download &&
+        go install github.com/swaggo/swag/cmd/swag@latest &&
+        swag init -g cmd/api-server/main.go"
+    profiles:
+      - manual
+  update_postman:
+    build:
+      context: .
+      dockerfile: ./docker/node/Dockerfile
+    environment:
+      - POSTMAN_API_KEY=${POSTMAN_API_KEY}
+      - POSTMAN_COLLECTION_ID=${POSTMAN_COLLECTION_ID}
+    profiles:
+      - manual
+    volumes:
+      - ./internal/docs:/app/docs
+volumes:
+  db-volume:

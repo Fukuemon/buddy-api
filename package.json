@@ -1,0 +1,14 @@
+{
+  "name": "buddy-api",
+  "version": "1.0.0",
+  "description": "### Dependencies",
+  "main": "changelog.config.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

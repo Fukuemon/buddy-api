@@ -1,0 +1,96 @@
+{
+  "collection": {
+    "item": [
+      {
+        "name": "health",
+        "description": "",
+        "item": [
+          {
+            "id": "4449e89e-cbc9-4f1e-aabe-498b92890f3f",
+            "name": "ヘルスチェック用エンドポイント",
+            "request": {
+              "name": "ヘルスチェック用エンドポイント",
+              "description": {},
+              "url": {
+                "path": [
+                  "health"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                }
+              ],
+              "method": "GET",
+              "body": {},
+              "auth": null
+            },
+            "response": [
+              {
+                "id": "a0f74ee6-d401-4f01-a09b-501bcd38fbe6",
+                "name": "OK",
+                "originalRequest": {
+                  "url": {
+                    "path": [
+                      "health"
+                    ],
+                    "host": [
+                      "{{baseUrl}}"
+                    ],
+                    "query": [],
+                    "variable": []
+                  },
+                  "header": [
+                    {
+                      "key": "Accept",
+                      "value": "application/json"
+                    }
+                  ],
+                  "method": "GET",
+                  "body": {}
+                },
+                "status": "OK",
+                "code": 200,
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": "{\n  \"status\": \"<string>\"\n}",
+                "cookie": [],
+                "_postman_previewlanguage": "json"
+              }
+            ],
+            "event": [],
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            }
+          }
+        ]
+      }
+    ],
+    "event": [],
+    "variable": [
+      {
+        "key": "baseUrl",
+        "value": "//localhost:8080/v1"
+      }
+    ],
+    "info": {
+      "_postman_id": "8189e955-f31a-41e5-a4ce-adaee2a25777",
+      "name": "Buddy-API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "description": {
+        "content": "BuddyのAPIサーバー",
+        "type": "text/plain"
+      }
+    }
+  }
+}

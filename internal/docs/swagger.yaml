@@ -1,0 +1,29 @@
+basePath: /v1
+definitions:
+  health_handler.HealthResponse:
+    properties:
+      status:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: BuddyのAPIサーバー
+  title: Buddy-API
+  version: "2.0"
+paths:
+  /health:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/health_handler.HealthResponse'
+      summary: ヘルスチェック用エンドポイント
+      tags:
+      - Health
+swagger: "2.0"
