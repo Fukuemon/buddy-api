@@ -7,3 +7,47 @@ services:
       dockerfile: ./docker/app/Dockerfile
     ports:
       - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:5.7
+    container_name: buddy_db
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: ${DB_USER}
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: "Asia/Tokyo"
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-volume:/var/lib/mysql
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+    healthcheck:
+      test: "mysqladmin ping -h 127.0.0.1 -u ${DB_USER} -p${DB_PASS}"
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: buddy_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_ARBITRARY: 1
+      PMA_USER: ${DB_USER}
+      PMA_PASSWORD: ${DB_PASS}
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+
+volumes:
+  db-volume:

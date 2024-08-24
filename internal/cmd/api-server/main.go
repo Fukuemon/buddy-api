@@ -10,6 +10,7 @@ package main
 import (
 	"api-buddy/config"
 	_ "api-buddy/docs"
+	"api-buddy/infrastructure/mysql/db"
 	"api-buddy/server"
 	"context"
 )
@@ -19,6 +20,9 @@ func main() {
 	defer cancel()
 
 	conf := config.GetConfig()
+
+	db.DBOpen(conf.DBConfig)
+	defer db.DBClose()
 
 	server.Run(ctx, conf)
 }
