@@ -9,6 +9,7 @@ package main
 import (
 	"api-buddy/config"
 	_ "api-buddy/docs"
+	"api-buddy/infrastructure/aws"
 	"api-buddy/infrastructure/mysql/db"
 	"api-buddy/server"
 	"context"
@@ -22,6 +23,9 @@ func main() {
 
 	db.DBOpen(conf.DBConfig)
 	defer db.DBClose()
+
+	awsClients := &aws.AWSClients{}
+	awsClients.SetupCognitoClient(conf.AWSConfig.Region, conf.CognitoConfig.ClientId)
 
 	server.Run(ctx, conf)
 }

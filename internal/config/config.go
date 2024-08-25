@@ -7,8 +7,10 @@ import (
 )
 
 type Config struct {
-	Server   ServerConfig
-	DBConfig DBConfig
+	Server        ServerConfig
+	DBConfig      DBConfig
+	CognitoConfig CognitoConfig
+	AWSConfig     AWSConfig
 }
 
 type ServerConfig struct {
@@ -22,6 +24,14 @@ type DBConfig struct {
 	Password string `envconfig:"DB_PASS" default:"pass"`
 	Port     string `envconfig:"DB_PORT" default:"3306"`
 	Host     string `envconfig:"DB_HOST" default:"db-buddy"`
+}
+
+type CognitoConfig struct {
+	ClientId string `envconfig:"COGNITO_CLIENT_ID"`
+}
+
+type AWSConfig struct {
+	Region string `envconfig:"AWS_REGION"`
 }
 
 var (
