@@ -60,7 +60,6 @@ services:
       - ./internal/docs:/app/docs
     command: >
       sh -c "
-        ls &&
         go mod download &&
         go install github.com/swaggo/swag/cmd/swag@latest &&
         swag init -g cmd/api-server/main.go"

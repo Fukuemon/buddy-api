@@ -27,7 +27,8 @@ type DBConfig struct {
 }
 
 type CognitoConfig struct {
-	ClientId string `envconfig:"COGNITO_CLIENT_ID"`
+	ClientId   string `envconfig:"COGNITO_CLIENT_ID"`
+	UserPoolId string `envconfig:"COGNITO_USER_POOL_ID"`
 }
 
 type AWSConfig struct {

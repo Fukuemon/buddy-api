@@ -1,17 +1,64 @@
 basePath: /v1
 definitions:
+  auth.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  auth.SignInRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  auth.SignInResponse:
+    properties:
+      access_token:
+        type: string
+      id_token:
+        type: string
+    type: object
   health_handler.HealthResponse:
     properties:
       status:
         type: string
     type: object
-host: localhost:8080
+host: http://localhost:8080
 info:
   contact: {}
   description: BuddyのAPIサーバー
   title: Buddy-API
-  version: "2.0"
+  version: "1.0"
 paths:
+  /auth/signin:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Sign In Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.SignInResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+      summary: サインイン用エンドポイント
+      tags:
+      - Auth
   /health:
     get:
       consumes:
