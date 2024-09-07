@@ -13,8 +13,8 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        request  body      SignInRequest  true  "Sign In Request"
-// @Success      200      {object}  SignInResponse
-// @Failure      401      {object}  ErrorResponse
+// @Success      201      {object}  SignInResponse
+// @Failure      400      {object}  ErrorResponse
 // @Router       /auth/signin [post]
 func SignIn(ctx *gin.Context) {
 	var req SignInRequest

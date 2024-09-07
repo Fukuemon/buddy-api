@@ -8,22 +8,22 @@ import (
 )
 
 type Position struct {
-	ID         string `gorm:"primaryKey"`
-	Name       string `gorm:"not null"`
-	facilityID string
-	Policies   []policyDomain.Policy `gorm:"many2many:position_policies;"`
+	ID         string                 `gorm:"primaryKey"`
+	Name       string                 `gorm:"not null"`
+	FacilityID string                 `gorm:"not null"`
+	Policies   []*policyDomain.Policy `gorm:"many2many:position_policies;"`
 	common.CommonModel
 }
 
-func NewPosition(name string, facilityID string, policies []policyDomain.Policy) (*Position, error) {
+func NewPosition(name string, facilityID string, policies []*policyDomain.Policy) (*Position, error) {
 	return newPosition(ulid.NewULID(), name, facilityID, policies)
 }
 
-func newPosition(ID string, name string, facilityID string, policies []policyDomain.Policy) (*Position, error) {
+func newPosition(ID string, name string, facilityID string, policies []*policyDomain.Policy) (*Position, error) {
 	position := &Position{
 		ID:         ID,
 		Name:       name,
-		facilityID: facilityID,
+		FacilityID: facilityID,
 		Policies:   policies,
 	}
 
