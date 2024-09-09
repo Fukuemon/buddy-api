@@ -31,6 +31,7 @@ services:
     volumes:
       - db-volume:/var/lib/mysql
       - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./docker/mysql/initdb:/docker-entrypoint-initdb.d
     healthcheck:
       test: "mysqladmin ping -h 127.0.0.1 -u ${DB_USER} -p${DB_PASS}"
       timeout: 5s
