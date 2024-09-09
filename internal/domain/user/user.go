@@ -2,6 +2,10 @@ package user
 
 import (
 	"api-buddy/domain/common"
+	facilityDomain "api-buddy/domain/facility"
+	departmentDomain "api-buddy/domain/facility/department"
+	positionDomain "api-buddy/domain/facility/position"
+	teamDomain "api-buddy/domain/facility/team"
 	policyDomain "api-buddy/domain/policy"
 
 	"github.com/Fukuemon/go-pkg/ulid"
@@ -12,36 +16,41 @@ type Option struct {
 	PhoneNumber *string
 }
 
+// Todo: 担当エリアの追加
 type User struct {
-	ID          string `gorm:"primaryKey"`
-	Username    string `gorm:"unique"`
-	Email       string `gorm:"unique"`
-	PhoneNumber string `gorm:"unique"`
-	PositionID  string
-	TeamID      string
-	FacilityID  string
-	AreaID      string
-	Policies    []*policyDomain.Policy `gorm:"many2many:user_policies;"`
+	ID           string `gorm:"primaryKey"`
+	Username     string `gorm:"unique"`
+	Email        string `gorm:"unique"`
+	PhoneNumber  string `gorm:"unique"`
+	FacilityID   string
+	Facility     *facilityDomain.Facility `gorm:"foreignKey:FacilityID"`
+	DepartmentID string
+	Department   *departmentDomain.Department `gorm:"foreignKey:DepartmentID"`
+	PositionID   string
+	Position     *positionDomain.Position `gorm:"foreignKey:PositionID"`
+	TeamID       string
+	Team         *teamDomain.Team       `gorm:"foreignKey:TeamID"`
+	Policies     []*policyDomain.Policy `gorm:"many2many:user_policies;"`
 	common.CommonModel
 }
 
 func Reconstruct(
 	ID string,
 	username string,
-	positionID string,
-	teamID string,
-	facilityID string,
-	areaID string,
+	position *positionDomain.Position,
+	team *teamDomain.Team,
+	facility *facilityDomain.Facility,
+	department *departmentDomain.Department,
 	policies []*policyDomain.Policy,
 	options *Option,
 ) (*User, error) {
 	return newUser(
 		ID,
 		username,
-		positionID,
-		teamID,
-		facilityID,
-		areaID,
+		position,
+		team,
+		facility,
+		department,
 		policies,
 		options,
 	)
@@ -49,20 +58,20 @@ func Reconstruct(
 
 func NewUser(
 	username string,
-	positionID string,
-	teamID string,
-	facilityID string,
-	areaID string,
+	position *positionDomain.Position,
+	team *teamDomain.Team,
+	facility *facilityDomain.Facility,
+	department *departmentDomain.Department,
 	policies []*policyDomain.Policy,
 	options *Option,
 ) (*User, error) {
 	return newUser(
 		ulid.NewULID(),
 		username,
-		positionID,
-		teamID,
-		facilityID,
-		areaID,
+		position,
+		team,
+		facility,
+		department,
 		policies,
 		options,
 	)
@@ -71,33 +80,36 @@ func NewUser(
 func newUser(
 	ID string,
 	username string,
-	positionID string,
-	teamID string,
-	facilityID string,
-	areaID string,
+	position *positionDomain.Position,
+	team *teamDomain.Team,
+	facility *facilityDomain.Facility,
+	department *departmentDomain.Department,
 	policies []*policyDomain.Policy,
 	options *Option,
 ) (*User, error) {
 	user := &User{
-		ID:         ID,
-		Username:   username,
-		PositionID: positionID,
-		TeamID:     teamID,
-		FacilityID: facilityID,
-		AreaID:     areaID,
-		Policies:   policies,
+		ID:           ID,
+		Username:     username,
+		PositionID:   position.ID,
+		TeamID:       team.ID,
+		FacilityID:   facility.ID,
+		DepartmentID: department.ID,
+		Position:     position,
+		Team:         team,
+		Facility:     facility,
+		Department:   department,
+		Policies:     policies,
 	}
 
+	// Optionがnilでない場合のみ、EmailとPhoneNumberを設定
 	if options != nil {
-		options = &Option{}
-	}
+		if options.Email != nil {
+			user.Email = *options.Email
+		}
 
-	if options.Email == nil {
-		user.Email = *options.Email
-	}
-
-	if options.PhoneNumber == nil {
-		user.PhoneNumber = *options.PhoneNumber
+		if options.PhoneNumber != nil {
+			user.PhoneNumber = *options.PhoneNumber
+		}
 	}
 
 	common.InitializeCommonModel(&user.CommonModel)

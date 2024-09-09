@@ -18,7 +18,7 @@ type CognitoClient struct {
 }
 
 // SignUpRequest struct to encapsulate the request parameters
-type SignUpRequest struct {
+type CognitoSignUpRequest struct {
 	Username    string
 	Password    string
 	Email       *string
@@ -26,7 +26,7 @@ type SignUpRequest struct {
 	// Add other fields as necessary
 }
 
-func (c *CognitoClient) SignUp(req *SignUpRequest) (*string, error) {
+func (c *CognitoClient) SignUp(req *CognitoSignUpRequest) (*string, error) {
 	attributes := []types.AttributeType{}
 
 	if req.Email != nil {

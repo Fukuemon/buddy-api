@@ -28,7 +28,7 @@ func (r *UserRepository) Create(ctx context.Context, user *userDomain.User) erro
 
 func (r *UserRepository) FindByID(ctx context.Context, id string) (*userDomain.User, error) {
 	var user userDomain.User
-	err := r.db.Preload("Position").Preload("Team").Preload("Department").Preload("Policies").Where("id = ?", id).First(&user).Error
+	err := r.db.Preload("Facility").Preload("Position").Preload("Team").Preload("Department").Preload("Policies").Where("id = ?", id).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
