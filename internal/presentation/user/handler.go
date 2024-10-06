@@ -29,8 +29,8 @@ func NewHandler(findUserUseCase *user.FindUserUseCase) *handler {
 // @Failure      500      {object} ErrorResponse
 // @Router       /users/{user_id} [get]
 func (h *handler) FindByUserId(ctx *gin.Context) {
-	id := ctx.Param("id")
-	output, err := h.findUserUseCase.Run(ctx, id)
+	userID := ctx.Param("user_id")
+	output, err := h.findUserUseCase.Run(ctx, userID)
 	if err != nil {
 		settings.ReturnStatusInternalServerError(ctx, err)
 	}

@@ -68,9 +68,9 @@ func (h handler) Create(ctx *gin.Context) {
 // @Failure      500      {object} ErrorResponse
 // @Router       /policies/{policy_id} [get]
 func (h handler) FindById(ctx *gin.Context) {
-	id := ctx.Param("id")
+	policyID := ctx.Param("policy_id")
 
-	output, err := h.findPolicyUseCase.Run(ctx, id)
+	output, err := h.findPolicyUseCase.Run(ctx, policyID)
 	if err != nil {
 		settings.ReturnStatusInternalServerError(ctx, err)
 		return
