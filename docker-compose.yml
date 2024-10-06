@@ -16,6 +16,7 @@ services:
         condition: service_healthy
 
   db:
+    platform: linux/x86_64
     image: mysql:5.7
     container_name: buddy_db
     restart: always
@@ -66,16 +67,13 @@ services:
         swag init -g cmd/api-server/main.go"
     profiles:
       - manual
-  update_postman:
-    build:
-      context: .
-      dockerfile: ./docker/node/Dockerfile
-    environment:
-      - POSTMAN_API_KEY=${POSTMAN_API_KEY}
-      - POSTMAN_COLLECTION_ID=${POSTMAN_COLLECTION_ID}
-    profiles:
-      - manual
+
+  # Postmanのコレクションを更新するためのジョブ
+  postman_collection_update:
+    image: fukuemon/postman_collection_update
     volumes:
-      - ./internal/docs:/app/docs
+      - ./internal/docs/swagger.yaml:/swagger.yaml
+    env_file:
+      - .env
 volumes:
   db-volume:
