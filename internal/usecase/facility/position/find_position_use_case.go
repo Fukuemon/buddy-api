@@ -23,7 +23,6 @@ type FindUseCaseOutputDto struct {
 	Policies   []PolicyDto
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  *time.Time
 }
 
 type PolicyDto struct {

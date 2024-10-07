@@ -33,7 +33,6 @@ type FindUserUseCaseOutputDto struct {
 	PhoneNumber *string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-	DeletedAt   *time.Time
 }
 
 func (uc *FindUserUseCase) Run(ctx context.Context, input string) (*FindUserUseCaseOutputDto, error) {
@@ -54,6 +53,5 @@ func (uc *FindUserUseCase) Run(ctx context.Context, input string) (*FindUserUseC
 		PhoneNumber: &user.PhoneNumber,
 		CreatedAt:   user.CreatedAt,
 		UpdatedAt:   user.UpdatedAt,
-		DeletedAt:   user.DeletedAt,
 	}, nil
 }

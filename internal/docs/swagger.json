@@ -6,7 +6,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "http://localhost:8080",
+    "host": "localhost:8080",
     "basePath": "/v1",
     "paths": {
         "/auth/signin": {
@@ -753,9 +753,6 @@
                 "created_at": {
                     "type": "string"
                 },
-                "deleted_at": {
-                    "type": "string"
-                },
                 "facility_id": {
                     "type": "string"
                 },
@@ -822,9 +819,6 @@
                 "created_at": {
                     "type": "string"
                 },
-                "deleted_at": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
@@ -840,9 +834,6 @@
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
                     "type": "string"
                 },
                 "id": {
@@ -899,9 +890,6 @@
                 "created_at": {
                     "type": "string"
                 },
-                "deleted_at": {
-                    "type": "string"
-                },
                 "facility_id": {
                     "type": "string"
                 },
@@ -947,9 +935,6 @@
                 "created_at": {
                     "type": "string"
                 },
-                "deleted_at": {
-                    "type": "string"
-                },
                 "facility_id": {
                     "type": "string"
                 },
@@ -987,9 +972,6 @@
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
                     "type": "string"
                 },
                 "department": {

@@ -75,8 +75,6 @@ definitions:
     properties:
       created_at:
         type: string
-      deleted_at:
-        type: string
       facility_id:
         type: string
       id:
@@ -119,8 +117,6 @@ definitions:
     properties:
       created_at:
         type: string
-      deleted_at:
-        type: string
       id:
         type: string
       name:
@@ -131,8 +127,6 @@ definitions:
   policy.PolicyResponse:
     properties:
       created_at:
-        type: string
-      deleted_at:
         type: string
       id:
         type: string
@@ -169,8 +163,6 @@ definitions:
     properties:
       created_at:
         type: string
-      deleted_at:
-        type: string
       facility_id:
         type: string
       id:
@@ -200,8 +192,6 @@ definitions:
     properties:
       created_at:
         type: string
-      deleted_at:
-        type: string
       facility_id:
         type: string
       id:
@@ -227,8 +217,6 @@ definitions:
     properties:
       created_at:
         type: string
-      deleted_at:
-        type: string
       department:
         type: string
       email:
@@ -252,7 +240,7 @@ definitions:
       username:
         type: string
     type: object
-host: http://localhost:8080
+host: localhost:8080
 info:
   contact: {}
   description: BuddyのAPIサーバー

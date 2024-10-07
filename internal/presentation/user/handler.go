@@ -55,7 +55,6 @@ func (h *handler) FindByUserId(ctx *gin.Context) {
 		PhoneNumber: output.PhoneNumber,
 		CreatedAt:   output.CreatedAt,
 		UpdatedAt:   output.UpdatedAt,
-		DeletedAt:   output.DeletedAt,
 	}
 
 	settings.ReturnStatusOK(ctx, response)

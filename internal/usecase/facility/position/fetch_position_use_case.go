@@ -23,7 +23,6 @@ type FetchPositionsUseCaseOutputDto struct {
 	Policies   []PolicyDto
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  *time.Time
 }
 
 func (uc *FetchPositionsUseCase) Run(ctx context.Context, input string) ([]FetchPositionsUseCaseOutputDto, error) {
