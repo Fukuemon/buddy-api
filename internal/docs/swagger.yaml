@@ -75,8 +75,6 @@ definitions:
     properties:
       created_at:
         type: string
-      deleted_at:
-        type: string
       facility_id:
         type: string
       id:
@@ -119,8 +117,6 @@ definitions:
     properties:
       created_at:
         type: string
-      deleted_at:
-        type: string
       id:
         type: string
       name:
@@ -131,8 +127,6 @@ definitions:
   policy.PolicyResponse:
     properties:
       created_at:
-        type: string
-      deleted_at:
         type: string
       id:
         type: string
@@ -169,8 +163,6 @@ definitions:
     properties:
       created_at:
         type: string
-      deleted_at:
-        type: string
       facility_id:
         type: string
       id:
@@ -200,8 +192,6 @@ definitions:
     properties:
       created_at:
         type: string
-      deleted_at:
-        type: string
       facility_id:
         type: string
       id:
@@ -226,8 +216,6 @@ definitions:
   user.UserResponse:
     properties:
       created_at:
-        type: string
-      deleted_at:
         type: string
       department:
         type: string
