@@ -72,7 +72,7 @@ func (h handler) CreateByFacilityId(ctx *gin.Context) {
 // @Failure      500      {object} ErrorResponse
 // @Router       /positions/{position_id} [get]
 func (h handler) FindById(ctx *gin.Context) {
-	positionID := ctx.Param("id")
+	positionID := ctx.Param("position_id")
 
 	output, err := h.findPositionUseCase.Run(ctx, positionID)
 	if err != nil {
