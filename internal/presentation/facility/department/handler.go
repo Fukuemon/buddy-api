@@ -45,7 +45,6 @@ func (h handler) FindById(ctx *gin.Context) {
 		FacilityID: output.FacilityID,
 		CreateAt:   output.CreatedAt,
 		UpdateAt:   output.UpdatedAt,
-		DeletedAt:  output.DeletedAt,
 	}
 
 	settings.ReturnStatusOK(ctx, response)
@@ -80,7 +79,6 @@ func (h handler) FetchByFacilityId(ctx *gin.Context) {
 			FacilityID: department.FacilityID,
 			CreateAt:   department.CreatedAt,
 			UpdateAt:   department.UpdatedAt,
-			DeletedAt:  department.DeletedAt,
 		})
 	}
 

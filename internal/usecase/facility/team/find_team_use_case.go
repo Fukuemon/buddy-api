@@ -22,7 +22,6 @@ type FindTeamUseCaseOutputDto struct {
 	FacilityID string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  *time.Time
 }
 
 func (uc *FindTeamUseCase) Run(ctx context.Context, input string) (*FindTeamUseCaseOutputDto, error) {
@@ -37,6 +36,5 @@ func (uc *FindTeamUseCase) Run(ctx context.Context, input string) (*FindTeamUseC
 		FacilityID: team.FacilityID,
 		CreatedAt:  team.CreatedAt,
 		UpdatedAt:  team.UpdatedAt,
-		DeletedAt:  team.DeletedAt,
 	}, nil
 }

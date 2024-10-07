@@ -21,7 +21,6 @@ type FindUseCaseOutputDto struct {
 	Name      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
 }
 
 func (uc *FindPolicyUseCase) Run(ctx context.Context, input string) (*FindUseCaseOutputDto, error) {
@@ -35,6 +34,5 @@ func (uc *FindPolicyUseCase) Run(ctx context.Context, input string) (*FindUseCas
 		Name:      policy.Name,
 		CreatedAt: policy.CreatedAt,
 		UpdatedAt: policy.UpdatedAt,
-		DeletedAt: policy.DeletedAt,
 	}, nil
 }

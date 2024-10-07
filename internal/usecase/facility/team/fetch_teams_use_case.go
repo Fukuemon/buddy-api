@@ -22,7 +22,6 @@ type FetchTeamsUseCaseOutputDto struct {
 	FacilityID string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  *time.Time
 }
 
 func (uc *FetchTeamsUseCase) Run(ctx context.Context, input string) ([]FetchTeamsUseCaseOutputDto, error) {
@@ -47,7 +46,6 @@ func (uc *FetchTeamsUseCase) Run(ctx context.Context, input string) ([]FetchTeam
 			FacilityID: team.FacilityID,
 			CreatedAt:  team.CreatedAt,
 			UpdatedAt:  team.UpdatedAt,
-			DeletedAt:  team.DeletedAt,
 		})
 
 	}

@@ -21,7 +21,6 @@ type FetchUseCaseOutputDto struct {
 	Name      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
 }
 
 func (uc *FetchPoliciesUseCase) Run(ctx context.Context) ([]FetchUseCaseOutputDto, error) {
@@ -37,7 +36,6 @@ func (uc *FetchPoliciesUseCase) Run(ctx context.Context) ([]FetchUseCaseOutputDt
 			Name:      policy.Name,
 			CreatedAt: policy.CreatedAt,
 			UpdatedAt: policy.UpdatedAt,
-			DeletedAt: policy.DeletedAt,
 		})
 	}
 
