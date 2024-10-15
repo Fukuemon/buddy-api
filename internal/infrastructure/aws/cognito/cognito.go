@@ -1,6 +1,7 @@
 package cognito
 
 import (
+	errorDomain "api-buddy/domain/error"
 	"context"
 	"errors"
 	"log"
@@ -17,26 +18,24 @@ type CognitoClient struct {
 	ClientId string
 }
 
-// SignUpRequest struct to encapsulate the request parameters
 type CognitoSignUpRequest struct {
 	Username    string
 	Password    string
 	Email       *string
 	PhoneNumber *string
-	// Add other fields as necessary
 }
 
 func (c *CognitoClient) SignUp(req *CognitoSignUpRequest) (*string, error) {
 	attributes := []types.AttributeType{}
 
-	if req.Email != nil {
+	if req.Email != nil || *req.Email != "" {
 		attributes = append(attributes, types.AttributeType{
 			Name:  aws.String("email"),
 			Value: aws.String(*req.Email),
 		})
 	}
 
-	if req.PhoneNumber != nil {
+	if req.PhoneNumber != nil || *req.PhoneNumber != "" {
 		attributes = append(attributes, types.AttributeType{
 			Name:  aws.String("phone_number"),
 			Value: aws.String(*req.PhoneNumber),
@@ -53,14 +52,17 @@ func (c *CognitoClient) SignUp(req *CognitoSignUpRequest) (*string, error) {
 	output, err := c.Client.SignUp(context.TODO(), signUpInput)
 	if err != nil {
 		var invalidPassword *types.InvalidPasswordException
+		var invalidInput *types.InvalidParameterException
 		if errors.As(err, &invalidPassword) {
 			log.Println(*invalidPassword.Message)
-		} else {
-			log.Printf("Couldn't sign up user: %v", err)
+			return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 		}
-		return nil, err
+		if errors.As(err, &invalidInput) {
+			log.Println(*invalidInput.Message)
+			return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+		}
+		return nil, errorDomain.WrapError(errorDomain.CognitoFailureErr, err)
 	}
-
 	return output.UserSub, nil
 }
 
@@ -84,7 +86,6 @@ func (c *CognitoClient) SignIn(username, password string) (*cognitoidentityprovi
 	return authOutput, nil
 }
 
-// ListUsers function to get a list of users in the user pool
 func (c *CognitoClient) ListUsers(userPoolId string) ([]types.UserType, error) {
 	listUsersInput := &cognitoidentityprovider.ListUsersInput{
 		UserPoolId: aws.String(userPoolId),
