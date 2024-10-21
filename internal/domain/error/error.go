@@ -29,6 +29,13 @@ func WrapError(err *Error, originalErr error) *Error {
 	}
 }
 
+func ValidationError(err error) *Error {
+	return &Error{
+		description: InvalidInputErr.description,
+		originalErr: err,
+	}
+}
+
 // エラー変数を定義
 var (
 	InvalidInputErr   = NewError("入力の内容が不正です")

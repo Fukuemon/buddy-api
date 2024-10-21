@@ -6,6 +6,8 @@ import (
 
 	errorDomain "api-buddy/domain/error"
 
+	"github.com/Fukuemon/go-pkg/validator"
+	pathValidator "github.com/Fukuemon/go-pkg/validator/gin"
 	"github.com/gin-gonic/gin"
 )
 
@@ -107,4 +109,11 @@ func HandleErrorResponse(ctx *gin.Context, err error) {
 	} else {
 		ReturnStatusInternalServerError(ctx, err)
 	}
+}
+
+func InitValidationSettings() {
+	validator.InitValidator(nil)
+
+	pathValidator.InitTagErrorMessages(map[string]string{})
+
 }
