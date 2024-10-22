@@ -2,6 +2,7 @@ package policy
 
 import (
 	errorDomain "api-buddy/domain/error"
+	_ "api-buddy/presentation/common"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/policy"
 
@@ -31,8 +32,8 @@ func NewHandler(createPolicyUseCase *policy.CreatePolicyUseCase, findPolicyUseCa
 // @Produce      json
 // @Param        request body      CreatePolicyRequest  true  "Create Policy Request"
 // @Success      201      {object} CreatePolicyResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /policies [post]
 func (h handler) Create(ctx *gin.Context) {
 	var params CreatePolicyRequest
@@ -67,9 +68,10 @@ func (h handler) Create(ctx *gin.Context) {
 // @Produce      json
 // @Param        policy_id path string true "Policy ID"
 // @Success      200      {object} PolicyResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      404      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      404      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /policies/{policy_id} [get]
 func (h handler) FindById(ctx *gin.Context) {
 	policyId := pathValidator.Param(ctx, "policy_id", "required", "ulid")
@@ -102,8 +104,9 @@ func (h handler) FindById(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200      {object} PolicyListResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /policies [get]
 func (h handler) Fetch(ctx *gin.Context) {
 	output, err := h.fetchPoliciesUseCase.Run(ctx)

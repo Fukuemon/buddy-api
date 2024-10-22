@@ -2,6 +2,7 @@ package team
 
 import (
 	errorDomain "api-buddy/domain/error"
+	_ "api-buddy/presentation/common"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/facility/team"
 
@@ -30,8 +31,9 @@ func NewHandler(createTeamUseCase *team.CreateTeamUseCase, findTeamUseCase *team
 // @Produce      json
 // @Param        request body      CreateTeamRequest  true  "Create Team Request"
 // @Success      201      {object} TeamResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /facilities/{facility_id}/teams [post]
 func (h handler) CreateByFacilityId(ctx *gin.Context) {
 	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
@@ -68,8 +70,10 @@ func (h handler) CreateByFacilityId(ctx *gin.Context) {
 // @Produce      json
 // @Param        team_id path string true "Team ID"
 // @Success      200      {object} TeamResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      404      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /teams/{team_id} [get]
 func (h handler) FindByID(ctx *gin.Context) {
 	teamId := pathValidator.Param(ctx, "team_id", "required", "ulid")
@@ -102,9 +106,10 @@ func (h handler) FindByID(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        facility_id query string false "Facility ID"
-// @Success      200      {object} []TeamResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Success      200      {object} TeamListResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /facilities/{facility_id}/teams [get]
 func (h handler) FetchByFacilityId(ctx *gin.Context) {
 	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")

@@ -15,7 +15,3 @@ type PolicyResponse struct {
 }
 
 type PolicyListResponse []PolicyResponse
-
-type ErrorResponse struct {
-	Error string `json:"error"`
-}

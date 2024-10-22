@@ -4,6 +4,7 @@ import (
 	errorDomain "api-buddy/domain/error"
 	userDomain "api-buddy/domain/user"
 	"api-buddy/infrastructure/aws/cognito"
+	_ "api-buddy/presentation/common"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/user"
 
@@ -28,7 +29,8 @@ func NewHandler(createUserUseCase *user.CreateUserUseCase) *handler {
 // @Produce      json
 // @Param        request  body      SignUpRequest  true  "Sign Up Request"
 // @Success      201      {object}  SignUpResponse
-// @Failure      400      {object}  ErrorResponse
+// @Failure      400      {object}  common.ErrorResponse
+// @Failure      500      {object}  common.ErrorResponse
 // @Router       /auth/signup [post]
 func (h handler) SignUp(ctx *gin.Context) {
 	var params SignUpRequest
@@ -87,7 +89,8 @@ func (h handler) SignUp(ctx *gin.Context) {
 // @Produce      json
 // @Param        request  body      SignInRequest  true  "Sign In Request"
 // @Success      201      {object}  SignInResponse
-// @Failure      400      {object}  ErrorResponse
+// @Failure      400      {object}  common.ErrorResponse
+// @Failure      500      {object}  common.ErrorResponse
 // @Router       /auth/signin [post]
 func (h handler) SignIn(ctx *gin.Context) {
 	var req SignInRequest

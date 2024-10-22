@@ -2,6 +2,7 @@ package department
 
 import (
 	errorDomain "api-buddy/domain/error"
+	_ "api-buddy/presentation/common"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/facility/department"
 
@@ -28,9 +29,9 @@ func NewHandler(findDepartmentUseCase *department.FindDepartmentUseCase, fetchDe
 // @Produce      json
 // @Param        department_id path string true "Department ID"
 // @Success      200      {object} DepartmentResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      404      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /departments/{department_id} [get]
 func (h handler) FindById(ctx *gin.Context) {
 	departmentId := pathValidator.Param(ctx, "department_id", "required", "ulid")
@@ -65,8 +66,9 @@ func (h handler) FindById(ctx *gin.Context) {
 // @Produce      json
 // @Param        facility_id path string true "Facility ID"
 // @Success      200      {object} DepartmentResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /facilities/{facility_id}/departments [get]
 func (h handler) FetchByFacilityId(ctx *gin.Context) {
 	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")

@@ -1,10 +1,5 @@
 basePath: /v1
 definitions:
-  auth.ErrorResponse:
-    properties:
-      error:
-        type: string
-    type: object
   auth.SignInRequest:
     properties:
       password:
@@ -71,6 +66,15 @@ definitions:
       team:
         type: string
     type: object
+  common.ErrorResponse:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      msg:
+        type: string
+    type: object
   department.DepartmentResponse:
     properties:
       created_at:
@@ -82,11 +86,6 @@ definitions:
       name:
         type: string
       updated_at:
-        type: string
-    type: object
-  department.ErrorResponse:
-    properties:
-      message:
         type: string
     type: object
   health_handler.HealthResponse:
@@ -106,11 +105,6 @@ definitions:
       id:
         type: string
       name:
-        type: string
-    type: object
-  policy.ErrorResponse:
-    properties:
-      error:
         type: string
     type: object
   policy.Policy:
@@ -147,11 +141,6 @@ definitions:
     - name
     - policy_ids
     type: object
-  position.ErrorResponse:
-    properties:
-      error:
-        type: string
-    type: object
   position.PolicyDto:
     properties:
       id:
@@ -183,11 +172,6 @@ definitions:
     required:
     - name
     type: object
-  team.ErrorResponse:
-    properties:
-      error:
-        type: string
-    type: object
   team.TeamResponse:
     properties:
       created_at:
@@ -199,11 +183,6 @@ definitions:
       name:
         type: string
       updated_at:
-        type: string
-    type: object
-  user.ErrorResponse:
-    properties:
-      message:
         type: string
     type: object
   user.PolicyModel:
@@ -268,7 +247,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/auth.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
       summary: サインイン用エンドポイント
       tags:
       - Auth
@@ -293,7 +276,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/auth.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
       summary: サインアップ用エンドポイント
       tags:
       - Auth
@@ -317,15 +304,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/department.ErrorResponse'
-        "404":
-          description: Not Found
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
           schema:
-            $ref: '#/definitions/department.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/department.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: 単一の部署を取得する
       tags:
       - Department
@@ -349,11 +336,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/department.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/department.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: 施設IDに紐づく部署を取得する
       tags:
       - Department
@@ -377,11 +368,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/position.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/position.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: 施設IDに紐づく役職を取得する
       tags:
       - Position
@@ -405,11 +400,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/position.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/position.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: 施設に紐づく役職を作成する
       tags:
       - Position
@@ -434,11 +433,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/team.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/team.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: 施設IDに紐づくチームを取得する
       tags:
       - Team
@@ -462,11 +465,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/team.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/team.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: 施設に紐づくチームを作成する
       tags:
       - Team
@@ -500,11 +507,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/policy.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/policy.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: ポリシー一覧を取得する
       tags:
       - Policy
@@ -528,11 +539,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/policy.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/policy.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: ポリシーを作成する
       tags:
       - Policy
@@ -556,15 +567,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/policy.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/policy.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/policy.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: 単一のポリシーを取得する
       tags:
       - Policy
@@ -588,11 +603,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/position.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/position.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: 単一の役職を取得する
       tags:
       - Position
@@ -616,11 +639,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/team.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/team.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: 単一のチーム取得する
       tags:
       - Team
@@ -644,15 +675,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/user.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/user.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/user.ErrorResponse'
+            $ref: '#/definitions/common.ErrorResponse'
       summary: 単一のユーザーを取得する
       tags:
       - User

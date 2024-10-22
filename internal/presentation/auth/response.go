@@ -19,7 +19,3 @@ type SignUpResponse struct {
 	TeamName       string           `json:"team"`
 	Policies       []*policy.Policy `json:"policies"`
 }
-
-type ErrorResponse struct {
-	Error string `json:"error"`
-}

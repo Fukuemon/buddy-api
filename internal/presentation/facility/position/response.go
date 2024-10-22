@@ -21,7 +21,3 @@ type PositionResponse struct {
 }
 
 type PositionListResponse []PositionResponse
-
-type ErrorResponse struct {
-	Error string `json:"error"`
-}

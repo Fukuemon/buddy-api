@@ -2,6 +2,7 @@ package user
 
 import (
 	errorDomain "api-buddy/domain/error"
+	_ "api-buddy/presentation/common"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/user"
 
@@ -26,9 +27,10 @@ func NewHandler(findUserUseCase *user.FindUserUseCase) *handler {
 // @Produce      json
 // @Param        user_id path string true "User ID"
 // @Success      200      {object} UserResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      404      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      404      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /users/{user_id} [get]
 func (h *handler) FindByUserId(ctx *gin.Context) {
 	userId := pathValidator.Param(ctx, "user_id", "required", "ulid")

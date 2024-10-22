@@ -1,5 +1,7 @@
 package common
 
 type ErrorResponse struct {
-	Error string `json:"error"`
+	Code        string `json:"code"`
+	Description string `json:"description"`
+	Msg         string `json:"msg"`
 }

@@ -117,3 +117,9 @@ func InitValidationSettings() {
 	pathValidator.InitTagErrorMessages(map[string]string{})
 
 }
+
+type ErrorResponse struct {
+	Code        string `json:"code"`
+	Description string `json:"description"`
+	Msg         string `json:"msg"`
+}
