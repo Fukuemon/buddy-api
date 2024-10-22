@@ -14,3 +14,7 @@ func InitializeCommonModel(m *CommonModel) {
 	m.CreatedAt = currentTime
 	m.UpdatedAt = currentTime
 }
+
+func AddPlusToPhoneNumber(phoneNumber string) string {
+	return "+" + phoneNumber
+}

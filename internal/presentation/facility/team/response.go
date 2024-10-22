@@ -17,7 +17,3 @@ type TeamResponse struct {
 }
 
 type TeamListResponse []TeamResponse
-
-type ErrorResponse struct {
-	Error string `json:"error"`
-}

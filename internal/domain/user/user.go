@@ -8,6 +8,8 @@ import (
 	teamDomain "api-buddy/domain/facility/team"
 	policyDomain "api-buddy/domain/policy"
 
+	errorDomain "api-buddy/domain/error"
+
 	"github.com/Fukuemon/go-pkg/ulid"
 )
 
@@ -101,13 +103,28 @@ func newUser(
 		Policies:     policies,
 	}
 
+	if len(user.Username) > 128 {
+		err := errorDomain.NewError("ユーザー名は128文字以内です")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+	}
+
 	// Optionがnilでない場合のみ、EmailとPhoneNumberを設定
 	if options != nil {
 		if options.Email != nil {
+			if len(*options.Email) > 320 {
+				err := errorDomain.NewError("Emailは320文字以内です")
+				return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+			}
 			user.Email = *options.Email
 		}
 
 		if options.PhoneNumber != nil {
+			if len(*options.PhoneNumber) > 11 {
+				err := errorDomain.NewError("電話番号は11文字以内です")
+				return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+			}
+			// 先頭に"+"を加える処理を追加
+			*options.PhoneNumber = common.AddPlusToPhoneNumber(*options.PhoneNumber)
 			user.PhoneNumber = *options.PhoneNumber
 		}
 	}

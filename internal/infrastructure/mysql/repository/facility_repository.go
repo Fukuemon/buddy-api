@@ -1,6 +1,7 @@
 package repository
 
 import (
+	errorDomain "api-buddy/domain/error"
 	facilityDomain "api-buddy/domain/facility"
 	"api-buddy/infrastructure/mysql/db"
 	"context"
@@ -19,8 +20,9 @@ func NewFacilityRepository() facilityDomain.FacilityRepository {
 }
 
 func (r *FacilityRepository) Create(ctx context.Context, facility *facilityDomain.Facility) error {
-	if err := r.db.Create(facility).Error; err != nil {
-		return err
+	err := r.db.Create(facility).Error
+	if err != nil {
+		return errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return nil
 }
@@ -29,7 +31,10 @@ func (r *FacilityRepository) FindByID(ctx context.Context, id string) (*facility
 	var facility facilityDomain.Facility
 	err := r.db.Where("id = ?", id).First(&facility).Error
 	if err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, errorDomain.WrapError(errorDomain.NotFoundErr, err)
+		}
+		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return &facility, nil
 }

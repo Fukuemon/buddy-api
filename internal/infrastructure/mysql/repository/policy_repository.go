@@ -1,6 +1,7 @@
 package repository
 
 import (
+	errorDomain "api-buddy/domain/error"
 	policyDomain "api-buddy/domain/policy"
 	"api-buddy/infrastructure/mysql/db"
 	"context"
@@ -21,7 +22,7 @@ func NewPolicyRepository() policyDomain.PolicyRepository {
 func (r *policyRepository) Create(ctx context.Context, policy *policyDomain.Policy) error {
 	err := r.db.Create(&policy).Error
 	if err != nil {
-		return err
+		return errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return nil
 }
@@ -30,7 +31,10 @@ func (r *policyRepository) FindByID(ctx context.Context, id string) (*policyDoma
 	var policy policyDomain.Policy
 	err := r.db.Where("id = ?", id).First(&policy).Error
 	if err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, errorDomain.WrapError(errorDomain.NotFoundErr, err)
+		}
+		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return &policy, nil
 }
@@ -39,7 +43,7 @@ func (r *policyRepository) FindByIDs(ctx context.Context, ids []string) ([]*poli
 	var policies []*policyDomain.Policy
 	err := r.db.Where("id IN ?", ids).Find(&policies).Error
 	if err != nil {
-		return nil, err
+		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return policies, nil
 }
@@ -48,7 +52,10 @@ func (r *policyRepository) FindByPositionID(ctx context.Context, positionID stri
 	var policies []*policyDomain.Policy
 	err := r.db.Preload("Positions").Begin().Where("position_id = ?", positionID).Find(&policies).Error
 	if err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return policies, nil
 }
@@ -57,7 +64,10 @@ func (r *policyRepository) FindAll(ctx context.Context) ([]*policyDomain.Policy,
 	var policies []*policyDomain.Policy
 	err := r.db.Find(&policies).Error
 	if err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return policies, nil
 }

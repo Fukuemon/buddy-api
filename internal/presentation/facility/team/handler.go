@@ -1,9 +1,12 @@
 package team
 
 import (
+	errorDomain "api-buddy/domain/error"
+	_ "api-buddy/presentation/common"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/facility/team"
 
+	pathValidator "github.com/Fukuemon/go-pkg/validator/gin"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,25 +31,32 @@ func NewHandler(createTeamUseCase *team.CreateTeamUseCase, findTeamUseCase *team
 // @Produce      json
 // @Param        request body      CreateTeamRequest  true  "Create Team Request"
 // @Success      201      {object} TeamResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /facilities/{facility_id}/teams [post]
 func (h handler) CreateByFacilityId(ctx *gin.Context) {
-	facilityID := ctx.Param("facility_id")
+	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
 	var params CreateTeamRequest
 
 	if err := ctx.ShouldBindJSON(&params); err != nil {
-		settings.ReturnBadRequest(ctx, err)
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	err := facilityId.ParamValidate()
+	if err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
 		return
 	}
 
 	input := team.CreateUseCaseInputDto{
 		Name:       params.Name,
-		FacilityID: facilityID,
+		FacilityID: facilityId.ParamValue,
 	}
 	output, err := h.createTeamUseCase.Run(ctx, input)
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(err)
 		return
 	}
 
@@ -65,15 +75,23 @@ func (h handler) CreateByFacilityId(ctx *gin.Context) {
 // @Produce      json
 // @Param        team_id path string true "Team ID"
 // @Success      200      {object} TeamResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      404      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /teams/{team_id} [get]
 func (h handler) FindByID(ctx *gin.Context) {
-	teamID := ctx.Param("team_id")
+	teamId := pathValidator.Param(ctx, "team_id", "required", "ulid")
 
-	output, err := h.findTeamUseCase.Run(ctx, teamID)
+	err := teamId.ParamValidate()
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.findTeamUseCase.Run(ctx, teamId.ParamValue)
+	if err != nil {
+		ctx.Error(err)
 		return
 	}
 
@@ -93,16 +111,23 @@ func (h handler) FindByID(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        facility_id query string false "Facility ID"
-// @Success      200      {object} []TeamResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Success      200      {object} TeamListResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /facilities/{facility_id}/teams [get]
 func (h handler) FetchByFacilityId(ctx *gin.Context) {
-	facilityID := ctx.Param("facility_id")
+	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
 
-	output, err := h.fetchTeamsUseCase.Run(ctx, facilityID)
+	err := facilityId.ParamValidate()
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.fetchTeamsUseCase.Run(ctx, facilityId.ParamValue)
+	if err != nil {
+		ctx.Error(err)
 		return
 	}
 

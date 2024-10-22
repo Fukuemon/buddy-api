@@ -1,6 +1,7 @@
 package repository
 
 import (
+	errorDomain "api-buddy/domain/error"
 	departmentDomain "api-buddy/domain/facility/department"
 	"api-buddy/infrastructure/mysql/db"
 	"context"
@@ -21,7 +22,7 @@ func NewDepartmentRepository() departmentDomain.DepartmentRepository {
 func (r *DepartmentRepository) Create(ctx context.Context, department *departmentDomain.Department) error {
 	err := r.db.Create(&department).Error
 	if err != nil {
-		return err
+		return errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return nil
 }
@@ -30,7 +31,10 @@ func (r *DepartmentRepository) FindByID(ctx context.Context, id string) (*depart
 	var department *departmentDomain.Department
 	err := r.db.Where("id = ?", id).First(&department).Error
 	if err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, errorDomain.WrapError(errorDomain.NotFoundErr, err)
+		}
+		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return department, nil
 }
@@ -39,7 +43,10 @@ func (r *DepartmentRepository) FindByFacilityID(ctx context.Context, facilityID 
 	var departments []*departmentDomain.Department
 	err := r.db.Where("facility_id = ?", facilityID).Find(&departments).Error
 	if err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return departments, nil
 }
@@ -48,7 +55,10 @@ func (r *DepartmentRepository) FindAll(ctx context.Context) ([]*departmentDomain
 	var departments []*departmentDomain.Department
 	err := r.db.Find(&departments).Error
 	if err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return departments, nil
 }

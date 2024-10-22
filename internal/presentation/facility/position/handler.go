@@ -1,9 +1,14 @@
 package position
 
 import (
+	errorDomain "api-buddy/domain/error"
+	_ "api-buddy/presentation/common"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/facility/position"
 
+	pathValidator "github.com/Fukuemon/go-pkg/validator/gin"
+
+	"github.com/Fukuemon/go-pkg/validator"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,27 +33,44 @@ func NewHandler(createPositionUseCase *position.CreatePositionUseCase, findPosit
 // @Produce      json
 // @Param        request body      CreatePositionRequest  true  "Create Position Request"
 // @Success      201      {object} PositionResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /facilities/{facility_id}/positions [post]
 func (h handler) CreateByFacilityId(ctx *gin.Context) {
-	facilityID := ctx.Param("facility_id")
+	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
 	var params CreatePositionRequest
 
 	if err := ctx.ShouldBindJSON(&params); err != nil {
-		settings.ReturnBadRequest(ctx, err)
+		ctx.Error(errorDomain.ValidationError(err))
 		return
 	}
 
+	err := facilityId.ParamValidate()
+	if err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	if err := validator.StructValidation(params); err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	// policyIDs := make([]string, len(params.PolicyIDs))
+	// for i, policy := range params.PolicyIDs {
+	// 	policyIDs[i] = policy.Id
+	// }
+
 	input := position.CreateUseCaseInputDto{
 		Name:       params.Name,
-		FacilityID: facilityID,
+		FacilityID: facilityId.ParamValue,
 		PolicyIDs:  params.PolicyIDs,
 	}
 
 	output, err := h.createPositionUseCase.Create(ctx, input)
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(err)
 		return
 	}
 
@@ -68,13 +90,21 @@ func (h handler) CreateByFacilityId(ctx *gin.Context) {
 // @Produce      json
 // @Param        position_id path string true "Position ID"
 // @Success      200      {object} PositionResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      404      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /positions/{position_id} [get]
 func (h handler) FindById(ctx *gin.Context) {
-	positionID := ctx.Param("id")
+	positionId := pathValidator.Param(ctx, "position_id", "required", "ulid")
 
-	output, err := h.findPositionUseCase.Run(ctx, positionID)
+	err := positionId.ParamValidate()
+	if err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.findPositionUseCase.Run(ctx, positionId.ParamValue)
 	if err != nil {
 		settings.ReturnStatusInternalServerError(ctx, err)
 		return
@@ -99,15 +129,22 @@ func (h handler) FindById(ctx *gin.Context) {
 // @Produce      json
 // @Param        facility_id path string true "Facility ID"
 // @Success      200      {object} PositionResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /facilities/{facility_id}/positions [get]
 func (h handler) FetchByFacilityId(ctx *gin.Context) {
-	facilityID := ctx.Param("facility_id")
+	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
 
-	output, err := h.fetchPositionsUseCase.Run(ctx, facilityID)
+	err := facilityId.ParamValidate()
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.fetchPositionsUseCase.Run(ctx, facilityId.ParamValue)
+	if err != nil {
+		ctx.Error(err)
 		return
 	}
 

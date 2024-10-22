@@ -1,9 +1,12 @@
 package department
 
 import (
+	errorDomain "api-buddy/domain/error"
+	_ "api-buddy/presentation/common"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/facility/department"
 
+	pathValidator "github.com/Fukuemon/go-pkg/validator/gin"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,14 +29,20 @@ func NewHandler(findDepartmentUseCase *department.FindDepartmentUseCase, fetchDe
 // @Produce      json
 // @Param        department_id path string true "Department ID"
 // @Success      200      {object} DepartmentResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      404      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /departments/{department_id} [get]
 func (h handler) FindById(ctx *gin.Context) {
-	id := ctx.Param("id")
+	departmentId := pathValidator.Param(ctx, "department_id", "required", "ulid")
 
-	output, err := h.findDepartmentUseCase.Run(ctx, id)
+	err := departmentId.ParamValidate()
+	if err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.findDepartmentUseCase.Run(ctx, departmentId.ParamValue)
 	if err != nil {
 		settings.ReturnStatusInternalServerError(ctx, err)
 		return
@@ -57,15 +66,22 @@ func (h handler) FindById(ctx *gin.Context) {
 // @Produce      json
 // @Param        facility_id path string true "Facility ID"
 // @Success      200      {object} DepartmentResponse
-// @Failure      400      {object} ErrorResponse
-// @Failure      500      {object} ErrorResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      403      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
 // @Router       /facilities/{facility_id}/departments [get]
 func (h handler) FetchByFacilityId(ctx *gin.Context) {
-	facilityID := ctx.Param("facility_id")
+	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
 
-	output, err := h.fetchDepartmentsUseCase.Run(ctx, facilityID)
+	err := facilityId.ParamValidate()
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.fetchDepartmentsUseCase.Run(ctx, facilityId.ParamValue)
+	if err != nil {
+		ctx.Error(err)
 		return
 	}
 

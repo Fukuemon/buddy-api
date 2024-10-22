@@ -1,6 +1,7 @@
 package repository
 
 import (
+	errorDomain "api-buddy/domain/error"
 	userDomain "api-buddy/domain/user"
 	"api-buddy/infrastructure/mysql/db"
 	"context"
@@ -21,7 +22,7 @@ func NewUserRepository() userDomain.UserRepository {
 func (r *UserRepository) Create(ctx context.Context, user *userDomain.User) error {
 	err := r.db.Create(user).Error
 	if err != nil {
-		return err
+		return errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return nil
 }
@@ -30,7 +31,10 @@ func (r *UserRepository) FindByID(ctx context.Context, id string) (*userDomain.U
 	var user userDomain.User
 	err := r.db.Preload("Facility").Preload("Position").Preload("Team").Preload("Department").Preload("Policies").Where("id = ?", id).First(&user).Error
 	if err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, errorDomain.WrapError(errorDomain.NotFoundErr, err)
+		}
+		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
 	return &user, nil
 }

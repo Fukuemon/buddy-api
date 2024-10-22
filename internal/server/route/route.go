@@ -62,7 +62,7 @@ func departmentRoute(r *gin.RouterGroup) {
 		departmentUse.NewFetchDepartmentsUseCase(departmentRepository),
 	)
 	group := r.Group("/departments")
-	group.GET("/:id", h.FindById)
+	group.GET("/:department_id", h.FindById)
 
 	group = r.Group("/facilities/:facility_id/departments")
 	group.GET("", h.FetchByFacilityId)
@@ -77,7 +77,7 @@ func positionRoute(r *gin.RouterGroup) {
 		positionUse.NewFetchPositionsUseCase(positionRepository),
 	)
 	group := r.Group("/positions")
-	group.GET("/:id", h.FindById)
+	group.GET("/:position_id", h.FindById)
 
 	group = r.Group("/facilities/:facility_id/positions")
 	group.POST("", h.CreateByFacilityId)
@@ -92,7 +92,7 @@ func teamRoute(r *gin.RouterGroup) {
 		teamUse.NewFetchTeamsUseCase(teamRepository),
 	)
 	group := r.Group("/teams")
-	group.GET("/:id", h.FindByID)
+	group.GET("/:team_id", h.FindByID)
 
 	group = r.Group("/facilities/:facility_id/teams")
 	group.POST("", h.CreateByFacilityId)
@@ -108,7 +108,7 @@ func policyRoute(r *gin.RouterGroup) {
 	)
 	group := r.Group("/policies")
 	group.POST("", h.Create)
-	group.GET("/:id", h.FindById)
+	group.GET("/:policy_id", h.FindById)
 	group.GET("", h.Fetch)
 }
 
@@ -118,5 +118,5 @@ func userRoute(r *gin.RouterGroup) {
 		userUse.NewFindUserUseCase(userRepository),
 	)
 	group := r.Group("/users")
-	group.GET("/:id", h.FindByUserId)
+	group.GET("/:user_id", h.FindByUserId)
 }

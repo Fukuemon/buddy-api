@@ -13,7 +13,3 @@ type DepartmentResponse struct {
 type FetchDepartmentsResponse struct {
 	Departments []DepartmentResponse `json:"departments"`
 }
-
-type ErrorResponse struct {
-	Error string `json:"message"`
-}

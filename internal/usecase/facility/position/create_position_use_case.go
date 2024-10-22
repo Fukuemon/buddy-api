@@ -19,16 +19,16 @@ func NewCreatePositionUseCase(positionRepository positionDomain.PositionReposito
 }
 
 type CreateUseCaseInputDto struct {
-	Name       string   `json:"name"`
-	FacilityID string   `json:"facility_id"`
-	PolicyIDs  []string `json:"policy_ids"`
+	Name       string
+	FacilityID string
+	PolicyIDs  []string
 }
 
 type CreateUseCaseOutputDto struct {
-	ID         string      `json:"id"`
-	Name       string      `json:"name"`
-	FacilityID string      `json:"facility_id"`
-	Policies   []PolicyDto `json:"policies"`
+	ID         string
+	Name       string
+	FacilityID string
+	Policies   []PolicyDto
 }
 
 func (uc *CreatePositionUseCase) Create(ctx context.Context, input CreateUseCaseInputDto) (*CreateUseCaseOutputDto, error) {
