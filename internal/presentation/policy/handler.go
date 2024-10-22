@@ -1,9 +1,12 @@
 package policy
 
 import (
+	errorDomain "api-buddy/domain/error"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/policy"
 
+	"github.com/Fukuemon/go-pkg/validator"
+	pathValidator "github.com/Fukuemon/go-pkg/validator/gin"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,8 +36,9 @@ func NewHandler(createPolicyUseCase *policy.CreatePolicyUseCase, findPolicyUseCa
 // @Router       /policies [post]
 func (h handler) Create(ctx *gin.Context) {
 	var params CreatePolicyRequest
-	if err := ctx.ShouldBindJSON(&params); err != nil {
-		settings.ReturnBadRequest(ctx, err)
+
+	if err := validator.StructValidation(params); err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
 		return
 	}
 
@@ -44,7 +48,7 @@ func (h handler) Create(ctx *gin.Context) {
 
 	output, err := h.createPolicyUseCase.Run(ctx, &input)
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(err)
 		return
 	}
 
@@ -68,11 +72,17 @@ func (h handler) Create(ctx *gin.Context) {
 // @Failure      500      {object} ErrorResponse
 // @Router       /policies/{policy_id} [get]
 func (h handler) FindById(ctx *gin.Context) {
-	policyID := ctx.Param("policy_id")
+	policyId := pathValidator.Param(ctx, "policy_id", "required", "ulid")
 
-	output, err := h.findPolicyUseCase.Run(ctx, policyID)
+	err := policyId.ParamValidate()
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.findPolicyUseCase.Run(ctx, policyId.ParamValue)
+	if err != nil {
+		ctx.Error(err)
 		return
 	}
 
@@ -98,7 +108,7 @@ func (h handler) FindById(ctx *gin.Context) {
 func (h handler) Fetch(ctx *gin.Context) {
 	output, err := h.fetchPoliciesUseCase.Run(ctx)
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(err)
 		return
 	}
 

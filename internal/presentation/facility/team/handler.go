@@ -1,9 +1,11 @@
 package team
 
 import (
+	errorDomain "api-buddy/domain/error"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/facility/team"
 
+	pathValidator "github.com/Fukuemon/go-pkg/validator/gin"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,21 +34,22 @@ func NewHandler(createTeamUseCase *team.CreateTeamUseCase, findTeamUseCase *team
 // @Failure      500      {object} ErrorResponse
 // @Router       /facilities/{facility_id}/teams [post]
 func (h handler) CreateByFacilityId(ctx *gin.Context) {
-	facilityID := ctx.Param("facility_id")
+	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
 	var params CreateTeamRequest
 
-	if err := ctx.ShouldBindJSON(&params); err != nil {
-		settings.ReturnBadRequest(ctx, err)
+	err := facilityId.ParamValidate()
+	if err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
 		return
 	}
 
 	input := team.CreateUseCaseInputDto{
 		Name:       params.Name,
-		FacilityID: facilityID,
+		FacilityID: facilityId.ParamValue,
 	}
 	output, err := h.createTeamUseCase.Run(ctx, input)
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(err)
 		return
 	}
 
@@ -69,11 +72,17 @@ func (h handler) CreateByFacilityId(ctx *gin.Context) {
 // @Failure      500      {object} ErrorResponse
 // @Router       /teams/{team_id} [get]
 func (h handler) FindByID(ctx *gin.Context) {
-	teamID := ctx.Param("team_id")
+	teamId := pathValidator.Param(ctx, "team_id", "required", "ulid")
 
-	output, err := h.findTeamUseCase.Run(ctx, teamID)
+	err := teamId.ParamValidate()
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.findTeamUseCase.Run(ctx, teamId.ParamValue)
+	if err != nil {
+		ctx.Error(err)
 		return
 	}
 
@@ -98,11 +107,17 @@ func (h handler) FindByID(ctx *gin.Context) {
 // @Failure      500      {object} ErrorResponse
 // @Router       /facilities/{facility_id}/teams [get]
 func (h handler) FetchByFacilityId(ctx *gin.Context) {
-	facilityID := ctx.Param("facility_id")
+	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
 
-	output, err := h.fetchTeamsUseCase.Run(ctx, facilityID)
+	err := facilityId.ParamValidate()
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.fetchTeamsUseCase.Run(ctx, facilityId.ParamValue)
+	if err != nil {
+		ctx.Error(err)
 		return
 	}
 

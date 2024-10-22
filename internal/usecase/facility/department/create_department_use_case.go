@@ -16,13 +16,13 @@ func NewCreateDepartmentUseCase(departmentRepository departmentDomain.Department
 }
 
 type CreateUseCaseInputDto struct {
-	Name       string `json:"name"`
-	FacilityID string `json:"facility_id"`
+	Name       string
+	FacilityID string
 }
 
 type CreateUseCaseOutputDto struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID   string
+	Name string
 }
 
 func (uc *CreateDepartmentUseCase) Run(ctx context.Context, input CreateUseCaseInputDto) (*CreateUseCaseOutputDto, error) {

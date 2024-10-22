@@ -16,14 +16,14 @@ func NewCreateTeamUseCase(teamRepository teamDomain.TeamRepository) *CreateTeamU
 }
 
 type CreateUseCaseInputDto struct {
-	Name       string `json:"name"`
-	FacilityID string `json:"facility_id"`
+	Name       string
+	FacilityID string
 }
 
 type CreateUseCaseOutputDto struct {
-	ID         string `json:"id"`
-	Name       string `json:"name"`
-	FacilityID string `json:"facility_id"`
+	ID         string
+	Name       string
+	FacilityID string
 }
 
 func (uc *CreateTeamUseCase) Run(ctx context.Context, input CreateUseCaseInputDto) (*CreateUseCaseOutputDto, error) {

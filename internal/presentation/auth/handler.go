@@ -6,9 +6,8 @@ import (
 	"api-buddy/infrastructure/aws/cognito"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/user"
-	"net/http"
 
-	"github.com/Fukuemon/go-pkg/ulid"
+	"github.com/Fukuemon/go-pkg/validator"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,29 +32,9 @@ func NewHandler(createUserUseCase *user.CreateUserUseCase) *handler {
 // @Router       /auth/signup [post]
 func (h handler) SignUp(ctx *gin.Context) {
 	var params SignUpRequest
-	if err := ctx.ShouldBindJSON(&params); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
-		return
-	}
 
-	// facility, position, department, teamのIDがulidかどうかのチェック
-	if !ulid.IsValid(params.FacilityID) {
-		settings.ReturnBadRequest(ctx, errorDomain.NewError("施設IDが不正です"))
-		return
-	}
-
-	if !ulid.IsValid(params.DepartmentID) {
-		settings.ReturnBadRequest(ctx, errorDomain.NewError("部署IDが不正です"))
-		return
-	}
-
-	if !ulid.IsValid(params.PositionID) {
-		settings.ReturnBadRequest(ctx, errorDomain.NewError("役職IDが不正です"))
-		return
-	}
-
-	if !ulid.IsValid(params.TeamID) {
-		settings.ReturnBadRequest(ctx, errorDomain.NewError("チームIDが不正です"))
+	if err := validator.StructValidation(params); err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
 		return
 	}
 
@@ -64,7 +43,7 @@ func (h handler) SignUp(ctx *gin.Context) {
 		PhoneNumber: params.PhoneNumber,
 	}
 
-	if params.Email == nil && params.PhoneNumber == nil {
+	if (params.Email == nil || *params.Email == "") && (params.PhoneNumber == nil || *params.PhoneNumber == "") {
 		settings.ReturnBadRequest(ctx, errorDomain.NewError("メールアドレスか電話番号のどちらかは必須です"))
 		return
 	}
@@ -81,7 +60,7 @@ func (h handler) SignUp(ctx *gin.Context) {
 
 	output, err := h.createUserUseCase.Run(ctx, input)
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(err)
 		return
 	}
 
@@ -112,14 +91,15 @@ func (h handler) SignUp(ctx *gin.Context) {
 // @Router       /auth/signin [post]
 func (h handler) SignIn(ctx *gin.Context) {
 	var req SignInRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+
+	if err := validator.StructValidation(req); err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
 		return
 	}
 
 	authOutput, err := cognito.Actions.SignIn(req.Username, req.Password)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
+		ctx.Error(err)
 		return
 	}
 
@@ -128,5 +108,5 @@ func (h handler) SignIn(ctx *gin.Context) {
 		IdToken:     *authOutput.AuthenticationResult.IdToken,
 	}
 
-	ctx.JSON(http.StatusOK, response)
+	settings.ReturnStatusCreated(ctx, response)
 }

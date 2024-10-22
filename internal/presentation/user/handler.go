@@ -1,9 +1,11 @@
 package user
 
 import (
+	errorDomain "api-buddy/domain/error"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/user"
 
+	pathValidator "github.com/Fukuemon/go-pkg/validator/gin"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,10 +31,16 @@ func NewHandler(findUserUseCase *user.FindUserUseCase) *handler {
 // @Failure      500      {object} ErrorResponse
 // @Router       /users/{user_id} [get]
 func (h *handler) FindByUserId(ctx *gin.Context) {
-	userID := ctx.Param("user_id")
-	output, err := h.findUserUseCase.Run(ctx, userID)
+	userId := pathValidator.Param(ctx, "user_id", "required", "ulid")
+
+	err := userId.ParamValidate()
 	if err != nil {
-		settings.ReturnStatusInternalServerError(ctx, err)
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+	output, err := h.findUserUseCase.Run(ctx, userId.ParamValue)
+	if err != nil {
+		ctx.Error(err)
 	}
 
 	policies := []PolicyModel{}

@@ -91,6 +91,7 @@ func (uc *CreateUserUseCase) Run(ctx context.Context, input CreateUserUseCaseInp
 		position.Policies,
 		input.Option,
 	)
+
 	if err != nil {
 		return nil, err
 	}

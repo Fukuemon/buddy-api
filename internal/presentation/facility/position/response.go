@@ -7,7 +7,7 @@ import (
 
 type CreatePositionResponse struct {
 	ID       string               `json:"id"`
-	Name     string               `json:"name" binding:"required"`
+	Name     string               `json:"name"`
 	Policies []position.PolicyDto `json:"policies"`
 }
 
