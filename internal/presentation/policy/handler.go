@@ -38,6 +38,11 @@ func NewHandler(createPolicyUseCase *policy.CreatePolicyUseCase, findPolicyUseCa
 func (h handler) Create(ctx *gin.Context) {
 	var params CreatePolicyRequest
 
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
 	if err := validator.StructValidation(params); err != nil {
 		ctx.Error(errorDomain.ValidationError(err))
 		return

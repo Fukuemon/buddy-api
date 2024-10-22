@@ -35,6 +35,11 @@ func NewHandler(createUserUseCase *user.CreateUserUseCase) *handler {
 func (h handler) SignUp(ctx *gin.Context) {
 	var params SignUpRequest
 
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
 	if err := validator.StructValidation(params); err != nil {
 		ctx.Error(errorDomain.ValidationError(err))
 		return
@@ -93,14 +98,19 @@ func (h handler) SignUp(ctx *gin.Context) {
 // @Failure      500      {object}  common.ErrorResponse
 // @Router       /auth/signin [post]
 func (h handler) SignIn(ctx *gin.Context) {
-	var req SignInRequest
+	var params SignInRequest
 
-	if err := validator.StructValidation(req); err != nil {
+	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.Error(errorDomain.ValidationError(err))
 		return
 	}
 
-	authOutput, err := cognito.Actions.SignIn(req.Username, req.Password)
+	if err := validator.StructValidation(params); err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	authOutput, err := cognito.Actions.SignIn(params.Username, params.Password)
 	if err != nil {
 		ctx.Error(err)
 		return

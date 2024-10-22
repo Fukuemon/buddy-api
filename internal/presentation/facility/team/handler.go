@@ -39,6 +39,11 @@ func (h handler) CreateByFacilityId(ctx *gin.Context) {
 	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
 	var params CreateTeamRequest
 
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
 	err := facilityId.ParamValidate()
 	if err != nil {
 		ctx.Error(errorDomain.ValidationError(err))

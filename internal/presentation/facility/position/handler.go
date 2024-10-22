@@ -41,6 +41,11 @@ func (h handler) CreateByFacilityId(ctx *gin.Context) {
 	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
 	var params CreatePositionRequest
 
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
 	err := facilityId.ParamValidate()
 	if err != nil {
 		ctx.Error(errorDomain.ValidationError(err))
@@ -51,6 +56,11 @@ func (h handler) CreateByFacilityId(ctx *gin.Context) {
 		ctx.Error(errorDomain.ValidationError(err))
 		return
 	}
+
+	// policyIDs := make([]string, len(params.PolicyIDs))
+	// for i, policy := range params.PolicyIDs {
+	// 	policyIDs[i] = policy.Id
+	// }
 
 	input := position.CreateUseCaseInputDto{
 		Name:       params.Name,
