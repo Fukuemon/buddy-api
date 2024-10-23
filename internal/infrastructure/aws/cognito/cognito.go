@@ -28,14 +28,14 @@ type CognitoSignUpRequest struct {
 func (c *CognitoClient) SignUp(req *CognitoSignUpRequest) (*string, error) {
 	attributes := []types.AttributeType{}
 
-	if req.Email != nil || *req.Email != "" {
+	if req.Email != nil && *req.Email != "" {
 		attributes = append(attributes, types.AttributeType{
 			Name:  aws.String("email"),
 			Value: aws.String(*req.Email),
 		})
 	}
 
-	if req.PhoneNumber != nil || *req.PhoneNumber != "" {
+	if req.PhoneNumber != nil && *req.PhoneNumber != "" {
 		attributes = append(attributes, types.AttributeType{
 			Name:  aws.String("phone_number"),
 			Value: aws.String(*req.PhoneNumber),

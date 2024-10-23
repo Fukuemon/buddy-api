@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS user_policies (
 );
 
 INSERT INTO facilities (id, name, created_at, updated_at)
-VALUES ('01J6SMYDSKKKNJCR2Y3242T7YX', 'クリオ訪問看護リハビリステーション', NOW(), NOW());
+VALUES ('01J6SMYDSKKKNJCR2Y3242T7YX', 'テスト訪問看護ステーション', NOW(), NOW());
 
 -- departments（看護・リハビリ）
 INSERT INTO departments (id, name, facility_id, created_at, updated_at)
