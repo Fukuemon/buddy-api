@@ -98,17 +98,20 @@ func (uc *CreateUserUseCase) Run(ctx context.Context, input CreateUserUseCaseInp
 
 	// Cognitoへのユーザー登録
 	cognitoUserId, err := cognito.Actions.SignUp(&cognito.CognitoSignUpRequest{
-		Username:    input.Username,
+		Username:    user.Username,
 		Password:    input.Password,
-		Email:       input.Option.Email,
-		PhoneNumber: input.Option.PhoneNumber,
+		Email:       &user.Email,
+		PhoneNumber: &user.PhoneNumber,
 	})
 
 	if err != nil || cognitoUserId == nil {
 		return nil, err
 	}
 
-	uc.userRepository.Create(ctx, user)
+	err = uc.userRepository.Create(ctx, user)
+	if err != nil {
+		return nil, err
+	}
 
 	return &CreateUserUseCaseOutputDto{
 		ID:          user.ID,
