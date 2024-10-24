@@ -116,7 +116,11 @@ func userRoute(r *gin.RouterGroup) {
 	userRepository := repository.NewUserRepository()
 	h := userPre.NewHandler(
 		userUse.NewFindUserUseCase(userRepository),
+		userUse.NewFetchUsersUseCase(userRepository),
 	)
 	group := r.Group("/users")
 	group.GET("/:user_id", h.FindByUserId)
+
+	group = r.Group("/facilities/:facility_id/users")
+	group.GET("", h.FetchByFacilityId)
 }

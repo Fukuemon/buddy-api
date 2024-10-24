@@ -10,6 +10,7 @@ import (
 
 	errorDomain "api-buddy/domain/error"
 
+	"github.com/Fukuemon/go-pkg/query"
 	"github.com/Fukuemon/go-pkg/ulid"
 )
 
@@ -132,4 +133,22 @@ func newUser(
 	common.InitializeCommonModel(&user.CommonModel)
 
 	return user, nil
+}
+
+var UserRelationMappings = map[string]query.RelationMapping{
+	"position": {
+		TableName:   "positions",
+		JoinKey:     "positions.id = users.position_id",
+		FilterField: "positions.name",
+	},
+	"department": {
+		TableName:   "departments",
+		JoinKey:     "departments.id = users.department_id",
+		FilterField: "departments.name",
+	},
+	"team": {
+		TableName:   "teams",
+		JoinKey:     "teams.id = users.team_id",
+		FilterField: "teams.name",
+	},
 }

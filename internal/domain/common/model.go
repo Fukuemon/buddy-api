@@ -18,3 +18,8 @@ func InitializeCommonModel(m *CommonModel) {
 func AddPlusToPhoneNumber(phoneNumber string) string {
 	return "+" + phoneNumber
 }
+
+const (
+	UpdatedAt = "updated_at"
+	CreatedAt = "created_at"
+)

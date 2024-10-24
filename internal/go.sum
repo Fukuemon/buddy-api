@@ -4,6 +4,8 @@ github.com/Fukuemon/go-pkg v0.0.0-20241017155523-9a7305ee314b h1:dHTuL+k7vYhryPq
 github.com/Fukuemon/go-pkg v0.0.0-20241017155523-9a7305ee314b/go.mod h1:B7oD7Chq+hoNqhGS0+3koSBCgX6zBVvbLBx1u9DxDeY=
 github.com/Fukuemon/go-pkg v0.0.0-20241018042859-df0b068ceab2 h1:6oR2kGua3dCvd89MMNVBz6STrf8azCWES2nV+qg+860=
 github.com/Fukuemon/go-pkg v0.0.0-20241018042859-df0b068ceab2/go.mod h1:B7oD7Chq+hoNqhGS0+3koSBCgX6zBVvbLBx1u9DxDeY=
+github.com/Fukuemon/go-pkg v0.0.0-20241024030606-345c47c9319a h1:dSBfCNZNtCZ6tBKVg/pHtrhNJh8QbT0V/CZiNz7j+oI=
+github.com/Fukuemon/go-pkg v0.0.0-20241024030606-345c47c9319a/go.mod h1:B7oD7Chq+hoNqhGS0+3koSBCgX6zBVvbLBx1u9DxDeY=
 github.com/KyleBanks/depth v1.2.1 h1:5h8fQADFrWtarTdtDudMmGsC7GPbOAu6RVB3ffsVFHc=
 github.com/KyleBanks/depth v1.2.1/go.mod h1:jzSb9d0L43HxTQfT+oSA1EEp2q+ne2uh6XgeJcm8brE=
 github.com/aws/aws-sdk-go-v2 v1.30.4 h1:frhcagrVNrzmT95RJImMHgabt99vkXGslubDaDagTk8=

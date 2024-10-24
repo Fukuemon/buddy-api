@@ -3,7 +3,7 @@ module api-buddy
 go 1.22.2
 
 require (
-	github.com/Fukuemon/go-pkg v0.0.0-20241018042859-df0b068ceab2
+	github.com/Fukuemon/go-pkg v0.0.0-20241024030606-345c47c9319a
 	github.com/aws/aws-sdk-go-v2 v1.30.4
 	github.com/aws/aws-sdk-go-v2/config v1.27.30
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.43.2
