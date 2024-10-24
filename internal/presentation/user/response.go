@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type UserResponse struct {
+type UserDetailResponse struct {
 	ID          string        `json:"id"`
 	Username    string        `json:"username"`
 	Position    string        `json:"position"`
@@ -16,6 +16,18 @@ type UserResponse struct {
 	PhoneNumber *string       `json:"phone"`
 	CreatedAt   time.Time     `json:"created_at"`
 	UpdatedAt   time.Time     `json:"updated_at"`
+}
+
+type UserResponse struct {
+	ID         string `json:"id"`
+	Username   string `json:"username"`
+	Position   string `json:"position"`
+	Team       string `json:"team"`
+	Department string `json:"department"`
+}
+
+type UserListResponse struct {
+	Users []UserResponse `json:"users"`
 }
 
 type PolicyModel struct {

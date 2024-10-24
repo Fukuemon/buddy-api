@@ -477,6 +477,60 @@ paths:
       summary: 施設に紐づくチームを作成する
       tags:
       - Team
+  /facilities/{facility_id}/users:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Facility ID
+        in: path
+        name: facility_id
+        required: true
+        type: string
+      - description: Username
+        in: query
+        name: username
+        type: string
+      - description: Position
+        in: query
+        name: position
+        type: string
+      - description: Department
+        in: query
+        name: department
+        type: string
+      - description: Team
+        in: query
+        name: team
+        type: string
+      - description: Sort Field
+        in: query
+        name: sort_field
+        type: string
+      - description: Sort Order (asc or desc)
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/user.UserResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: 施設IDに紐づくユーザーを取得する
+      tags:
+      - User
   /health:
     get:
       consumes:

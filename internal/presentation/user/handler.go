@@ -5,18 +5,21 @@ import (
 	_ "api-buddy/presentation/common"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/user"
+	"strings"
 
 	pathValidator "github.com/Fukuemon/go-pkg/validator/gin"
 	"github.com/gin-gonic/gin"
 )
 
 type handler struct {
-	findUserUseCase *user.FindUserUseCase
+	findUserUseCase   *user.FindUserUseCase
+	fetchUsersUseCase *user.FetchUsersUseCase
 }
 
-func NewHandler(findUserUseCase *user.FindUserUseCase) *handler {
+func NewHandler(findUserUseCase *user.FindUserUseCase, fetchUsersUseCase *user.FetchUsersUseCase) *handler {
 	return &handler{
-		findUserUseCase: findUserUseCase,
+		findUserUseCase:   findUserUseCase,
+		fetchUsersUseCase: fetchUsersUseCase,
 	}
 }
 
@@ -26,7 +29,7 @@ func NewHandler(findUserUseCase *user.FindUserUseCase) *handler {
 // @Accept       json
 // @Produce      json
 // @Param        user_id path string true "User ID"
-// @Success      200      {object} UserResponse
+// @Success      200      {object} UserDetailResponse
 // @Failure      400      {object} common.ErrorResponse
 // @Failure      403      {object} common.ErrorResponse
 // @Failure      404      {object} common.ErrorResponse
@@ -53,7 +56,7 @@ func (h *handler) FindByUserId(ctx *gin.Context) {
 		})
 	}
 
-	response := UserResponse{
+	response := UserDetailResponse{
 		ID:          output.ID,
 		Username:    output.Username,
 		Position:    output.Position.Name,
@@ -67,5 +70,70 @@ func (h *handler) FindByUserId(ctx *gin.Context) {
 		UpdatedAt:   output.UpdatedAt,
 	}
 
+	settings.ReturnStatusOK(ctx, response)
+}
+
+// FindUsers godoc
+// @Summary      施設IDに紐づくユーザーを取得する
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Param        facility_id path string true "Facility ID"
+// @Param        username query string false "Username"
+// @Param        position query string false "Position"
+// @Param        department query string false "Department"
+// @Param        team query string false "Team"
+// @Param        sort_field query string false "Sort Field"
+// @Param        sort_order query string false "Sort Order (asc or desc)"
+// @Success      200      {array} UserResponse
+// @Failure      400      {object} common.ErrorResponse
+// @Failure      500      {object} common.ErrorResponse
+// @Router       /facilities/{facility_id}/users [get]
+func (h *handler) FetchByFacilityId(ctx *gin.Context) {
+	facilityId := pathValidator.Param(ctx, "facility_id", "required", "ulid")
+	err := facilityId.ParamValidate()
+	if err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	// クエリパラメータを取得
+	username := ctx.Query("username")
+	position := ctx.Query("position")
+	department := ctx.Query("department")
+	team := ctx.Query("team")
+	sortField := ctx.Query("sort_field")
+	sortOrder := strings.ToLower(ctx.Query("sort_order"))
+
+	// フィルタリングとソートのための DTO を作成
+	input := user.FetchUsersUseCaseInputDto{
+		Username:   username,
+		Position:   position,
+		Department: department,
+		Team:       team,
+		SortField:  sortField,
+		SortOrder:  sortOrder,
+	}
+
+	// ユースケースを実行してユーザー一覧を取得
+	output, err := h.fetchUsersUseCase.Run(ctx, facilityId.ParamValue, input)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	// 出力を整形してレスポンスを作成
+	response := UserListResponse{}
+	for _, user := range output {
+		response.Users = append(response.Users, UserResponse{
+			ID:         user.ID,
+			Username:   user.Username,
+			Position:   user.Position,
+			Team:       user.Team,
+			Department: user.Department,
+		})
+	}
+
+	// レスポンスを返す
 	settings.ReturnStatusOK(ctx, response)
 }
