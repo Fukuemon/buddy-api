@@ -1,8 +1,13 @@
 package settings
 
 import (
+	"errors"
 	"net/http"
 
+	errorDomain "api-buddy/domain/error"
+
+	"github.com/Fukuemon/go-pkg/validator"
+	pathValidator "github.com/Fukuemon/go-pkg/validator/gin"
 	"github.com/gin-gonic/gin"
 )
 
@@ -63,15 +68,58 @@ func ReturnStatusInternalServerError(ctx *gin.Context, err error) {
 func ReturnError(ctx *gin.Context, err error) {
 	ctx.Error(err)
 }
-
 func returnAbortWith(ctx *gin.Context, code int, err error) {
-	var msg string
-	if err != nil {
-		msg = err.Error()
+	var domainErr *errorDomain.Error
+	if errors.As(err, &domainErr) { // trueの場合、domainErrにerrの内容が格納される
+		msg := domainErr.Error()
+
+		ctx.AbortWithStatusJSON(code, gin.H{
+			"code":        code,
+			"description": domainErr.Description(), // 事前定義したエラー情報を持つ(domain/error参照)
+			"msg":         msg,
+		})
+		return
 	}
 
-	ctx.AbortWithStatusJSON(code, gin.H{
+	ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 		"code": code,
-		"msg":  msg,
+		"msg":  err.Error(),
 	})
+}
+
+// エラー内容によって適切なステータスコードを返す
+func HandleErrorResponse(ctx *gin.Context, err error) {
+	var domainErr *errorDomain.Error
+
+	if errors.As(err, &domainErr) { // trueの場合、domainErrにerrの内容が格納される
+		switch domainErr.Description() {
+		case errorDomain.InvalidInputErr.Description():
+			ReturnBadRequest(ctx, err)
+		case errorDomain.NotFoundErr.Description():
+			ReturnNotFound(ctx, err)
+		case errorDomain.GeneralDBError.Description():
+			ReturnStatusInternalServerError(ctx, err)
+		case errorDomain.UnAuthorizedErr.Description():
+			ReturnUnauthorized(ctx, err)
+		case errorDomain.ForbiddenErr.Description():
+			ReturnForbidden(ctx, err)
+		default:
+			ReturnStatusInternalServerError(ctx, err)
+		}
+	} else {
+		ReturnStatusInternalServerError(ctx, err)
+	}
+}
+
+func InitValidationSettings() {
+	validator.InitValidator(nil)
+
+	pathValidator.InitTagErrorMessages(map[string]string{})
+
+}
+
+type ErrorResponse struct {
+	Code        string `json:"code"`
+	Description string `json:"description"`
+	Msg         string `json:"msg"`
 }

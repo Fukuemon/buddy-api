@@ -16,6 +16,7 @@ services:
         condition: service_healthy
 
   db:
+    platform: linux/x86_64
     image: mysql:5.7
     container_name: buddy_db
     restart: always
@@ -31,6 +32,7 @@ services:
     volumes:
       - db-volume:/var/lib/mysql
       - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./docker/mysql/initdb:/docker-entrypoint-initdb.d
     healthcheck:
       test: "mysqladmin ping -h 127.0.0.1 -u ${DB_USER} -p${DB_PASS}"
       timeout: 5s
@@ -60,22 +62,20 @@ services:
       - ./internal/docs:/app/docs
     command: >
       sh -c "
-        ls &&
         go mod download &&
         go install github.com/swaggo/swag/cmd/swag@latest &&
         swag init -g cmd/api-server/main.go"
     profiles:
       - manual
-  update_postman:
-    build:
-      context: .
-      dockerfile: ./docker/node/Dockerfile
-    environment:
-      - POSTMAN_API_KEY=${POSTMAN_API_KEY}
-      - POSTMAN_COLLECTION_ID=${POSTMAN_COLLECTION_ID}
+
+  # Postmanのコレクションを更新するためのジョブ
+  postman_collection_update:
+    image: fukuemon/postman_collection_update
+    volumes:
+      - ./internal/docs/swagger.yaml:/swagger.yaml
+    env_file:
+      - .env
     profiles:
       - manual
-    volumes:
-      - ./internal/docs:/app/docs
 volumes:
   db-volume:

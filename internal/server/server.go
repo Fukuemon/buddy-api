@@ -14,6 +14,9 @@ import (
 )
 
 func Run(ctx context.Context, conf *config.Config) {
+	// validatorの初期化
+	settings.InitValidationSettings()
+
 	api := settings.NewGinEngine()
 	route.InitRoute(api)
 	address := conf.Server.Address + ":" + conf.Server.Port
