@@ -62,6 +62,7 @@ func (h handler) SignUp(ctx *gin.Context) {
 		DepartmentID: params.DepartmentID,
 		PositionID:   params.PositionID,
 		TeamID:       params.TeamID,
+		AreaID:       params.AreaID,
 		Option:       option,
 	}
 
@@ -80,6 +81,7 @@ func (h handler) SignUp(ctx *gin.Context) {
 		DepartmentName: output.Department.Name,
 		PositionName:   output.Position.Name,
 		TeamName:       output.Team.Name,
+		AreaName:       output.Area.Name,
 		Policies:       output.Policies,
 	}
 

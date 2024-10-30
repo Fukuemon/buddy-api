@@ -120,7 +120,7 @@ func (h handler) Fetch(ctx *gin.Context) {
 		return
 	}
 
-	response := PolicyListResponse{}
+	response := make([]PolicyResponse, 0, len(output))
 	for _, o := range output {
 		response = append(response, PolicyResponse{
 			ID:        o.ID,

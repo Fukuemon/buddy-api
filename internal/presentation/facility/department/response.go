@@ -10,6 +10,4 @@ type DepartmentResponse struct {
 	UpdateAt   time.Time `json:"updated_at"`
 }
 
-type FetchDepartmentsResponse struct {
-	Departments []DepartmentResponse `json:"departments"`
-}
+type FetchDepartmentsResponse []DepartmentResponse

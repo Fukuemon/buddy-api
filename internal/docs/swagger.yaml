@@ -1,5 +1,96 @@
 basePath: /v1
 definitions:
+  address.AddressDetailResponse:
+    properties:
+      addressLine1:
+        type: string
+      addressLine2:
+        type: string
+      city:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      prefecture:
+        type: string
+      updatedAt:
+        type: string
+      zipCode:
+        type: string
+    type: object
+  address.CreateAddressResponse:
+    properties:
+      addressLine1:
+        type: string
+      addressLine2:
+        type: string
+      city:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      prefecture:
+        type: string
+      updatedAt:
+        type: string
+      zipCode:
+        type: string
+    type: object
+  area.AddressModel:
+    properties:
+      address_line1:
+        type: string
+      address_line2:
+        type: string
+      city:
+        type: string
+      id:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      prefecture:
+        type: string
+    type: object
+  area.AreaResponse:
+    properties:
+      addresses:
+        items:
+          $ref: '#/definitions/area.AddressModel'
+        type: array
+      facility_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  area.CreateAreaRequest:
+    properties:
+      address_ids:
+        items:
+          type: string
+        type: array
+      facility_id:
+        type: string
+      name:
+        type: string
+    required:
+    - address_ids
+    - facility_id
+    - name
+    type: object
   auth.SignInRequest:
     properties:
       password:
@@ -19,6 +110,8 @@ definitions:
     type: object
   auth.SignUpRequest:
     properties:
+      area_id:
+        type: string
       department_id:
         type: string
       email:
@@ -36,6 +129,7 @@ definitions:
       username:
         type: string
     required:
+    - area_id
     - department_id
     - facility_id
     - password
@@ -45,6 +139,8 @@ definitions:
     type: object
   auth.SignUpResponse:
     properties:
+      area:
+        type: string
       department:
         type: string
       email:
@@ -192,8 +288,10 @@ definitions:
       name:
         type: string
     type: object
-  user.UserResponse:
+  user.UserDetailResponse:
     properties:
+      area:
+        type: string
       created_at:
         type: string
       department:
@@ -219,6 +317,21 @@ definitions:
       username:
         type: string
     type: object
+  user.UserResponse:
+    properties:
+      area:
+        type: string
+      department:
+        type: string
+      id:
+        type: string
+      position:
+        type: string
+      team:
+        type: string
+      username:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -226,6 +339,168 @@ info:
   title: Buddy-API
   version: "1.0"
 paths:
+  /addresses:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Zip Code
+        in: query
+        name: zip_code
+        type: string
+      - description: Prefecture
+        in: query
+        name: prefecture
+        type: string
+      - description: City
+        in: query
+        name: city
+        type: string
+      - description: Address Line1
+        in: query
+        name: address_line1
+        type: string
+      - description: Address Line2
+        in: query
+        name: address_line2
+        type: string
+      - description: Latitude
+        in: query
+        name: latitude
+        type: string
+      - description: Longitude
+        in: query
+        name: longitude
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/address.AddressDetailResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: 住所一覧を取得する
+      tags:
+      - Address
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/address.CreateAddressResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: 住所を作成する
+      tags:
+      - Address
+  /addresses/{address_id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Address ID
+        in: path
+        name: address_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/address.AddressDetailResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: 単一の住所を取得する
+      tags:
+      - Address
+  /areas/{area_id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Area ID
+        in: path
+        name: area_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/area.AreaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: 単一のエリアを取得する
+      tags:
+      - Area
   /auth/signin:
     post:
       consumes:
@@ -316,6 +591,70 @@ paths:
       summary: 単一の部署を取得する
       tags:
       - Department
+  /facilities/{facility_id}/areas:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Facility ID
+        in: path
+        name: facility_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/area.AreaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: 施設IDに紐づくエリアを取得する
+      tags:
+      - Area
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create Area Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/area.CreateAreaRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/area.AreaResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: 施設に紐づくエリアを作成する
+      tags:
+      - Area
   /facilities/{facility_id}/departments:
     get:
       consumes:
@@ -502,6 +841,10 @@ paths:
       - description: Team
         in: query
         name: team
+        type: string
+      - description: Area
+        in: query
+        name: area
         type: string
       - description: Sort Field
         in: query
@@ -725,7 +1068,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.UserResponse'
+            $ref: '#/definitions/user.UserDetailResponse'
         "400":
           description: Bad Request
           schema:

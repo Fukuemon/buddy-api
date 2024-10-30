@@ -3,6 +3,7 @@ package user
 import (
 	"api-buddy/domain/common"
 	facilityDomain "api-buddy/domain/facility"
+	areaDomain "api-buddy/domain/facility/area"
 	departmentDomain "api-buddy/domain/facility/department"
 	positionDomain "api-buddy/domain/facility/position"
 	teamDomain "api-buddy/domain/facility/team"
@@ -23,8 +24,8 @@ type Option struct {
 type User struct {
 	ID           string `gorm:"primaryKey"`
 	Username     string `gorm:"unique"`
-	Email        string `gorm:"unique"`
-	PhoneNumber  string `gorm:"unique"`
+	Email        string
+	PhoneNumber  string
 	FacilityID   string
 	Facility     *facilityDomain.Facility `gorm:"foreignKey:FacilityID"`
 	DepartmentID string
@@ -32,7 +33,9 @@ type User struct {
 	PositionID   string
 	Position     *positionDomain.Position `gorm:"foreignKey:PositionID"`
 	TeamID       string
-	Team         *teamDomain.Team       `gorm:"foreignKey:TeamID"`
+	Team         *teamDomain.Team `gorm:"foreignKey:TeamID"`
+	AreaID       string
+	Area         *areaDomain.Area       `gorm:"foreignKey:AreaID"`
 	Policies     []*policyDomain.Policy `gorm:"many2many:user_policies;"`
 	common.CommonModel
 }
@@ -44,6 +47,7 @@ func Reconstruct(
 	team *teamDomain.Team,
 	facility *facilityDomain.Facility,
 	department *departmentDomain.Department,
+	area *areaDomain.Area,
 	policies []*policyDomain.Policy,
 	options *Option,
 ) (*User, error) {
@@ -54,6 +58,7 @@ func Reconstruct(
 		team,
 		facility,
 		department,
+		area,
 		policies,
 		options,
 	)
@@ -65,6 +70,7 @@ func NewUser(
 	team *teamDomain.Team,
 	facility *facilityDomain.Facility,
 	department *departmentDomain.Department,
+	area *areaDomain.Area,
 	policies []*policyDomain.Policy,
 	options *Option,
 ) (*User, error) {
@@ -75,6 +81,7 @@ func NewUser(
 		team,
 		facility,
 		department,
+		area,
 		policies,
 		options,
 	)
@@ -87,6 +94,7 @@ func newUser(
 	team *teamDomain.Team,
 	facility *facilityDomain.Facility,
 	department *departmentDomain.Department,
+	area *areaDomain.Area,
 	policies []*policyDomain.Policy,
 	options *Option,
 ) (*User, error) {
@@ -101,6 +109,8 @@ func newUser(
 		Team:         team,
 		Facility:     facility,
 		Department:   department,
+		AreaID:       area.ID,
+		Area:         area,
 		Policies:     policies,
 	}
 
@@ -150,5 +160,10 @@ var UserRelationMappings = map[string]query.RelationMapping{
 		TableName:   "teams",
 		JoinKey:     "teams.id = users.team_id",
 		FilterField: "teams.name",
+	},
+	"area": {
+		TableName:   "areas",
+		JoinKey:     "areas.id = users.area_id",
+		FilterField: "areas.name",
 	},
 }

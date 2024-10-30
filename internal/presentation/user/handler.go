@@ -63,6 +63,7 @@ func (h *handler) FindByUserId(ctx *gin.Context) {
 		Team:        output.Team.Name,
 		Facility:    output.Facility.Name,
 		Department:  output.Department.Name,
+		Area:        output.Area.Name,
 		Policies:    policies,
 		Email:       output.Email,
 		PhoneNumber: output.PhoneNumber,
@@ -83,6 +84,7 @@ func (h *handler) FindByUserId(ctx *gin.Context) {
 // @Param        position query string false "Position"
 // @Param        department query string false "Department"
 // @Param        team query string false "Team"
+// @Param        area query string false "Area"
 // @Param        sort_field query string false "Sort Field"
 // @Param        sort_order query string false "Sort Order (asc or desc)"
 // @Success      200      {array} UserResponse
@@ -102,6 +104,7 @@ func (h *handler) FetchByFacilityId(ctx *gin.Context) {
 	position := ctx.Query("position")
 	department := ctx.Query("department")
 	team := ctx.Query("team")
+	area := ctx.Query("area")
 	sortField := ctx.Query("sort_field")
 	sortOrder := strings.ToLower(ctx.Query("sort_order"))
 
@@ -111,6 +114,7 @@ func (h *handler) FetchByFacilityId(ctx *gin.Context) {
 		Position:   position,
 		Department: department,
 		Team:       team,
+		Area:       area,
 		SortField:  sortField,
 		SortOrder:  sortOrder,
 	}
@@ -123,13 +127,14 @@ func (h *handler) FetchByFacilityId(ctx *gin.Context) {
 	}
 
 	// 出力を整形してレスポンスを作成
-	response := UserListResponse{}
+	response := make(UserListResponse, 0, len(output))
 	for _, user := range output {
-		response.Users = append(response.Users, UserResponse{
+		response = append(response, UserResponse{
 			ID:         user.ID,
 			Username:   user.Username,
 			Position:   user.Position,
 			Team:       user.Team,
+			Area:       user.Area,
 			Department: user.Department,
 		})
 	}
