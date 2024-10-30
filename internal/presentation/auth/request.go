@@ -13,6 +13,7 @@ type SignUpRequest struct {
 	DepartmentID string  `json:"department_id" validate:"required,ulid"`
 	PositionID   string  `json:"position_id" validate:"required,ulid"`
 	TeamID       string  `json:"team_id" validate:"required,ulid"`
+	AreaID       string  `json:"area_id" validate:"required,ulid"`
 	Email        *string `json:"email" validate:"omitempty,email"`
 	PhoneNumber  *string `json:"phone_number" validate:"omitempty"`
 }

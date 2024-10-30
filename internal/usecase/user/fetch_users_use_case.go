@@ -24,6 +24,7 @@ type FetchUsersUseCaseOutputDto struct {
 	Position   string
 	Team       string
 	Department string
+	Area       string
 }
 
 // Input DTO
@@ -32,6 +33,7 @@ type FetchUsersUseCaseInputDto struct {
 	Position   string
 	Team       string
 	Department string
+	Area       string
 	SortField  string
 	SortOrder  string
 }
@@ -52,6 +54,9 @@ func (uc *FetchUsersUseCase) Run(ctx context.Context, facility_id string, input 
 	if input.Department != "" {
 		filters = append(filters, &query.ByFieldFilter{Field: "department", Value: input.Department, RelationMapping: userDomain.UserRelationMappings})
 	}
+	if input.Area != "" {
+		filters = append(filters, &query.ByFieldFilter{Field: "area", Value: input.Area, RelationMapping: userDomain.UserRelationMappings})
+	}
 
 	sortOption := query.SortOption{
 		Field: input.SortField,
@@ -71,6 +76,7 @@ func (uc *FetchUsersUseCase) Run(ctx context.Context, facility_id string, input 
 			Position:   user.Position.Name,
 			Team:       user.Team.Name,
 			Department: user.Department.Name,
+			Area:       user.Area.Name,
 		})
 	}
 

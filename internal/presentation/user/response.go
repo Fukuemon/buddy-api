@@ -11,6 +11,7 @@ type UserDetailResponse struct {
 	Team        string        `json:"team"`
 	Facility    string        `json:"facility"`
 	Department  string        `json:"department"`
+	Area        string        `json:"area"`
 	Policies    []PolicyModel `json:"policies"`
 	Email       *string       `json:"email"`
 	PhoneNumber *string       `json:"phone"`
@@ -24,11 +25,10 @@ type UserResponse struct {
 	Position   string `json:"position"`
 	Team       string `json:"team"`
 	Department string `json:"department"`
+	Area       string `json:"area"`
 }
 
-type UserListResponse struct {
-	Users []UserResponse `json:"users"`
-}
+type UserListResponse []UserResponse
 
 type PolicyModel struct {
 	ID   string `json:"id"`

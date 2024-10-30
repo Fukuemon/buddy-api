@@ -17,5 +17,6 @@ type SignUpResponse struct {
 	DepartmentName string           `json:"department"`
 	PositionName   string           `json:"position"`
 	TeamName       string           `json:"team"`
+	AreaName       string           `json:"area"`
 	Policies       []*policy.Policy `json:"policies"`
 }

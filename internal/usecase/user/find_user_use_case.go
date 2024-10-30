@@ -2,6 +2,7 @@ package user
 
 import (
 	facilityDomain "api-buddy/domain/facility"
+	areaDomain "api-buddy/domain/facility/area"
 	departmentDomain "api-buddy/domain/facility/department"
 	positionDomain "api-buddy/domain/facility/position"
 	teamDomain "api-buddy/domain/facility/team"
@@ -28,6 +29,7 @@ type FindUserUseCaseOutputDto struct {
 	Team        teamDomain.Team
 	Facility    facilityDomain.Facility
 	Department  departmentDomain.Department
+	Area        areaDomain.Area
 	Policies    []*policyDomain.Policy
 	Email       *string
 	PhoneNumber *string
@@ -48,6 +50,7 @@ func (uc *FindUserUseCase) Run(ctx context.Context, input string) (*FindUserUseC
 		Team:        *user.Team,
 		Facility:    *user.Facility,
 		Department:  *user.Department,
+		Area:        *user.Area,
 		Policies:    user.Policies,
 		Email:       &user.Email,
 		PhoneNumber: &user.PhoneNumber,

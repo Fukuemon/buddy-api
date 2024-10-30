@@ -2,6 +2,7 @@ package user
 
 import (
 	facilityDomain "api-buddy/domain/facility"
+	areaDomain "api-buddy/domain/facility/area"
 	departmentDomain "api-buddy/domain/facility/department"
 	positionDomain "api-buddy/domain/facility/position"
 	teamDomain "api-buddy/domain/facility/team"
@@ -17,6 +18,7 @@ type CreateUserUseCase struct {
 	departmentRepository departmentDomain.DepartmentRepository
 	positionRepository   positionDomain.PositionRepository
 	teamRepository       teamDomain.TeamRepository
+	areaRepository       areaDomain.AreaRepository
 }
 
 func NewCreateUserUseCase(
@@ -25,6 +27,7 @@ func NewCreateUserUseCase(
 	departmentRepository departmentDomain.DepartmentRepository,
 	positionRepository positionDomain.PositionRepository,
 	teamRepository teamDomain.TeamRepository,
+	areaRepository areaDomain.AreaRepository,
 ) *CreateUserUseCase {
 	return &CreateUserUseCase{
 		userRepository:       userRepository,
@@ -32,6 +35,7 @@ func NewCreateUserUseCase(
 		departmentRepository: departmentRepository,
 		positionRepository:   positionRepository,
 		teamRepository:       teamRepository,
+		areaRepository:       areaRepository,
 	}
 }
 
@@ -42,7 +46,7 @@ type CreateUserUseCaseInputDto struct {
 	DepartmentID string
 	PositionID   string
 	TeamID       string
-
+	AreaID       string
 	*userDomain.Option
 }
 
@@ -53,6 +57,7 @@ type CreateUserUseCaseOutputDto struct {
 	Department  departmentDomain.Department
 	Position    positionDomain.Position
 	Team        teamDomain.Team
+	Area        areaDomain.Area
 	Policies    []*policyDomain.Policy
 	Email       *string
 	PhoneNumber *string
@@ -81,6 +86,11 @@ func (uc *CreateUserUseCase) Run(ctx context.Context, input CreateUserUseCaseInp
 		return nil, err
 	}
 
+	area, err := uc.areaRepository.FindByID(ctx, input.AreaID)
+	if err != nil {
+		return nil, err
+	}
+
 	// Userエンティティを生成する
 	user, err := userDomain.NewUser(
 		input.Username,
@@ -88,6 +98,7 @@ func (uc *CreateUserUseCase) Run(ctx context.Context, input CreateUserUseCaseInp
 		team,
 		facility,
 		department,
+		area,
 		position.Policies,
 		input.Option,
 	)
@@ -120,6 +131,7 @@ func (uc *CreateUserUseCase) Run(ctx context.Context, input CreateUserUseCaseInp
 		Department:  *department,
 		Position:    *position,
 		Team:        *team,
+		Area:        *area,
 		Policies:    user.Policies,
 		Email:       &user.Email,
 		PhoneNumber: &user.PhoneNumber,

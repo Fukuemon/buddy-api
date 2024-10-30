@@ -73,7 +73,7 @@ func (r *UserRepository) FindByFacilityID(ctx context.Context, facility_id strin
 
 	// クエリ実行
 	var users []*userDomain.User
-	err := dbQuery.Preload("Facility").Preload("Position").Preload("Team").Preload("Department").Preload("Policies").
+	err := dbQuery.Preload("Facility").Preload("Position").Preload("Team").Preload("Department").Preload("Policies").Preload("Area").
 		Where("users.facility_id = ?", facility_id).Find(&users).Error
 	if err != nil {
 		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
@@ -84,7 +84,7 @@ func (r *UserRepository) FindByFacilityID(ctx context.Context, facility_id strin
 
 func (r *UserRepository) FindByID(ctx context.Context, id string) (*userDomain.User, error) {
 	var user userDomain.User
-	err := r.db.Preload("Facility").Preload("Position").Preload("Team").Preload("Department").Preload("Policies").Where("id = ?", id).First(&user).Error
+	err := r.db.Preload("Facility").Preload("Position").Preload("Team").Preload("Department").Preload("Policies").Preload("Area").Where("id = ?", id).First(&user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errorDomain.WrapError(errorDomain.NotFoundErr, err)
