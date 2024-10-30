@@ -53,8 +53,9 @@ func authRoute(r *gin.RouterGroup) {
 	departmentRepository := repository.NewDepartmentRepository()
 	positionRepository := repository.NewPositionRepository()
 	teamRepository := repository.NewTeamRepository()
+	areaRepository := repository.NewAreaRepository()
 	h := auth.NewHandler(
-		userUse.NewCreateUserUseCase(userRepository, facilityRepository, departmentRepository, positionRepository, teamRepository),
+		userUse.NewCreateUserUseCase(userRepository, facilityRepository, departmentRepository, positionRepository, teamRepository, areaRepository),
 	)
 	group := r.Group("/auth")
 	group.POST("/signin", h.SignIn)

@@ -39,6 +39,4 @@ type AddressDetailResponse struct {
 	UpdatedAt    time.Time
 }
 
-type AddressListResponse struct {
-	Addresses []AddressResponse `json:"addresses"`
-}
+type AddressListResponse []AddressResponse

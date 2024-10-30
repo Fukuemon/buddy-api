@@ -104,9 +104,9 @@ func (h *handler) Fetch(ctx *gin.Context) {
 		ctx.Error(err)
 	}
 
-	response := make([]AddressDetailResponse, 0, len(output))
+	response := make(AddressListResponse, 0, len(output))
 	for _, address := range output {
-		response = append(response, AddressDetailResponse{
+		response = append(response, AddressResponse{
 			ID:           address.ID,
 			ZipCode:      address.ZipCode,
 			Prefecture:   address.Prefecture,

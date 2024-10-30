@@ -85,11 +85,9 @@ func (h handler) FetchByFacilityId(ctx *gin.Context) {
 		return
 	}
 
-	response := FetchDepartmentsResponse{
-		Departments: make([]DepartmentResponse, 0, len(output)),
-	}
+	response := make(FetchDepartmentsResponse, 0, len(output))
 	for _, department := range output {
-		response.Departments = append(response.Departments, DepartmentResponse{
+		response = append(response, DepartmentResponse{
 			ID:         department.ID,
 			Name:       department.Name,
 			FacilityID: department.FacilityID,
