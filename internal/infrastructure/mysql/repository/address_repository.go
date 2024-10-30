@@ -52,7 +52,7 @@ func (r *AddressRepository) FindByIDs(ctx context.Context, ids []string) ([]*add
 
 func (r *AddressRepository) FindByAreaID(ctx context.Context, areaID string) ([]*addressDomain.Address, error) {
 	var addresses []*addressDomain.Address
-	err := r.db.Preload("Areas").Begin().Where("area_id = ?", areaID).Find(&addresses).Error
+	err := r.db.Where("area_id = ?", areaID).Find(&addresses).Error
 	if err != nil {
 		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
