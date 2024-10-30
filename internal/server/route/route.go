@@ -2,7 +2,9 @@ package route
 
 import (
 	"api-buddy/infrastructure/mysql/repository"
+	addressPre "api-buddy/presentation/address"
 	"api-buddy/presentation/auth"
+	areaPre "api-buddy/presentation/facility/area"
 	departmentPre "api-buddy/presentation/facility/department"
 	positionPre "api-buddy/presentation/facility/position"
 	teamPre "api-buddy/presentation/facility/team"
@@ -10,6 +12,8 @@ import (
 	policyPre "api-buddy/presentation/policy"
 	"api-buddy/presentation/settings"
 	userPre "api-buddy/presentation/user"
+	addressUse "api-buddy/usecase/address"
+	areaUse "api-buddy/usecase/facility/area"
 	departmentUse "api-buddy/usecase/facility/department"
 	positionUse "api-buddy/usecase/facility/position"
 	teamUse "api-buddy/usecase/facility/team"
@@ -35,6 +39,8 @@ func InitRoute(api *gin.Engine) {
 		teamRoute(v1)
 		departmentRoute(v1)
 		userRoute(v1)
+		addressRoute(v1)
+		areaRoute(v1)
 	}
 
 	// Swagger
@@ -122,5 +128,35 @@ func userRoute(r *gin.RouterGroup) {
 	group.GET("/:user_id", h.FindByUserId)
 
 	group = r.Group("/facilities/:facility_id/users")
+	group.GET("", h.FetchByFacilityId)
+}
+
+func addressRoute(r *gin.RouterGroup) {
+	addressRepository := repository.NewAddressRepository()
+	h := addressPre.NewHandler(
+		addressUse.NewCreateAddressUseCase(addressRepository),
+		addressUse.NewFindAddressUseCase(addressRepository),
+		addressUse.NewFetchAddressUseCase(addressRepository),
+	)
+	group := r.Group("/addresses")
+	group.POST("", h.Create)
+	group.GET("", h.Fetch)
+	group.GET("/:address_id", h.FindById)
+
+}
+
+func areaRoute(r *gin.RouterGroup) {
+	addressRepository := repository.NewAddressRepository()
+	areaRepository := repository.NewAreaRepository()
+	h := areaPre.NewHandler(
+		areaUse.NewCreateAreaUseCase(areaRepository, addressRepository),
+		areaUse.NewFindAreaUseCase(areaRepository),
+		areaUse.NewFetchAreaUseCase(areaRepository),
+	)
+	group := r.Group("/areas")
+	group.POST("", h.Create)
+	group.GET("/:area_id", h.FindById)
+
+	group = r.Group("/facilities/:facility_id/areas")
 	group.GET("", h.FetchByFacilityId)
 }
