@@ -15,6 +15,253 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/addresses": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Address"
+                ],
+                "summary": "住所一覧を取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Zip Code",
+                        "name": "zip_code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Prefecture",
+                        "name": "prefecture",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "City",
+                        "name": "city",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Address Line1",
+                        "name": "address_line1",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Address Line2",
+                        "name": "address_line2",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Latitude",
+                        "name": "latitude",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Longitude",
+                        "name": "longitude",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/address.AddressDetailResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Address"
+                ],
+                "summary": "住所を作成する",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/address.CreateAddressResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/addresses/{address_id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Address"
+                ],
+                "summary": "単一の住所を取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address ID",
+                        "name": "address_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/address.AddressDetailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/areas/{area_id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Area"
+                ],
+                "summary": "単一のエリアを取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Area ID",
+                        "name": "area_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/area.AreaResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/signin": {
             "post": {
                 "consumes": [
@@ -131,6 +378,104 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/department.DepartmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/facilities/{facility_id}/areas": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Area"
+                ],
+                "summary": "施設IDに紐づくエリアを取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "facility_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/area.AreaResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Area"
+                ],
+                "summary": "施設に紐づくエリアを作成する",
+                "parameters": [
+                    {
+                        "description": "Create Area Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/area.CreateAreaRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/area.AreaResponse"
                         }
                     },
                     "400": {
@@ -443,6 +788,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Team",
                         "name": "team",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Area",
+                        "name": "area",
                         "in": "query"
                     },
                     {
@@ -781,7 +1132,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UserResponse"
+                            "$ref": "#/definitions/user.UserDetailResponse"
                         }
                     },
                     "400": {
@@ -813,6 +1164,144 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "address.AddressDetailResponse": {
+            "type": "object",
+            "properties": {
+                "addressLine1": {
+                    "type": "string"
+                },
+                "addressLine2": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "prefecture": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "zipCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "address.CreateAddressResponse": {
+            "type": "object",
+            "properties": {
+                "addressLine1": {
+                    "type": "string"
+                },
+                "addressLine2": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "prefecture": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "zipCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "area.AddressModel": {
+            "type": "object",
+            "properties": {
+                "address_line1": {
+                    "type": "string"
+                },
+                "address_line2": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "prefecture": {
+                    "type": "string"
+                }
+            }
+        },
+        "area.AreaResponse": {
+            "type": "object",
+            "properties": {
+                "addresses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/area.AddressModel"
+                    }
+                },
+                "facility_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "area.CreateAreaRequest": {
+            "type": "object",
+            "required": [
+                "address_ids",
+                "facility_id",
+                "name"
+            ],
+            "properties": {
+                "address_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "facility_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "auth.SignInRequest": {
             "type": "object",
             "required": [
@@ -842,6 +1331,7 @@ const docTemplate = `{
         "auth.SignUpRequest": {
             "type": "object",
             "required": [
+                "area_id",
                 "department_id",
                 "facility_id",
                 "password",
@@ -850,6 +1340,9 @@ const docTemplate = `{
                 "username"
             ],
             "properties": {
+                "area_id": {
+                    "type": "string"
+                },
                 "department_id": {
                     "type": "string"
                 },
@@ -879,6 +1372,9 @@ const docTemplate = `{
         "auth.SignUpResponse": {
             "type": "object",
             "properties": {
+                "area": {
+                    "type": "string"
+                },
                 "department": {
                     "type": "string"
                 },
@@ -1106,9 +1602,12 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserResponse": {
+        "user.UserDetailResponse": {
             "type": "object",
             "properties": {
+                "area": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -1140,6 +1639,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserResponse": {
+            "type": "object",
+            "properties": {
+                "area": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "team": {
                     "type": "string"
                 },
                 "username": {
