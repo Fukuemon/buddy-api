@@ -5,6 +5,7 @@ import (
 	patientDomain "api-buddy/domain/patient"
 	userDomain "api-buddy/domain/user"
 	routeDomain "api-buddy/domain/visit_info/route"
+	serviceCodeDomain "api-buddy/domain/visit_info/service_code"
 
 	"github.com/Fukuemon/go-pkg/query"
 	"github.com/Fukuemon/go-pkg/ulid"
@@ -20,7 +21,8 @@ type VisitInfo struct {
 	Companion       *userDomain.User `gorm:"foreignKey:CompanionID"`
 	RouteID         string
 	Route           *routeDomain.Route `gorm:"foreignKey:RouteID"`
-	ServiceCode     string
+	ServiceCodeID   string
+	ServiceCode     *serviceCodeDomain.ServiceCode `gorm:"foreignKey:ServiceCodeID"`
 	common.CommonModel
 }
 
@@ -29,7 +31,7 @@ func NewVisitInfo(
 	assignedStaff *userDomain.User,
 	companion *userDomain.User,
 	route *routeDomain.Route,
-	serviceCode string,
+	serviceCode *serviceCodeDomain.ServiceCode,
 ) (*VisitInfo, error) {
 	return newVisitInfo(
 		ulid.NewULID(),
@@ -47,7 +49,7 @@ func newVisitInfo(
 	assignedStaff *userDomain.User,
 	companion *userDomain.User,
 	route *routeDomain.Route,
-	serviceCode string,
+	serviceCode *serviceCodeDomain.ServiceCode,
 ) (*VisitInfo, error) {
 	visitInfo := &VisitInfo{
 		ID:              ID,
@@ -59,6 +61,7 @@ func newVisitInfo(
 		Companion:       companion,
 		RouteID:         route.ID,
 		Route:           route,
+		ServiceCodeID:   serviceCode.ID,
 		ServiceCode:     serviceCode,
 	}
 
@@ -87,5 +90,10 @@ var VisitInfoRelationMappings = map[string]query.RelationMapping{
 		TableName:   "routes",
 		JoinKey:     "routes.id = visit_infos.route_id",
 		FilterField: "routes.name",
+	},
+	"service_code": {
+		TableName:   "service_codes",
+		JoinKey:     "service_codes.id = visit_infos.service_code_id",
+		FilterField: "service_codes.code",
 	},
 }
