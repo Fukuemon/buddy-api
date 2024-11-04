@@ -87,12 +87,14 @@ CREATE TABLE IF NOT EXISTS users (
     position_id VARCHAR(255) NOT NULL,
     department_id VARCHAR(255) NOT NULL,
     team_id VARCHAR(255) NOT NULL,
+    area_id VARCHAR(255) NOT NULL,
     facility_id VARCHAR(255) NOT NULL,
     created_at DATETIME,
     updated_at DATETIME,
     FOREIGN KEY (position_id) REFERENCES positions(id),
     FOREIGN KEY (department_id) REFERENCES departments(id),
     FOREIGN KEY (team_id) REFERENCES teams(id),
+    FOREIGN KEY (area_id) REFERENCES areas(id),
     FOREIGN KEY (facility_id) REFERENCES facilities(id)
 );
 
@@ -103,6 +105,62 @@ CREATE TABLE IF NOT EXISTS user_policies (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (policy_id) REFERENCES policies(id)
 );
+
+CREATE TABLE IF NOT EXISTS service_codes (
+    id VARCHAR(255) PRIMARY KEY,
+    code VARCHAR(255) NOT NULL,
+    service_time_range_start int,
+    service_time_range_end int,
+    created_at DATETIME,
+    updated_at DATETIME
+);
+
+CREATE TABLE IF NOT EXISTS patients (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    preferred_time VARCHAR(255) NOT NULL,
+    preferred_gender VARCHAR(255) NOT NULL,
+    service_code_id VARCHAR(255) NOT NULL,
+    address_id VARCHAR(255) NOT NULL,
+    area_id VARCHAR(255) NOT NULL,
+    assigned_staff_id VARCHAR(255) NOT NULL,
+    facility_id VARCHAR(255) NOT NULL,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY (service_code_id) REFERENCES service_codes(id),
+    FOREIGN KEY (address_id) REFERENCES addresses(id),
+    FOREIGN KEY (area_id) REFERENCES areas(id),
+    FOREIGN KEY (assigned_staff_id) REFERENCES users(id),
+    FOREIGN KEY (facility_id) REFERENCES facilities(id)
+);
+
+CREATE TABLE IF NOT EXISTS routes (
+    id VARCHAR(255) PRIMARY KEY,
+    travel_time int,
+    address_id VARCHAR(255) NOT NULL,
+    destination_id VARCHAR(255) NOT NULL,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY (address_id) REFERENCES addresses(id),
+    FOREIGN KEY (destination_id) REFERENCES addresses(id)
+);
+
+CREATE TABLE IF NOT EXISTS visit_infos (
+    id VARCHAR(255) PRIMARY KEY,
+    patient_id VARCHAR(255) NOT NULL,
+    assigned_staff_id VARCHAR(255) NOT NULL,
+    companion_id VARCHAR(255),
+    route_id VARCHAR(255) NOT NULL,
+    service_code_id VARCHAR(255) NOT NULL,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY (patient_id) REFERENCES patients(id),
+    FOREIGN KEY (assigned_staff_id) REFERENCES users(id),
+    FOREIGN KEY (companion_id) REFERENCES users(id),
+    FOREIGN KEY (route_id) REFERENCES routes(id),
+    FOREIGN KEY (service_code_id) REFERENCES service_codes(id)
+);
+
 
 -- Insert data
 INSERT INTO facilities (id, name, created_at, updated_at)
@@ -163,3 +221,30 @@ INSERT INTO area_addresses (address_id, area_id)
 VALUES ('01JBBCQ314307YD69N89XT9WBN', '01JBBCQ867SR9Y001CR5HD6DNJ'),
        ('01JBBCPQ5SKAMZNDE9PY940ZZN', '01JBBCQ867SR9Y001CR5HD6DNJ'),
        ('01JBBCPX6RJPK18T4B7CAJG6F3', '01JBBCQP71J81VFQB2NRX77VDJ');
+
+
+INSERT INTO service_codes (id, code, service_time_range_start, service_time_range_end, created_at, updated_at) VALUES
+('01JBVE7Z0H0E0M6BX3FV1DK69A', '訪看I２', 20, 29, NOW(), NOW()),
+('01JBVE7Z0J2V4RK19SA57E6Z05', '予防看I２', 20, 29, NOW(), NOW()),
+('01JBVE7Z0JQ9VG0E9SBSAQPYK3', '予訪看I２', 20, 29, NOW(), NOW()),
+('01JBVE7Z0JBNQTF4ZYM229SRJ2', '予防訪看I２', 20, 29, NOW(), NOW()),
+('01JBVE7Z0JRTMVMMNPKTEHSYY7', '訪看I３', 30, 59, NOW(), NOW()),
+('01JBVE7Z0JFW5ZBQ89FZ80JE3D', '予防看I３', 30, 59, NOW(), NOW()),
+('01JBVE7Z0JFW8NYWCPTSBGTREV', '予訪看I３', 30, 59, NOW(), NOW()),
+('01JBVE7Z0JGC8VKTAS8MEV7C42', '予防訪看I３', 30, 59, NOW(), NOW()),
+('01JBVE7Z0JVGPNAZBD6QEES9XP', '訪看I４', 60, 89, NOW(), NOW()),
+('01JBVE7Z0JW6KRZ5VEQDN9MPSN', '予防看I４', 60, 89, NOW(), NOW()),
+('01JBVE7Z0JMM2H0VVKB07295KR', '予訪看I４', 60, 89, NOW(), NOW()),
+('01JBVE7Z0JC1R1NCVXW5QD50VY', '予防訪看I４', 60, 89, NOW(), NOW()),
+('01JBVE7Z0J7173WPCNTXQVKA2C', '訪看I５', 21, 40, NOW(), NOW()),
+('01JBVE7Z0JH4VE7NW3R73PAH0M', '予防看I５', 21, 40, NOW(), NOW()),
+('01JBVE7Z0JB1EA1AFH3DREZZAR', '予訪看I５', 21, 40, NOW(), NOW()),
+('01JBVE7Z0J656V3S0KKQXGWRBM', '予防訪看I５', 21, 40, NOW(), NOW()),
+('01JBVE7Z0JTE372AGDJ1629P30', '訪看I５・２超', 41, 60, NOW(), NOW()),
+('01JBVE7Z0KTMH989KS7SWDTS4N', '訪看I５２超', 41, 60, NOW(), NOW()),
+('01JBVE7Z0KFT13Y8M1VTX37E4H', '予防看I５・２超', 41, 60, NOW(), NOW()),
+('01JBVE7Z0K7TMZ0NHBHDTVKAEA', '予訪看I５・２超', 41, 60, NOW(), NOW()),
+('01JBVE7Z0KB3NPEWT5M09JBDHT', '予防訪看I５２超', 41, 60, NOW(), NOW()),
+('01JBVE7Z0K4KJ7G9C4Y8AWSVB7', '基本療養費', 30, 90, NOW(), NOW()),
+('01JBVE7Z0K9VT9ZYJRE6YFARFX', '医', 30, 90, NOW(), NOW()),
+('01JBVE7Z0KCS5C4ATYW3WPDHYN', '難病等複数回訪問加算(２回)', 30, 90, NOW(), NOW());
