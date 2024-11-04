@@ -87,12 +87,14 @@ CREATE TABLE IF NOT EXISTS users (
     position_id VARCHAR(255) NOT NULL,
     department_id VARCHAR(255) NOT NULL,
     team_id VARCHAR(255) NOT NULL,
+    area_id VARCHAR(255) NOT NULL,
     facility_id VARCHAR(255) NOT NULL,
     created_at DATETIME,
     updated_at DATETIME,
     FOREIGN KEY (position_id) REFERENCES positions(id),
     FOREIGN KEY (department_id) REFERENCES departments(id),
     FOREIGN KEY (team_id) REFERENCES teams(id),
+    FOREIGN KEY (area_id) REFERENCES areas(id),
     FOREIGN KEY (facility_id) REFERENCES facilities(id)
 );
 
@@ -103,6 +105,62 @@ CREATE TABLE IF NOT EXISTS user_policies (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (policy_id) REFERENCES policies(id)
 );
+
+CREATE TABLE IF NOT EXISTS service_codes (
+    id VARCHAR(255) PRIMARY KEY,
+    code VARCHAR(255) NOT NULL,
+    service_time_range_start int,
+    service_time_range_end int,
+    created_at DATETIME,
+    updated_at DATETIME
+);
+
+CREATE TABLE IF NOT EXISTS patients (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    preferred_time VARCHAR(255) NOT NULL,
+    preferred_gender VARCHAR(255) NOT NULL,
+    service_code_id VARCHAR(255) NOT NULL,
+    address_id VARCHAR(255) NOT NULL,
+    area_id VARCHAR(255) NOT NULL,
+    assigned_staff_id VARCHAR(255) NOT NULL,
+    facility_id VARCHAR(255) NOT NULL,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY (service_code_id) REFERENCES service_codes(id),
+    FOREIGN KEY (address_id) REFERENCES addresses(id),
+    FOREIGN KEY (area_id) REFERENCES areas(id),
+    FOREIGN KEY (assigned_staff_id) REFERENCES users(id),
+    FOREIGN KEY (facility_id) REFERENCES facilities(id)
+);
+
+CREATE TABLE IF NOT EXISTS routes (
+    id VARCHAR(255) PRIMARY KEY,
+    travel_time int,
+    address_id VARCHAR(255) NOT NULL,
+    destination_id VARCHAR(255) NOT NULL,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY (address_id) REFERENCES addresses(id),
+    FOREIGN KEY (destination_id) REFERENCES addresses(id)
+);
+
+CREATE TABLE IF NOT EXISTS visit_infos (
+    id VARCHAR(255) PRIMARY KEY,
+    patient_id VARCHAR(255) NOT NULL,
+    assigned_staff_id VARCHAR(255) NOT NULL,
+    companion_id VARCHAR(255),
+    route_id VARCHAR(255) NOT NULL,
+    service_code_id VARCHAR(255) NOT NULL,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY (patient_id) REFERENCES patients(id),
+    FOREIGN KEY (assigned_staff_id) REFERENCES users(id),
+    FOREIGN KEY (companion_id) REFERENCES users(id),
+    FOREIGN KEY (route_id) REFERENCES routes(id),
+    FOREIGN KEY (service_code_id) REFERENCES service_codes(id)
+);
+
 
 -- Insert data
 INSERT INTO facilities (id, name, created_at, updated_at)
