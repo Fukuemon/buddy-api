@@ -11,6 +11,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/gin-contrib/cors"
 )
 
 func Run(ctx context.Context, conf *config.Config) {
@@ -19,6 +21,16 @@ func Run(ctx context.Context, conf *config.Config) {
 
 	api := settings.NewGinEngine()
 	route.InitRoute(api)
+
+	// CORSの設定
+	api.Use(cors.New(cors.Config{
+		AllowOrigins:     conf.Server.AllowOrigins,
+		AllowMethods:     conf.Server.AllowMethods,
+		AllowHeaders:     conf.Server.AllowHeaders,
+		AllowCredentials: conf.Server.AllowCredentials,
+		MaxAge:           conf.Server.MaxAge,
+	}))
+
 	address := conf.Server.Address + ":" + conf.Server.Port
 	log.Printf("Starting server on %s...\n", address)
 
