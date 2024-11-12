@@ -20,8 +20,6 @@ func Run(ctx context.Context, conf *config.Config) {
 	settings.InitValidationSettings()
 
 	api := settings.NewGinEngine()
-	route.InitRoute(api)
-
 	// CORSの設定
 	api.Use(cors.New(cors.Config{
 		AllowOrigins:     conf.Server.AllowOrigins,
@@ -30,6 +28,8 @@ func Run(ctx context.Context, conf *config.Config) {
 		AllowCredentials: conf.Server.AllowCredentials,
 		MaxAge:           conf.Server.MaxAge,
 	}))
+
+	route.InitRoute(api)
 
 	address := conf.Server.Address + ":" + conf.Server.Port
 	log.Printf("Starting server on %s...\n", address)
