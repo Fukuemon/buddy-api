@@ -61,8 +61,9 @@ func (h handler) CreateByFacilityId(ctx *gin.Context) {
 	}
 
 	response := CreateTeamResponse{
-		ID:   output.ID,
-		Name: output.Name,
+		ID:         output.ID,
+		Name:       output.Name,
+		FacilityID: output.FacilityID,
 	}
 
 	settings.ReturnStatusCreated(ctx, response)
@@ -96,10 +97,11 @@ func (h handler) FindByID(ctx *gin.Context) {
 	}
 
 	response := TeamResponse{
-		ID:        output.ID,
-		Name:      output.Name,
-		CreatedAt: output.CreatedAt,
-		UpdatedAt: output.UpdatedAt,
+		ID:         output.ID,
+		Name:       output.Name,
+		FacilityID: output.FacilityID,
+		CreatedAt:  output.CreatedAt,
+		UpdatedAt:  output.UpdatedAt,
 	}
 
 	settings.ReturnStatusOK(ctx, response)
@@ -134,10 +136,11 @@ func (h handler) FetchByFacilityId(ctx *gin.Context) {
 	response := make(TeamListResponse, 0, len(output))
 	for _, team := range output {
 		response = append(response, TeamResponse{
-			ID:        team.ID,
-			Name:      team.Name,
-			CreatedAt: team.CreatedAt,
-			UpdatedAt: team.UpdatedAt,
+			ID:         team.ID,
+			Name:       team.Name,
+			FacilityID: team.FacilityID,
+			CreatedAt:  team.CreatedAt,
+			UpdatedAt:  team.UpdatedAt,
 		})
 	}
 
