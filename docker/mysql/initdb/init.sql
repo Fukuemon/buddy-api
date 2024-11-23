@@ -185,13 +185,13 @@ VALUES ('01J71685CQQF95SJ96ZGC2RBX3', 'C', '01J6SMYDSKKKNJCR2Y3242T7YX', NOW(), 
 
 -- positions（manager, reader, member）
 INSERT INTO positions (id, name, facility_id, created_at, updated_at)
-VALUES ('01J71685CQ0ZKYEHBRADF1Q8B4', 'manager', '01J6SMYDSKKKNJCR2Y3242T7YX', NOW(), NOW());
+VALUES ('01J71685CQ0ZKYEHBRADF1Q8B4', 'マネージャー', '01J6SMYDSKKKNJCR2Y3242T7YX', NOW(), NOW());
 
 INSERT INTO positions (id, name, facility_id, created_at, updated_at)
-VALUES ('01J71685CQ2JCBA6SAFTQ5MC87', 'reader', '01J6SMYDSKKKNJCR2Y3242T7YX', NOW(), NOW());
+VALUES ('01J71685CQ2JCBA6SAFTQ5MC87', 'リーダー', '01J6SMYDSKKKNJCR2Y3242T7YX', NOW(), NOW());
 
 INSERT INTO positions (id, name, facility_id, created_at, updated_at)
-VALUES ('01J71685CQ5GXXEE7EN2ECVQR6', 'member', '01J6SMYDSKKKNJCR2Y3242T7YX', NOW(), NOW());
+VALUES ('01J71685CQ5GXXEE7EN2ECVQR6', 'メンバー', '01J6SMYDSKKKNJCR2Y3242T7YX', NOW(), NOW());
 
 -- policies（すべてのカレンダーの閲覧）
 INSERT INTO policies (id, name, created_at, updated_at)
