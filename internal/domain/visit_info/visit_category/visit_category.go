@@ -6,20 +6,28 @@ import (
 	"github.com/Fukuemon/go-pkg/ulid"
 )
 
+type VisitCategoryType string
+
+const (
+	NightShift VisitCategoryType = "夜勤"
+	Emergency  VisitCategoryType = "緊急"
+	Hospital   VisitCategoryType = "入院"
+)
+
 type VisitCategory struct {
 	ID   string
-	Name string
+	Name VisitCategoryType
 	common.CommonModel
 }
 
-func NewVisitCategory(Name string) (*VisitCategory, error) {
+func NewVisitCategory(Name VisitCategoryType) (*VisitCategory, error) {
 	return newVisitCategory(
 		ulid.NewULID(),
 		Name,
 	)
 }
 
-func newVisitCategory(ID string, Name string) (*VisitCategory, error) {
+func newVisitCategory(ID string, Name VisitCategoryType) (*VisitCategory, error) {
 	visitCategory := &VisitCategory{
 		ID:   ID,
 		Name: Name,

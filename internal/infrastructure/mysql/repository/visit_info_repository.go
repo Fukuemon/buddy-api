@@ -63,7 +63,8 @@ func (r *VisitInfoRepository) FindAll(ctx context.Context, filters []query.Filte
 	}
 
 	var visitInfos []*visitInfoDomain.VisitInfo
-	err := dbQuery.Preload("Patient").Preload("User").Preload("Route").Find(&visitInfos).Error
+	err := dbQuery.Preload("Patient").Preload("AssignedStaff").Preload("Route").Preload("VisitCategory").Preload("ServiceCode").
+		Find(&visitInfos).Error
 	if err != nil {
 		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
@@ -72,7 +73,8 @@ func (r *VisitInfoRepository) FindAll(ctx context.Context, filters []query.Filte
 
 func (r *VisitInfoRepository) FindByID(ctx context.Context, id string) (*visitInfoDomain.VisitInfo, error) {
 	var visitInfo visitInfoDomain.VisitInfo
-	err := r.db.Preload("Patient").Preload("User").Preload("Route").Where("id = ?", id).First(&visitInfo).Error
+	err := r.db.Preload("Patient").Preload("AssignedStaff").Preload("Route").Preload("VisitCategory").Preload("ServiceCode").
+		Where("id = ?", id).First(&visitInfo).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errorDomain.WrapError(errorDomain.NotFoundErr, err)

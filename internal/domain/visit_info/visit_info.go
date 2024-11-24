@@ -6,10 +6,18 @@ import (
 	userDomain "api-buddy/domain/user"
 	routeDomain "api-buddy/domain/visit_info/route"
 	serviceCodeDomain "api-buddy/domain/visit_info/service_code"
+	visitCategoryDomain "api-buddy/domain/visit_info/visit_category"
 
 	"github.com/Fukuemon/go-pkg/query"
 	"github.com/Fukuemon/go-pkg/ulid"
 )
+
+type Option struct {
+	Companion       *userDomain.User
+	CompanionID     *string
+	VisitCategory   *visitCategoryDomain.VisitCategory
+	VisitCategoryID *string
+}
 
 type VisitInfo struct {
 	ID              string
@@ -23,23 +31,25 @@ type VisitInfo struct {
 	Route           *routeDomain.Route `gorm:"foreignKey:RouteID"`
 	ServiceCodeID   string
 	ServiceCode     *serviceCodeDomain.ServiceCode `gorm:"foreignKey:ServiceCodeID"`
+	VisitCategoryID string
+	VisitCategory   *visitCategoryDomain.VisitCategory `gorm:"foreignKey:VisitCategoryID"`
 	common.CommonModel
 }
 
 func NewVisitInfo(
 	patient *patientDomain.Patient,
 	assignedStaff *userDomain.User,
-	companion *userDomain.User,
 	route *routeDomain.Route,
 	serviceCode *serviceCodeDomain.ServiceCode,
+	options *Option,
 ) (*VisitInfo, error) {
 	return newVisitInfo(
 		ulid.NewULID(),
 		patient,
 		assignedStaff,
-		companion,
 		route,
 		serviceCode,
+		options,
 	)
 }
 
@@ -47,9 +57,9 @@ func newVisitInfo(
 	ID string,
 	patient *patientDomain.Patient,
 	assignedStaff *userDomain.User,
-	companion *userDomain.User,
 	route *routeDomain.Route,
 	serviceCode *serviceCodeDomain.ServiceCode,
+	options *Option,
 ) (*VisitInfo, error) {
 	visitInfo := &VisitInfo{
 		ID:              ID,
@@ -57,12 +67,21 @@ func newVisitInfo(
 		Patient:         patient,
 		AssignedStaffID: assignedStaff.ID,
 		AssignedStaff:   assignedStaff,
-		CompanionID:     companion.ID,
-		Companion:       companion,
 		RouteID:         route.ID,
 		Route:           route,
 		ServiceCodeID:   serviceCode.ID,
 		ServiceCode:     serviceCode,
+	}
+
+	if options != nil {
+		if options.Companion != nil {
+			visitInfo.CompanionID = options.Companion.ID
+			visitInfo.Companion = options.Companion
+		}
+		if options.VisitCategory != nil {
+			visitInfo.VisitCategoryID = options.VisitCategory.ID
+			visitInfo.VisitCategory = options.VisitCategory
+		}
 	}
 
 	common.InitializeCommonModel(&visitInfo.CommonModel)
@@ -95,5 +114,10 @@ var VisitInfoRelationMappings = map[string]query.RelationMapping{
 		TableName:   "service_codes",
 		JoinKey:     "service_codes.id = visit_infos.service_code_id",
 		FilterField: "service_codes.code",
+	},
+	"visit_category": {
+		TableName:   "visit_categories",
+		JoinKey:     "visit_categories.id = visit_infos.visit_category_id",
+		FilterField: "visit_categories.name",
 	},
 }
