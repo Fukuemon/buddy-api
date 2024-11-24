@@ -8,6 +8,8 @@ import (
 	userDomain "api-buddy/domain/user"
 	visitInfoDomain "api-buddy/domain/visit_info"
 	"time"
+
+	"github.com/Fukuemon/go-pkg/query"
 )
 
 type Option struct {
@@ -68,7 +70,7 @@ func newRecurringSchedule(
 	if options != nil {
 		if options != nil {
 			// 通常予定の場合
-			if schedule_type.Name == scheduleTypeDomain.ScheduleTypeNormal {
+			if schedule_type.Name == scheduleTypeDomain.Normal {
 				if options.Title == nil {
 					return nil, errorDomain.NewError("タイトルが含まれていません")
 				}
@@ -76,7 +78,7 @@ func newRecurringSchedule(
 			}
 
 			// 訪問予定の場合
-			if schedule_type.Name == scheduleTypeDomain.ScheduleTypeVisit {
+			if schedule_type.Name == scheduleTypeDomain.Visit {
 
 				if options.VisitInfoID == nil {
 					return nil, errorDomain.NewError("訪問情報が含まれていません")
@@ -106,4 +108,32 @@ func newRecurringSchedule(
 	}
 
 	return recurringSchedule, nil
+}
+
+var RecurringScheduleRelationMappings = map[string]query.RelationMapping{
+	"recurring_rule": {
+		TableName:   "recurring_rules",
+		JoinKey:     "recurring_rules.id = recurring_schedules.recurring_rule_id",
+		FilterField: "recurring_rule.name",
+	},
+	"schedule_type": {
+		TableName:   "schedule_types",
+		JoinKey:     "schedule_types.id = recurring_schedules.schedule_type_id",
+		FilterField: "schedule_type.name",
+	},
+	"staff": {
+		TableName:   "users",
+		JoinKey:     "users.id = recurring_schedules.staff_id",
+		FilterField: "users.name",
+	},
+	"facility": {
+		TableName:   "facilities",
+		JoinKey:     "facilities.id = recurring_schedules.facility_id",
+		FilterField: "facilities.name",
+	},
+	"visit_info": {
+		TableName:   "visit_infos",
+		JoinKey:     "visit_infos.id = recurring_schedules.visit_info_id",
+		FilterField: "visit_info.name",
+	},
 }

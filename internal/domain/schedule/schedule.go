@@ -3,12 +3,14 @@ package schedule
 import (
 	errorDomain "api-buddy/domain/error"
 	facilityDomain "api-buddy/domain/facility"
+	recurringScheduleDomain "api-buddy/domain/schedule/recurring_schedule"
 	scheduleCancelDomain "api-buddy/domain/schedule/schedule_cancel"
 	scheduleTypeDomain "api-buddy/domain/schedule/schedule_type"
 	userDomain "api-buddy/domain/user"
 	visitInfoDomain "api-buddy/domain/visit_info"
 	"time"
 
+	"github.com/Fukuemon/go-pkg/query"
 	"github.com/Fukuemon/go-pkg/ulid"
 )
 
@@ -17,6 +19,7 @@ type Option struct {
 	VisitInfoID           *string
 	Title                 *string
 	RecurringScheduleID   *string
+	RecurringSchedule     *recurringScheduleDomain.RecurringSchedule
 	BeforeChangeDate      *time.Time
 	BeforeChangeStartTime *time.Time
 	Description           *string
@@ -35,16 +38,17 @@ type Schedule struct {
 	Staff                 *userDomain.User
 	StaffID               string `gorm:"foreignKey:ID;references:StaffID"`
 	Facility              *facilityDomain.Facility
-	FacilityID            string
+	FacilityID            string `gorm:"foreignKey:ID;references:FacilityID"`
 	Title                 string
 	VisitInfo             *visitInfoDomain.VisitInfo
 	VisitInfoID           string `gorm:"foreignKey:ID;references:VisitInfoID"`
+	RecurringSchedule     *recurringScheduleDomain.RecurringSchedule
 	RecurringScheduleID   string `gorm:"foreignKey:ID;references:RecurringScheduleID"`
 	BeforeChangeDate      *time.Time
 	BeforeChangeStartTime *time.Time
 	Description           string
 	ScheduleCancel        *scheduleCancelDomain.ScheduleCancel
-	ScheduleCancelID      string
+	ScheduleCancelID      string `gorm:"foreignKey:ID;references:ScheduleCancelID"`
 }
 
 func NewSchedule(
@@ -96,7 +100,7 @@ func newSchedule(
 
 	if options != nil {
 		// 通常予定の場合
-		if schedule_type.Name == scheduleTypeDomain.ScheduleTypeNormal {
+		if schedule_type.Name == scheduleTypeDomain.Normal {
 			if options.Title == nil {
 				return nil, errorDomain.NewError("タイトルが含まれていません")
 			}
@@ -104,7 +108,7 @@ func newSchedule(
 		}
 
 		// 訪問予定の場合
-		if schedule_type.Name == scheduleTypeDomain.ScheduleTypeVisit {
+		if schedule_type.Name == scheduleTypeDomain.Visit {
 
 			if options.VisitInfoID == nil {
 				return nil, errorDomain.NewError("訪問情報が含まれていません")
@@ -124,6 +128,7 @@ func newSchedule(
 			}
 			schedule.BeforeChangeDate = options.BeforeChangeDate
 			schedule.BeforeChangeStartTime = options.BeforeChangeStartTime
+			schedule.RecurringSchedule = options.RecurringSchedule
 		}
 
 		// 補足情報
@@ -153,4 +158,37 @@ func newSchedule(
 	}
 
 	return schedule, nil
+}
+
+var ScheduleRelationMappings = map[string]query.RelationMapping{
+	"staff": {
+		TableName:   "users",
+		JoinKey:     "users.id = schedules.staff_id",
+		FilterField: "users.name",
+	},
+	"facility": {
+		TableName:   "facilities",
+		JoinKey:     "facilities.id = schedules.facility_id",
+		FilterField: "facilities.name",
+	},
+	"schedule_type": {
+		TableName:   "schedule_types",
+		JoinKey:     "schedule_types.id = schedules.schedule_type_id",
+		FilterField: "schedule_types.name",
+	},
+	"visit_info": {
+		TableName:   "visit_infos",
+		JoinKey:     "visit_infos.id = schedules.visit_info_id",
+		FilterField: "visit_infos.name",
+	},
+	"recurring_schedule": {
+		TableName:   "recurring_schedules",
+		JoinKey:     "recurring_schedules.id = schedules.recurring_schedule_id",
+		FilterField: "recurring_schedules.id",
+	},
+	"schedule_cancel": {
+		TableName:   "schedule_cancels",
+		JoinKey:     "schedule_cancels.id = schedules.schedule_cancel_id",
+		FilterField: "schedule_cancels.id",
+	},
 }
