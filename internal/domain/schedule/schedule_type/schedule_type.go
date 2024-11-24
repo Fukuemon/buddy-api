@@ -7,14 +7,13 @@ import (
 type ScheduleTypeEnum string
 
 const (
-	ScheduleTypeNormal ScheduleTypeEnum = "通常"
-	ScheduleTypeVisit  ScheduleTypeEnum = "訪問"
+	Normal ScheduleTypeEnum = "通常"
+	Visit  ScheduleTypeEnum = "訪問"
 )
 
 type ScheduleType struct {
-	ID         string `grom:"primaryKey"`
-	Name       ScheduleTypeEnum
-	FacilityID string
+	ID   string `grom:"primaryKey"`
+	Name ScheduleTypeEnum
 }
 
 func NewScheduleType(name ScheduleTypeEnum, facility_id string) *ScheduleType {
@@ -23,8 +22,7 @@ func NewScheduleType(name ScheduleTypeEnum, facility_id string) *ScheduleType {
 
 func newScheduleType(id string, name ScheduleTypeEnum, facility_id string) *ScheduleType {
 	return &ScheduleType{
-		ID:         id,
-		Name:       name,
-		FacilityID: facility_id,
+		ID:   id,
+		Name: name,
 	}
 }
