@@ -12,20 +12,20 @@ import (
 )
 
 type Patient struct {
-	ID               string
-	Name             string
-	PreferredTime    string
-	PreferredGender  string
-	ServiceCodeID    string
-	ServiceCode      *serviceCodeDomain.ServiceCode `gorm:"foreignKey:ServiceCodeID"`
-	AddressID        string
-	Address          *addressDomain.Address `gorm:"foreignKey:AddressID"`
-	AreaID           string
-	Area             *areaDomain.Area `gorm:"foreignKey:AreaID"`
-	Assigned_StaffID string
-	Assigned_Staff   *userDomain.User `gorm:"foreignKey:Assigned_StaffID"`
-	FacilityID       string
-	Facility         *facilityDomain.Facility `gorm:"foreignKey:FacilityID"`
+	ID              string
+	Name            string
+	PreferredTime   string
+	PreferredGender string
+	ServiceCodeID   string
+	ServiceCode     *serviceCodeDomain.ServiceCode `gorm:"foreignKey:ServiceCodeID"`
+	AddressID       string
+	Address         *addressDomain.Address `gorm:"foreignKey:AddressID"`
+	AreaID          string
+	Area            *areaDomain.Area `gorm:"foreignKey:AreaID"`
+	AssignedStaffID string
+	AssignedStaff   *userDomain.User `gorm:"foreignKey:AssignedStaffID"`
+	FacilityID      string
+	Facility        *facilityDomain.Facility `gorm:"foreignKey:FacilityID"`
 	common.CommonModel
 }
 

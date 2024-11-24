@@ -74,7 +74,7 @@ func (r *PatientRepository) FindByFacilityID(ctx context.Context, facility_id st
 
 func (r *PatientRepository) FindByID(ctx context.Context, id string) (*patientDomain.Patient, error) {
 	var patient patientDomain.Patient
-	err := r.db.Preload("ServiceCode").Preload("Address").Preload("Area").Preload("Assigned_Staff").
+	err := r.db.Preload("ServiceCode").Preload("Address").Preload("Area").Preload("AssignedStaff").
 		Where("id = ?", id).
 		First(&patient).Error
 	if err != nil {
