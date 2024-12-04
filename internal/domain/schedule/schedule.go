@@ -1,6 +1,7 @@
 package schedule
 
 import (
+	"api-buddy/domain/common"
 	errorDomain "api-buddy/domain/error"
 	facilityDomain "api-buddy/domain/facility"
 	recurringScheduleDomain "api-buddy/domain/schedule/recurring_schedule"
@@ -8,155 +9,134 @@ import (
 	scheduleTypeDomain "api-buddy/domain/schedule/schedule_type"
 	userDomain "api-buddy/domain/user"
 	visitInfoDomain "api-buddy/domain/visit_info"
-	"time"
 
 	"github.com/Fukuemon/go-pkg/query"
 	"github.com/Fukuemon/go-pkg/ulid"
 )
 
-type Option struct {
-	VisitInfo             *visitInfoDomain.VisitInfo
-	VisitInfoID           *string
-	Title                 *string
-	RecurringScheduleID   *string
-	RecurringSchedule     *recurringScheduleDomain.RecurringSchedule
-	BeforeChangeDate      *time.Time
-	BeforeChangeStartTime *time.Time
-	Description           *string
-	ScheduleCancel        *scheduleCancelDomain.ScheduleCancel
-	ScheduleCancelID      *string
-}
-
 type Schedule struct {
-	ID                    string
-	ScheduleType          *scheduleTypeDomain.ScheduleType
-	ScheduleTypeID        string `gorm:"foreignKey:ID;references:ScheduleTypeID"`
-	Date                  time.Time
-	StartTime             time.Time
-	EndTime               time.Time
+	ID                    string                           `gorm:"primaryKey"`
+	ScheduleType          *scheduleTypeDomain.ScheduleType `gorm:"foreignKey:ScheduleTypeID"`
+	ScheduleTypeID        string
+	Date                  common.Date
+	StartTime             common.Time
+	EndTime               common.Time
 	IsOverTimeWork        bool
-	Staff                 *userDomain.User
-	StaffID               string `gorm:"foreignKey:ID;references:StaffID"`
-	Facility              *facilityDomain.Facility
-	FacilityID            string `gorm:"foreignKey:ID;references:FacilityID"`
+	Staff                 *userDomain.User `gorm:"foreignKey:StaffID"`
+	StaffID               string
+	Facility              *facilityDomain.Facility `gorm:"foreignKey:FacilityID"`
+	FacilityID            string
 	Title                 string
-	VisitInfo             *visitInfoDomain.VisitInfo
-	VisitInfoID           string `gorm:"foreignKey:ID;references:VisitInfoID"`
-	RecurringSchedule     *recurringScheduleDomain.RecurringSchedule
-	RecurringScheduleID   string `gorm:"foreignKey:ID;references:RecurringScheduleID"`
-	BeforeChangeDate      *time.Time
-	BeforeChangeStartTime *time.Time
+	VisitInfo             *visitInfoDomain.VisitInfo `gorm:"foreignKey:VisitInfoID"`
+	VisitInfoID           string
+	RecurringSchedule     *recurringScheduleDomain.RecurringSchedule `gorm:"foreignKey:RecurringScheduleID"`
+	RecurringScheduleID   string
+	BeforeChangeDate      *common.Date
+	BeforeChangeStartTime *common.Time
 	Description           string
-	ScheduleCancel        *scheduleCancelDomain.ScheduleCancel
-	ScheduleCancelID      string `gorm:"foreignKey:ID;references:ScheduleCancelID"`
+	ScheduleCancel        *scheduleCancelDomain.ScheduleCancel `gorm:"foreignKey:ScheduleCancelID"`
+	ScheduleCancelID      string
+	common.CommonModel
 }
 
+type ScheduleOption func(*Schedule) error
+
+func WithTitle(title string) ScheduleOption {
+	return func(s *Schedule) error {
+		if title == "" {
+			return errorDomain.NewError("タイトルが含まれていません")
+		}
+		s.Title = title
+		return nil
+	}
+}
+
+func WithVisitInfo(visitInfo *visitInfoDomain.VisitInfo) ScheduleOption {
+	return func(s *Schedule) error {
+		if visitInfo == nil {
+			return errorDomain.NewError("訪問情報が含まれていません")
+		}
+		s.VisitInfo = visitInfo
+		s.VisitInfoID = visitInfo.ID
+		return nil
+	}
+}
+
+func WithRecurringSchedule(
+	recurringSchedule *recurringScheduleDomain.RecurringSchedule,
+	beforeChangeDate *common.Date,
+	beforeChangeStartTime *common.Time,
+) ScheduleOption {
+	return func(s *Schedule) error {
+		if recurringSchedule == nil || beforeChangeDate == nil || beforeChangeStartTime == nil {
+			return errorDomain.NewError("繰り返し予定の情報が含まれていません")
+		}
+		s.RecurringSchedule = recurringSchedule
+		s.RecurringScheduleID = recurringSchedule.ID
+		s.BeforeChangeDate = beforeChangeDate
+		s.BeforeChangeStartTime = beforeChangeStartTime
+		return nil
+	}
+}
+
+func WithDescription(description string) ScheduleOption {
+	return func(s *Schedule) error {
+		s.Description = description
+		return nil
+	}
+}
+
+func WithScheduleCancel(scheduleCancel *scheduleCancelDomain.ScheduleCancel) ScheduleOption {
+	return func(s *Schedule) error {
+		if scheduleCancel == nil {
+			return errorDomain.NewError("キャンセル情報が含まれていません")
+		}
+		s.ScheduleCancel = scheduleCancel
+		s.ScheduleCancelID = scheduleCancel.ID
+		return nil
+	}
+}
+
+// NewSchedule creates a new schedule instance
 func NewSchedule(
-	schedule_type *scheduleTypeDomain.ScheduleType,
-	date time.Time,
-	start_time time.Time,
-	end_time time.Time,
-	is_over_time_work bool,
+	scheduleType *scheduleTypeDomain.ScheduleType,
+	date common.Date,
+	startTime common.Time,
+	endTime common.Time,
 	staff *userDomain.User,
 	facility *facilityDomain.Facility,
-	options *Option,
+	options ...ScheduleOption,
 ) (*Schedule, error) {
-	return newSchedule(
-		ulid.NewULID(),
-		schedule_type,
-		date,
-		start_time,
-		end_time,
-		is_over_time_work,
-		staff,
-		facility,
-		options,
-	)
-}
+	// Validate start and end times
+	if endTime.Before(startTime.Time) {
+		return nil, errorDomain.NewError("終了時間が開始時間より前です")
+	}
+	if endTime.Equal(startTime.Time) {
+		return nil, errorDomain.NewError("終了時間が開始時間と同じです")
+	}
 
-func newSchedule(
-	id string,
-	schedule_type *scheduleTypeDomain.ScheduleType,
-	date time.Time,
-	start_time time.Time,
-	end_time time.Time,
-	is_over_time_work bool,
-	staff *userDomain.User,
-	facility *facilityDomain.Facility,
-	options *Option,
-) (*Schedule, error) {
 	schedule := &Schedule{
-		ID:             id,
-		ScheduleType:   schedule_type,
+		ID:             ulid.NewULID(),
+		ScheduleType:   scheduleType,
+		ScheduleTypeID: scheduleType.ID,
 		Date:           date,
-		StartTime:      start_time,
-		EndTime:        end_time,
-		IsOverTimeWork: is_over_time_work,
+		StartTime:      startTime,
+		EndTime:        endTime,
+		IsOverTimeWork: startTime.Hour() >= 17,
 		Staff:          staff,
 		StaffID:        staff.ID,
 		Facility:       facility,
 		FacilityID:     facility.ID,
 	}
 
-	if options != nil {
-		// 通常予定の場合
-		if schedule_type.Name == scheduleTypeDomain.Normal {
-			if options.Title == nil {
-				return nil, errorDomain.NewError("タイトルが含まれていません")
-			}
-			schedule.Title = *options.Title
-		}
-
-		// 訪問予定の場合
-		if schedule_type.Name == scheduleTypeDomain.Visit {
-
-			if options.VisitInfoID == nil {
-				return nil, errorDomain.NewError("訪問情報が含まれていません")
-			}
-			schedule.VisitInfoID = *options.VisitInfoID
-			schedule.VisitInfo = options.VisitInfo
-		}
-
-		// 繰り返し予定からの変更だった場合
-		if options.RecurringScheduleID != nil {
-			schedule.RecurringScheduleID = *options.RecurringScheduleID
-			if options.BeforeChangeDate == nil {
-				return nil, errorDomain.NewError("変更前の日付が含まれていません")
-			}
-			if options.BeforeChangeStartTime == nil {
-				return nil, errorDomain.NewError("変更前の開始時間が含まれていません")
-			}
-			schedule.BeforeChangeDate = options.BeforeChangeDate
-			schedule.BeforeChangeStartTime = options.BeforeChangeStartTime
-			schedule.RecurringSchedule = options.RecurringSchedule
-		}
-
-		// 補足情報
-		if options.Description != nil {
-			schedule.Description = *options.Description
-		}
-
-		// 予定キャンセル情報
-		if options.ScheduleCancelID != nil {
-			schedule.ScheduleCancelID = *options.ScheduleCancelID
-			schedule.ScheduleCancel = options.ScheduleCancel
+	// Apply options
+	for _, option := range options {
+		if err := option(schedule); err != nil {
+			return nil, err
 		}
 	}
-	// 開始時間が17:00以降の場合
-	if schedule.StartTime.Hour() >= 17 {
-		schedule.IsOverTimeWork = true
-	}
 
-	// 終了時間が開始時間より前の場合
-	if schedule.EndTime.Before(schedule.StartTime) {
-		return nil, errorDomain.NewError("終了時間が開始時間より前です")
-	}
-
-	// 終了時間が開始時間と同じ場合
-	if schedule.EndTime.Equal(schedule.StartTime) {
-		return nil, errorDomain.NewError("終了時間が開始時間と同じです")
-	}
-
+	common.InitializeCommonModel(&schedule.CommonModel)
 	return schedule, nil
 }
 

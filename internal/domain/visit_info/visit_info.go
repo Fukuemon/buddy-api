@@ -12,13 +12,6 @@ import (
 	"github.com/Fukuemon/go-pkg/ulid"
 )
 
-type Option struct {
-	Companion       *userDomain.User
-	CompanionID     *string
-	VisitCategory   *visitCategoryDomain.VisitCategory
-	VisitCategoryID *string
-}
-
 type VisitInfo struct {
 	ID              string
 	PatientID       string
@@ -30,58 +23,63 @@ type VisitInfo struct {
 	RouteID         string
 	Route           *routeDomain.Route `gorm:"foreignKey:RouteID"`
 	ServiceCodeID   string
-	ServiceCode     *serviceCodeDomain.ServiceCode `gorm:"foreignKey:ServiceCodeID"`
-	VisitCategoryID string
-	VisitCategory   *visitCategoryDomain.VisitCategory `gorm:"foreignKey:VisitCategoryID"`
+	ServiceCode     *serviceCodeDomain.ServiceCode       `gorm:"foreignKey:ServiceCodeID"`
+	VisitCategories []*visitCategoryDomain.VisitCategory `gorm:"many2many:visit_info_visit_categories"`
 	common.CommonModel
 }
 
+// Functional option type
+type VisitInfoOption func(*VisitInfo)
+
+// WithCompanion sets the companion for the VisitInfo
+func WithCompanion(companion *userDomain.User) VisitInfoOption {
+	return func(vi *VisitInfo) {
+		if companion != nil {
+			vi.CompanionID = companion.ID
+			vi.Companion = companion
+		}
+	}
+}
+
+// WithRoute sets the route for the VisitInfo
+func WithRoute(route *routeDomain.Route) VisitInfoOption {
+	return func(vi *VisitInfo) {
+		if route != nil {
+			vi.RouteID = route.ID
+			vi.Route = route
+		}
+	}
+}
+
+// WithVisitCategories sets the visit categories for the VisitInfo
+func WithVisitCategories(categories []*visitCategoryDomain.VisitCategory) VisitInfoOption {
+	return func(vi *VisitInfo) {
+		if categories != nil {
+			vi.VisitCategories = categories
+		}
+	}
+}
+
+// NewVisitInfo initializes a new VisitInfo with required fields and options
 func NewVisitInfo(
 	patient *patientDomain.Patient,
 	assignedStaff *userDomain.User,
-	route *routeDomain.Route,
 	serviceCode *serviceCodeDomain.ServiceCode,
-	options *Option,
-) (*VisitInfo, error) {
-	return newVisitInfo(
-		ulid.NewULID(),
-		patient,
-		assignedStaff,
-		route,
-		serviceCode,
-		options,
-	)
-}
-
-func newVisitInfo(
-	ID string,
-	patient *patientDomain.Patient,
-	assignedStaff *userDomain.User,
-	route *routeDomain.Route,
-	serviceCode *serviceCodeDomain.ServiceCode,
-	options *Option,
+	options ...VisitInfoOption,
 ) (*VisitInfo, error) {
 	visitInfo := &VisitInfo{
-		ID:              ID,
+		ID:              ulid.NewULID(),
 		PatientID:       patient.ID,
 		Patient:         patient,
 		AssignedStaffID: assignedStaff.ID,
 		AssignedStaff:   assignedStaff,
-		RouteID:         route.ID,
-		Route:           route,
 		ServiceCodeID:   serviceCode.ID,
 		ServiceCode:     serviceCode,
 	}
 
-	if options != nil {
-		if options.Companion != nil {
-			visitInfo.CompanionID = options.Companion.ID
-			visitInfo.Companion = options.Companion
-		}
-		if options.VisitCategory != nil {
-			visitInfo.VisitCategoryID = options.VisitCategory.ID
-			visitInfo.VisitCategory = options.VisitCategory
-		}
+	// Apply options
+	for _, option := range options {
+		option(visitInfo)
 	}
 
 	common.InitializeCommonModel(&visitInfo.CommonModel)
