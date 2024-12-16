@@ -4,6 +4,7 @@ import (
 	errorDomain "api-buddy/domain/error"
 	scheduleTypeDomain "api-buddy/domain/schedule/schedule_type"
 	"api-buddy/infrastructure/mysql/db"
+	"context"
 
 	"gorm.io/gorm"
 )
@@ -18,7 +19,7 @@ func NewScheduleTypeRepository() scheduleTypeDomain.ScheduleTypeRepository {
 	}
 }
 
-func (r *ScheduleTypeRepository) FindAll(facility_id string) ([]*scheduleTypeDomain.ScheduleType, error) {
+func (r *ScheduleTypeRepository) FindAll(ctx context.Context, facility_id string) ([]*scheduleTypeDomain.ScheduleType, error) {
 	var scheduleTypes []*scheduleTypeDomain.ScheduleType
 	err := r.db.Find(&scheduleTypes).Error
 	if err != nil {
@@ -30,7 +31,7 @@ func (r *ScheduleTypeRepository) FindAll(facility_id string) ([]*scheduleTypeDom
 	return scheduleTypes, nil
 }
 
-func (r *ScheduleTypeRepository) FindByID(id string) (*scheduleTypeDomain.ScheduleType, error) {
+func (r *ScheduleTypeRepository) FindByID(ctx context.Context, id string) (*scheduleTypeDomain.ScheduleType, error) {
 	var scheduleType scheduleTypeDomain.ScheduleType
 	err := r.db.Where("id = ?", id).First(&scheduleType).Error
 	if err != nil {
