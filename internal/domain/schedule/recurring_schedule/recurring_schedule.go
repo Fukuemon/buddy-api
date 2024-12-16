@@ -1,109 +1,143 @@
 package recurring_schedule
 
 import (
+	"api-buddy/domain/common"
 	errorDomain "api-buddy/domain/error"
 	facilityDomain "api-buddy/domain/facility"
 	recurringRuleDomain "api-buddy/domain/schedule/recurring_rule"
 	scheduleTypeDomain "api-buddy/domain/schedule/schedule_type"
 	userDomain "api-buddy/domain/user"
 	visitInfoDomain "api-buddy/domain/visit_info"
-	"time"
 
 	"github.com/Fukuemon/go-pkg/query"
+	"github.com/Fukuemon/go-pkg/ulid"
 )
 
-type Option struct {
-	VisitInfo   *visitInfoDomain.VisitInfo
-	VisitInfoID *string
-	Title       *string
-	Description *string
+type RecurringSchedule struct {
+	ID                      string                             `gorm:"primaryKey"`
+	RecurringRule           *recurringRuleDomain.RecurringRule `gorm:"foreignKey:RecurringRuleID"`
+	RecurringRuleID         string
+	ScheduleType            *scheduleTypeDomain.ScheduleType `gorm:"foreignKey:ScheduleTypeID"`
+	ScheduleTypeID          string
+	Date                    common.Date
+	StartTime               common.Time
+	EndTime                 common.Time
+	IsOverTimeWork          bool
+	Staff                   *userDomain.User
+	StaffID                 string `gorm:"foreignKey::StaffID"`
+	Facility                *facilityDomain.Facility
+	FacilityID              string
+	VisitInfoID             string
+	VisitInfo               *visitInfoDomain.VisitInfo `gorm:"foreignKey:VisitInfoID"`
+	Title                   string
+	Description             string
+	RecurringExclusionDates common.JSONSlice[int]
+	common.CommonModel
 }
 
-type RecurringSchedule struct {
-	ID              string
-	RecurringRule   *recurringRuleDomain.RecurringRule
-	RecurringRuleID string
-	ScheduleType    *scheduleTypeDomain.ScheduleType
-	ScheduleTypeID  string `gorm:"foreignKey:ID;references:ScheduleTypeID"`
-	Date            time.Time
-	StartTime       time.Time
-	EndTime         time.Time
-	IsOverTimeWork  bool
-	Staff           *userDomain.User
-	StaffID         string `gorm:"foreignKey:ID;references:StaffID"`
-	VisitInfo       *visitInfoDomain.VisitInfo
-	Facility        *facilityDomain.Facility
-	FacilityID      string
-	VisitInfoID     string
-	Title           string
-	Description     string
+type RecurringScheduleOption func(*RecurringSchedule) error
+
+func WithTitle(title string) RecurringScheduleOption {
+	return func(s *RecurringSchedule) error {
+		if title == "" {
+			return errorDomain.NewError("タイトルが含まれていません")
+		}
+		s.Title = title
+		return nil
+	}
+}
+
+func WithDescription(description string) RecurringScheduleOption {
+	return func(s *RecurringSchedule) error {
+		if description == "" {
+			return errorDomain.NewError("説明が含まれていません")
+		}
+		s.Description = description
+		return nil
+	}
+}
+
+func WithVisitInfo(visitInfo *visitInfoDomain.VisitInfo) RecurringScheduleOption {
+	return func(s *RecurringSchedule) error {
+		if visitInfo == nil {
+			return errorDomain.NewError("訪問情報が含まれていません")
+		}
+		s.VisitInfo = visitInfo
+		s.VisitInfoID = visitInfo.ID
+		return nil
+	}
+}
+
+func WithRecurringExclusionDates(recurring_exclusion_dates common.JSONSlice[int]) RecurringScheduleOption {
+	return func(s *RecurringSchedule) error {
+		if len(recurring_exclusion_dates) == 0 {
+			return errorDomain.NewError("除外日が含まれていません")
+		}
+		s.RecurringExclusionDates = recurring_exclusion_dates
+		return nil
+	}
+}
+
+func NewRecurringSchedule(
+	recurringRule *recurringRuleDomain.RecurringRule,
+	scheduleType *scheduleTypeDomain.ScheduleType,
+	date common.Date,
+	startTime common.Time,
+	endTime common.Time,
+	staff *userDomain.User,
+	facility *facilityDomain.Facility,
+	options ...RecurringScheduleOption,
+) (*RecurringSchedule, error) {
+	return newRecurringSchedule(
+		ulid.NewULID(),
+		recurringRule,
+		scheduleType,
+		date,
+		startTime,
+		startTime,
+		staff,
+		facility,
+		options...,
+	)
 }
 
 func newRecurringSchedule(
 	id string,
-	recurring_rule *recurringRuleDomain.RecurringRule,
-	schedule_type *scheduleTypeDomain.ScheduleType,
-	date time.Time,
-	start_time time.Time,
-	end_time time.Time,
-	is_over_time_work bool,
+	recurringRule *recurringRuleDomain.RecurringRule,
+	scheduleType *scheduleTypeDomain.ScheduleType,
+	date common.Date,
+	startTime common.Time,
+	endTime common.Time,
 	staff *userDomain.User,
 	facility *facilityDomain.Facility,
-	options *Option,
+	options ...RecurringScheduleOption,
 ) (*RecurringSchedule, error) {
+	if endTime.Before(startTime.Time) {
+		return nil, errorDomain.NewError("終了時間が開始時間より前です")
+	}
+	if endTime.Equal(startTime.Time) {
+		return nil, errorDomain.NewError("終了時間が開始時間と同じです")
+	}
+
 	recurringSchedule := &RecurringSchedule{
 		ID:              id,
-		RecurringRule:   recurring_rule,
-		RecurringRuleID: recurring_rule.ID,
-		ScheduleType:    schedule_type,
-		ScheduleTypeID:  schedule_type.ID,
+		RecurringRule:   recurringRule,
+		RecurringRuleID: recurringRule.ID,
+		ScheduleType:    scheduleType,
+		ScheduleTypeID:  scheduleType.ID,
 		Date:            date,
-		StartTime:       start_time,
-		EndTime:         end_time,
-		IsOverTimeWork:  is_over_time_work,
+		StartTime:       startTime,
+		EndTime:         endTime,
+		IsOverTimeWork:  startTime.Hour() >= 17,
 		Staff:           staff,
 		StaffID:         staff.ID,
 		Facility:        facility,
 		FacilityID:      facility.ID,
 	}
 
-	if options != nil {
-		if options != nil {
-			// 通常予定の場合
-			if schedule_type.Name == scheduleTypeDomain.Normal {
-				if options.Title == nil {
-					return nil, errorDomain.NewError("タイトルが含まれていません")
-				}
-				recurringSchedule.Title = *options.Title
-			}
-
-			// 訪問予定の場合
-			if schedule_type.Name == scheduleTypeDomain.Visit {
-
-				if options.VisitInfoID == nil {
-					return nil, errorDomain.NewError("訪問情報が含まれていません")
-				}
-				recurringSchedule.VisitInfoID = *options.VisitInfoID
-				recurringSchedule.VisitInfo = options.VisitInfo
-			}
-
-			// 補足情報
-			if options.Description != nil {
-				recurringSchedule.Description = *options.Description
-			}
-		}
-		// 開始時間が17:00以降の場合
-		if recurringSchedule.StartTime.Hour() >= 17 {
-			recurringSchedule.IsOverTimeWork = true
-		}
-		// 終了時間が開始時間より前の場合
-		if recurringSchedule.EndTime.Before(recurringSchedule.StartTime) {
-			return nil, errorDomain.NewError("終了時間が開始時間より前です")
-		}
-
-		// 終了時間が開始時間と同じ場合
-		if recurringSchedule.EndTime.Equal(recurringSchedule.StartTime) {
-			return nil, errorDomain.NewError("終了時間が開始時間と同じです")
+	for _, option := range options {
+		if err := option(recurringSchedule); err != nil {
+			return nil, err
 		}
 	}
 
