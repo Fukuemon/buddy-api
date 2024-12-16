@@ -16,11 +16,11 @@ type ScheduleType struct {
 	Name ScheduleTypeEnum
 }
 
-func NewScheduleType(name ScheduleTypeEnum, facility_id string) *ScheduleType {
-	return newScheduleType(ulid.NewULID(), name, facility_id)
+func NewScheduleType(name ScheduleTypeEnum) *ScheduleType {
+	return newScheduleType(ulid.NewULID(), name)
 }
 
-func newScheduleType(id string, name ScheduleTypeEnum, facility_id string) *ScheduleType {
+func newScheduleType(id string, name ScheduleTypeEnum) *ScheduleType {
 	return &ScheduleType{
 		ID:   id,
 		Name: name,
