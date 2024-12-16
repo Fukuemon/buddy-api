@@ -15,27 +15,25 @@ import (
 )
 
 type Schedule struct {
-	ID                    string                           `gorm:"primaryKey"`
-	ScheduleType          *scheduleTypeDomain.ScheduleType `gorm:"foreignKey:ScheduleTypeID"`
-	ScheduleTypeID        string
-	Date                  common.Date
-	StartTime             common.Time
-	EndTime               common.Time
-	IsOverTimeWork        bool
-	Staff                 *userDomain.User `gorm:"foreignKey:StaffID"`
-	StaffID               string
-	Facility              *facilityDomain.Facility `gorm:"foreignKey:FacilityID"`
-	FacilityID            string
-	Title                 string
-	VisitInfo             *visitInfoDomain.VisitInfo `gorm:"foreignKey:VisitInfoID"`
-	VisitInfoID           string
-	RecurringSchedule     *recurringScheduleDomain.RecurringSchedule `gorm:"foreignKey:RecurringScheduleID"`
-	RecurringScheduleID   string
-	BeforeChangeDate      *common.Date
-	BeforeChangeStartTime *common.Time
-	Description           string
-	ScheduleCancel        *scheduleCancelDomain.ScheduleCancel `gorm:"foreignKey:ScheduleCancelID"`
-	ScheduleCancelID      string
+	ID                  string                           `gorm:"primaryKey"`
+	ScheduleType        *scheduleTypeDomain.ScheduleType `gorm:"foreignKey:ScheduleTypeID"`
+	ScheduleTypeID      string
+	Date                common.Date
+	StartTime           common.Time
+	EndTime             common.Time
+	IsOverTimeWork      bool
+	Staff               *userDomain.User `gorm:"foreignKey:StaffID"`
+	StaffID             string
+	Facility            *facilityDomain.Facility `gorm:"foreignKey:FacilityID"`
+	FacilityID          string
+	Title               string
+	VisitInfo           *visitInfoDomain.VisitInfo `gorm:"foreignKey:VisitInfoID"`
+	VisitInfoID         string
+	RecurringSchedule   *recurringScheduleDomain.RecurringSchedule `gorm:"foreignKey:RecurringScheduleID"`
+	RecurringScheduleID string
+	Description         string
+	ScheduleCancel      *scheduleCancelDomain.ScheduleCancel `gorm:"foreignKey:ScheduleCancelID"`
+	ScheduleCancelID    string
 	common.CommonModel
 }
 
@@ -64,17 +62,13 @@ func WithVisitInfo(visitInfo *visitInfoDomain.VisitInfo) ScheduleOption {
 
 func WithRecurringSchedule(
 	recurringSchedule *recurringScheduleDomain.RecurringSchedule,
-	beforeChangeDate *common.Date,
-	beforeChangeStartTime *common.Time,
 ) ScheduleOption {
 	return func(s *Schedule) error {
-		if recurringSchedule == nil || beforeChangeDate == nil || beforeChangeStartTime == nil {
+		if recurringSchedule == nil {
 			return errorDomain.NewError("繰り返し予定の情報が含まれていません")
 		}
 		s.RecurringSchedule = recurringSchedule
 		s.RecurringScheduleID = recurringSchedule.ID
-		s.BeforeChangeDate = beforeChangeDate
-		s.BeforeChangeStartTime = beforeChangeStartTime
 		return nil
 	}
 }
