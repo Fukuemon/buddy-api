@@ -14,7 +14,7 @@ type VisitInfoService struct {
 	patientRepository       patientDomain.PatientRepository
 	userRepository          userDomain.UserRepository
 	serviceCodeRepository   serviceCodeDomain.ServiceCodeRepository
-	routeService            routeDomain.RouteService
+	routeService            *routeDomain.RouteService
 	visitCategoryRepository visitCategoryDomain.VisitCategoryRepository
 }
 
@@ -23,7 +23,7 @@ func NewVisitInfoService(
 	patientRepository patientDomain.PatientRepository,
 	userRepository userDomain.UserRepository,
 	serviceCodeRepository serviceCodeDomain.ServiceCodeRepository,
-	routeService routeDomain.RouteService,
+	routeService *routeDomain.RouteService,
 	visitCategoryRepository visitCategoryDomain.VisitCategoryRepository,
 ) *VisitInfoService {
 	return &VisitInfoService{
