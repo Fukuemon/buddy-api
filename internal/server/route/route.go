@@ -10,6 +10,7 @@ import (
 	teamPre "api-buddy/presentation/facility/team"
 	"api-buddy/presentation/health_handler"
 	policyPre "api-buddy/presentation/policy"
+	schedulePre "api-buddy/presentation/schedule"
 	"api-buddy/presentation/settings"
 	userPre "api-buddy/presentation/user"
 	addressUse "api-buddy/usecase/address"
@@ -18,7 +19,12 @@ import (
 	positionUse "api-buddy/usecase/facility/position"
 	teamUse "api-buddy/usecase/facility/team"
 	policyUse "api-buddy/usecase/policy"
+	scheduleUse "api-buddy/usecase/schedule"
+	recurringScheduleUse "api-buddy/usecase/schedule/recurring_schedule"
 	userUse "api-buddy/usecase/user"
+
+	visitInfoDomain "api-buddy/domain/visit_info"
+	routeDomain "api-buddy/domain/visit_info/route"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -41,6 +47,7 @@ func InitRoute(api *gin.Engine) {
 		userRoute(v1)
 		addressRoute(v1)
 		areaRoute(v1)
+		scheduleRoute(v1)
 	}
 
 	// Swagger
@@ -160,4 +167,40 @@ func areaRoute(r *gin.RouterGroup) {
 
 	group = r.Group("/facilities/:facility_id/areas")
 	group.GET("", h.FetchByFacilityId)
+}
+
+func scheduleRoute(r *gin.RouterGroup) {
+	scheduleRepository := repository.NewScheduleRepository()
+	facilityRepository := repository.NewFacilityRepository()
+	scheduleTypeRepository := repository.NewScheduleTypeRepository()
+	userRepository := repository.NewUserRepository()
+	recurringScheduleRepository := repository.NewRecurringScheduleRepository()
+	recurringRuleRepository := repository.NewRecurringRuleRepository()
+	addressRepository := repository.NewAddressRepository()
+	routeRepository := repository.NewRouteRepository()
+	patientRepository := repository.NewPatientRepository()
+	visitInfoRepository := repository.NewVisitInfoRepository()
+	serviceCodeRepository := repository.NewServiceCodeRepository()
+	visitCategoryRepository := repository.NewVisitCategoryRepository()
+	routeService := routeDomain.NewRouteService(
+		routeRepository,
+		addressRepository,
+	)
+	visitInfoService := visitInfoDomain.NewVisitInfoService(
+		visitInfoRepository,
+		patientRepository,
+		userRepository,
+		serviceCodeRepository,
+		routeService,
+		visitCategoryRepository,
+	)
+	h := schedulePre.NewHandler(
+		scheduleUse.NewCreateScheduleUseCase(scheduleRepository, facilityRepository, scheduleTypeRepository, userRepository, recurringScheduleRepository, visitInfoService),
+		recurringScheduleUse.NewCreateRecurringScheduleUseCase(recurringRuleRepository, facilityRepository, scheduleTypeRepository, userRepository, recurringScheduleRepository, visitInfoService),
+	)
+	group := r.Group("/facilities/:facility_id/schedules")
+	group.POST("", h.CreateSchedule)
+
+	group = r.Group("/facilities/:facility_id/schedules/recurring")
+	group.POST("", h.CreateRecurringSchedule)
 }

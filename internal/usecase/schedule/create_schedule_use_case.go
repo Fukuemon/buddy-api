@@ -20,6 +20,24 @@ type CreateScheduleUseCase struct {
 	visitInfoService            *visitInfoDomain.VisitInfoService
 }
 
+func NewCreateScheduleUseCase(
+	scheduleRepository scheduleDomain.ScheduleRepository,
+	facilityRepository facilityDomain.FacilityRepository,
+	scheduleTypeRepository scheduleTypeDomain.ScheduleTypeRepository,
+	userRepository userDomain.UserRepository,
+	recurringScheduleRepository recurringScheduleDomain.RecurringScheduleRepository,
+	visitInfoService *visitInfoDomain.VisitInfoService,
+) *CreateScheduleUseCase {
+	return &CreateScheduleUseCase{
+		scheduleRepository:          scheduleRepository,
+		facilityRepository:          facilityRepository,
+		scheduleTypeRepository:      scheduleTypeRepository,
+		userRepository:              userRepository,
+		recurringScheduleRepository: recurringScheduleRepository,
+		visitInfoService:            visitInfoService,
+	}
+}
+
 type CreateUseCaseInputDto struct {
 	ScheduleTypeID      string
 	Date                common.Date

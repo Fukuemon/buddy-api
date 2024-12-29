@@ -20,6 +20,24 @@ type CreateRecurringScheduleUseCase struct {
 	visitInfoService            *visitInfoDomain.VisitInfoService
 }
 
+func NewCreateRecurringScheduleUseCase(
+	recurringRuleRepository recurringRuleDomain.RecurringRuleRepository,
+	facilityRepository facilityDomain.FacilityRepository,
+	scheduleTypeRepository scheduleTypeDomain.ScheduleTypeRepository,
+	userRepository userDomain.UserRepository,
+	recurringScheduleRepository recurringScheduleDomain.RecurringScheduleRepository,
+	visitInfoService *visitInfoDomain.VisitInfoService,
+) *CreateRecurringScheduleUseCase {
+	return &CreateRecurringScheduleUseCase{
+		recurringRuleRepository:     recurringRuleRepository,
+		facilityRepository:          facilityRepository,
+		scheduleTypeRepository:      scheduleTypeRepository,
+		userRepository:              userRepository,
+		recurringScheduleRepository: recurringScheduleRepository,
+		visitInfoService:            visitInfoService,
+	}
+}
+
 type CreateRecurringScheduleUseCaseInputDto struct {
 	ScheduleTypeID string
 	RecurringRule  RecurringRuleModel
