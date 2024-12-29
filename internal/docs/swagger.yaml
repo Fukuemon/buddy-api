@@ -1,6 +1,56 @@
 basePath: /v1
 definitions:
-  address.AddressDetailResponse:
+  api-buddy_domain_common.Date:
+    properties:
+      time.Time:
+        type: string
+    type: object
+  api-buddy_domain_policy.Policy:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  api-buddy_domain_schedule_recurring_rule.FrequencyEnum:
+    enum:
+    - monthly
+    - weekly
+    type: string
+    x-enum-varnames:
+    - FrequencyMonthly
+    - FrequencyWeekly
+  api-buddy_domain_visit_info_visit_category.VisitCategoryType:
+    enum:
+    - 夜勤
+    - 緊急
+    - 入院
+    type: string
+    x-enum-varnames:
+    - NightShift
+    - Emergency
+    - Hospital
+  api-buddy_presentation_common.ErrorResponse:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      msg:
+        type: string
+    type: object
+  api-buddy_usecase_facility_position.PolicyDto:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  presentation_address.AddressDetailResponse:
     properties:
       addressLine1:
         type: string
@@ -23,7 +73,7 @@ definitions:
       zipCode:
         type: string
     type: object
-  address.CreateAddressResponse:
+  presentation_address.CreateAddressResponse:
     properties:
       addressLine1:
         type: string
@@ -46,52 +96,7 @@ definitions:
       zipCode:
         type: string
     type: object
-  area.AddressModel:
-    properties:
-      address_line1:
-        type: string
-      address_line2:
-        type: string
-      city:
-        type: string
-      id:
-        type: string
-      latitude:
-        type: number
-      longitude:
-        type: number
-      prefecture:
-        type: string
-    type: object
-  area.AreaResponse:
-    properties:
-      addresses:
-        items:
-          $ref: '#/definitions/area.AddressModel'
-        type: array
-      facility_id:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-    type: object
-  area.CreateAreaRequest:
-    properties:
-      address_ids:
-        items:
-          type: string
-        type: array
-      facility_id:
-        type: string
-      name:
-        type: string
-    required:
-    - address_ids
-    - facility_id
-    - name
-    type: object
-  auth.SignInRequest:
+  presentation_auth.SignInRequest:
     properties:
       password:
         type: string
@@ -101,14 +106,14 @@ definitions:
     - password
     - username
     type: object
-  auth.SignInResponse:
+  presentation_auth.SignInResponse:
     properties:
       access_token:
         type: string
       id_token:
         type: string
     type: object
-  auth.SignUpRequest:
+  presentation_auth.SignUpRequest:
     properties:
       area_id:
         type: string
@@ -137,7 +142,7 @@ definitions:
     - team_id
     - username
     type: object
-  auth.SignUpResponse:
+  presentation_auth.SignUpResponse:
     properties:
       area:
         type: string
@@ -155,23 +160,59 @@ definitions:
         type: string
       policies:
         items:
-          $ref: '#/definitions/policy.Policy'
+          $ref: '#/definitions/api-buddy_domain_policy.Policy'
         type: array
       position:
         type: string
       team:
         type: string
     type: object
-  common.ErrorResponse:
+  presentation_facility_area.AddressModel:
     properties:
-      code:
+      address_line1:
         type: string
-      description:
+      address_line2:
         type: string
-      msg:
+      city:
+        type: string
+      id:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      prefecture:
         type: string
     type: object
-  department.DepartmentResponse:
+  presentation_facility_area.AreaResponse:
+    properties:
+      addresses:
+        items:
+          $ref: '#/definitions/presentation_facility_area.AddressModel'
+        type: array
+      facility_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  presentation_facility_area.CreateAreaRequest:
+    properties:
+      address_ids:
+        items:
+          type: string
+        type: array
+      facility_id:
+        type: string
+      name:
+        type: string
+    required:
+    - address_ids
+    - facility_id
+    - name
+    type: object
+  presentation_facility_department.DepartmentResponse:
     properties:
       created_at:
         type: string
@@ -184,48 +225,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  health_handler.HealthResponse:
-    properties:
-      status:
-        type: string
-    type: object
-  policy.CreatePolicyRequest:
-    properties:
-      name:
-        type: string
-    required:
-    - name
-    type: object
-  policy.CreatePolicyResponse:
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-    type: object
-  policy.Policy:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  policy.PolicyResponse:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  position.CreatePositionRequest:
+  presentation_facility_position.CreatePositionRequest:
     properties:
       name:
         type: string
@@ -237,14 +237,7 @@ definitions:
     - name
     - policy_ids
     type: object
-  position.PolicyDto:
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-    type: object
-  position.PositionResponse:
+  presentation_facility_position.PositionResponse:
     properties:
       created_at:
         type: string
@@ -256,19 +249,19 @@ definitions:
         type: string
       policies:
         items:
-          $ref: '#/definitions/position.PolicyDto'
+          $ref: '#/definitions/api-buddy_usecase_facility_position.PolicyDto'
         type: array
       updated_at:
         type: string
     type: object
-  team.CreateTeamRequest:
+  presentation_facility_team.CreateTeamRequest:
     properties:
       name:
         type: string
     required:
     - name
     type: object
-  team.TeamResponse:
+  presentation_facility_team.TeamResponse:
     properties:
       created_at:
         type: string
@@ -281,14 +274,245 @@ definitions:
       updated_at:
         type: string
     type: object
-  user.PolicyModel:
+  presentation_health_handler.HealthResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  presentation_policy.CreatePolicyRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  presentation_policy.CreatePolicyResponse:
     properties:
       id:
         type: string
       name:
         type: string
     type: object
-  user.UserDetailResponse:
+  presentation_policy.PolicyResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  presentation_schedule.CreateRecurringScheduleRequest:
+    properties:
+      date:
+        format: date
+        type: string
+      description:
+        type: string
+      end_time:
+        type: string
+      recurring_rule:
+        $ref: '#/definitions/presentation_schedule.RecurringRuleRequestModel'
+      schedule_type_id:
+        type: string
+      staff_id:
+        type: string
+      start_time:
+        type: string
+      title:
+        type: string
+      visit_info:
+        $ref: '#/definitions/presentation_schedule.VisitInfoRequestModel'
+    required:
+    - date
+    - end_time
+    - schedule_type_id
+    - staff_id
+    - start_time
+    type: object
+  presentation_schedule.CreateRecurringScheduleResponse:
+    properties:
+      date:
+        $ref: '#/definitions/api-buddy_domain_common.Date'
+      description:
+        type: string
+      end_time:
+        type: string
+      id:
+        type: string
+      recurring_rule:
+        $ref: '#/definitions/presentation_schedule.RecurringRuleResponseModel'
+      schedule_type_id:
+        type: string
+      staff_id:
+        type: string
+      start_time:
+        type: string
+      title:
+        type: string
+      visit_info:
+        $ref: '#/definitions/presentation_schedule.VisitInfoResponseModel'
+    type: object
+  presentation_schedule.CreateScheduleRequest:
+    properties:
+      date:
+        format: date
+        type: string
+      description:
+        type: string
+      end_time:
+        type: string
+      schedule_type_id:
+        type: string
+      staff_id:
+        type: string
+      start_time:
+        type: string
+      title:
+        type: string
+      visit_info:
+        $ref: '#/definitions/presentation_schedule.VisitInfoRequestModel'
+    required:
+    - date
+    - end_time
+    - schedule_type_id
+    - staff_id
+    - start_time
+    type: object
+  presentation_schedule.CreateScheduleResponse:
+    properties:
+      date:
+        $ref: '#/definitions/api-buddy_domain_common.Date'
+      description:
+        type: string
+      end_time:
+        type: string
+      id:
+        type: string
+      schedule_type_id:
+        type: string
+      staff_id:
+        type: string
+      start_time:
+        type: string
+      title:
+        type: string
+      visit_info:
+        $ref: '#/definitions/presentation_schedule.VisitInfoResponseModel'
+    type: object
+  presentation_schedule.RecurringRuleRequestModel:
+    properties:
+      day_of_month:
+        type: integer
+      days_of_week:
+        type: integer
+      end_date:
+        format: date
+        type: string
+      frequency:
+        $ref: '#/definitions/api-buddy_domain_schedule_recurring_rule.FrequencyEnum'
+      start_date:
+        format: date
+        type: string
+      week_of_month:
+        type: integer
+    required:
+    - frequency
+    - start_date
+    type: object
+  presentation_schedule.RecurringRuleResponseModel:
+    properties:
+      day_of_month:
+        type: integer
+      days_of_week:
+        type: integer
+      end_date:
+        $ref: '#/definitions/api-buddy_domain_common.Date'
+      frequency:
+        $ref: '#/definitions/api-buddy_domain_schedule_recurring_rule.FrequencyEnum'
+      start_date:
+        $ref: '#/definitions/api-buddy_domain_common.Date'
+      week_of_month:
+        type: integer
+    type: object
+  presentation_schedule.RouteRequestModel:
+    properties:
+      destination_id:
+        type: string
+      from_address_id:
+        type: string
+      travel_time:
+        type: integer
+    required:
+    - destination_id
+    - from_address_id
+    type: object
+  presentation_schedule.RouteResponseModel:
+    properties:
+      address_id:
+        type: string
+      destination_id:
+        type: string
+      travel_time:
+        type: integer
+    type: object
+  presentation_schedule.VisitCategoryResponseModel:
+    properties:
+      id:
+        type: string
+      name:
+        $ref: '#/definitions/api-buddy_domain_visit_info_visit_category.VisitCategoryType'
+    type: object
+  presentation_schedule.VisitInfoRequestModel:
+    properties:
+      assign_staff_id:
+        type: string
+      companion_id:
+        type: string
+      patient_id:
+        type: string
+      route:
+        $ref: '#/definitions/presentation_schedule.RouteRequestModel'
+      service_code_id:
+        type: string
+      visit_category_ids:
+        items:
+          type: string
+        type: array
+    required:
+    - assign_staff_id
+    - patient_id
+    - service_code_id
+    type: object
+  presentation_schedule.VisitInfoResponseModel:
+    properties:
+      assigned_staff_id:
+        type: string
+      companion_id:
+        type: string
+      id:
+        type: string
+      patient_id:
+        type: string
+      route:
+        $ref: '#/definitions/presentation_schedule.RouteResponseModel'
+      service_code_id:
+        type: string
+      visit_categories:
+        items:
+          $ref: '#/definitions/presentation_schedule.VisitCategoryResponseModel'
+        type: array
+    type: object
+  presentation_user.PolicyModel:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  presentation_user.UserDetailResponse:
     properties:
       area:
         type: string
@@ -306,7 +530,7 @@ definitions:
         type: string
       policies:
         items:
-          $ref: '#/definitions/user.PolicyModel'
+          $ref: '#/definitions/presentation_user.PolicyModel'
         type: array
       position:
         type: string
@@ -317,7 +541,7 @@ definitions:
       username:
         type: string
     type: object
-  user.UserResponse:
+  presentation_user.UserResponse:
     properties:
       area:
         type: string
@@ -379,24 +603,24 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/address.AddressDetailResponse'
+              $ref: '#/definitions/presentation_address.AddressDetailResponse'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 住所一覧を取得する
       tags:
       - Address
@@ -409,23 +633,23 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/address.CreateAddressResponse'
+            $ref: '#/definitions/presentation_address.CreateAddressResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 住所を作成する
       tags:
       - Address
@@ -445,23 +669,23 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/address.AddressDetailResponse'
+            $ref: '#/definitions/presentation_address.AddressDetailResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 単一の住所を取得する
       tags:
       - Address
@@ -481,23 +705,23 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/area.AreaResponse'
+            $ref: '#/definitions/presentation_facility_area.AreaResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 単一のエリアを取得する
       tags:
       - Area
@@ -511,22 +735,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/auth.SignInRequest'
+          $ref: '#/definitions/presentation_auth.SignInRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/auth.SignInResponse'
+            $ref: '#/definitions/presentation_auth.SignInResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: サインイン用エンドポイント
       tags:
       - Auth
@@ -540,22 +764,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/auth.SignUpRequest'
+          $ref: '#/definitions/presentation_auth.SignUpRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/auth.SignUpResponse'
+            $ref: '#/definitions/presentation_auth.SignUpResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: サインアップ用エンドポイント
       tags:
       - Auth
@@ -575,19 +799,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/department.DepartmentResponse'
+            $ref: '#/definitions/presentation_facility_department.DepartmentResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 単一の部署を取得する
       tags:
       - Department
@@ -607,19 +831,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/area.AreaResponse'
+            $ref: '#/definitions/presentation_facility_area.AreaResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 施設IDに紐づくエリアを取得する
       tags:
       - Area
@@ -632,26 +856,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/area.CreateAreaRequest'
+          $ref: '#/definitions/presentation_facility_area.CreateAreaRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/area.AreaResponse'
+            $ref: '#/definitions/presentation_facility_area.AreaResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 施設に紐づくエリアを作成する
       tags:
       - Area
@@ -671,19 +895,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/department.DepartmentResponse'
+            $ref: '#/definitions/presentation_facility_department.DepartmentResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 施設IDに紐づく部署を取得する
       tags:
       - Department
@@ -703,19 +927,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/position.PositionResponse'
+            $ref: '#/definitions/presentation_facility_position.PositionResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 施設IDに紐づく役職を取得する
       tags:
       - Position
@@ -728,29 +952,105 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/position.CreatePositionRequest'
+          $ref: '#/definitions/presentation_facility_position.CreatePositionRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/position.PositionResponse'
+            $ref: '#/definitions/presentation_facility_position.PositionResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 施設に紐づく役職を作成する
       tags:
       - Position
+  /facilities/{facility_id}/schedules:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 予定作成リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/presentation_schedule.CreateScheduleRequest'
+      - description: 施設ID
+        in: path
+        name: facility_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/presentation_schedule.CreateScheduleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+      summary: 予定を作成する
+      tags:
+      - Schedule
+  /facilities/{facility_id}/schedules/recurring:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 予定作成リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/presentation_schedule.CreateRecurringScheduleRequest'
+      - description: 施設ID
+        in: path
+        name: facility_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/presentation_schedule.CreateRecurringScheduleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+      summary: 繰り返し予定を作成する
+      tags:
+      - Schedule
   /facilities/{facility_id}/teams:
     get:
       consumes:
@@ -767,20 +1067,20 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/team.TeamResponse'
+              $ref: '#/definitions/presentation_facility_team.TeamResponse'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 施設IDに紐づくチームを取得する
       tags:
       - Team
@@ -793,26 +1093,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/team.CreateTeamRequest'
+          $ref: '#/definitions/presentation_facility_team.CreateTeamRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/team.TeamResponse'
+            $ref: '#/definitions/presentation_facility_team.TeamResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 施設に紐づくチームを作成する
       tags:
       - Team
@@ -861,16 +1161,16 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/user.UserResponse'
+              $ref: '#/definitions/presentation_user.UserResponse'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 施設IDに紐づくユーザーを取得する
       tags:
       - User
@@ -884,7 +1184,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/health_handler.HealthResponse'
+            $ref: '#/definitions/presentation_health_handler.HealthResponse'
       summary: ヘルスチェック用エンドポイント
       tags:
       - Health
@@ -899,20 +1199,20 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/policy.PolicyResponse'
+              $ref: '#/definitions/presentation_policy.PolicyResponse'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: ポリシー一覧を取得する
       tags:
       - Policy
@@ -925,22 +1225,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/policy.CreatePolicyRequest'
+          $ref: '#/definitions/presentation_policy.CreatePolicyRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/policy.CreatePolicyResponse'
+            $ref: '#/definitions/presentation_policy.CreatePolicyResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: ポリシーを作成する
       tags:
       - Policy
@@ -960,23 +1260,23 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/policy.PolicyResponse'
+            $ref: '#/definitions/presentation_policy.PolicyResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 単一のポリシーを取得する
       tags:
       - Policy
@@ -996,23 +1296,23 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/position.PositionResponse'
+            $ref: '#/definitions/presentation_facility_position.PositionResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 単一の役職を取得する
       tags:
       - Position
@@ -1032,23 +1332,23 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/team.TeamResponse'
+            $ref: '#/definitions/presentation_facility_team.TeamResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 単一のチーム取得する
       tags:
       - Team
@@ -1068,23 +1368,23 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.UserDetailResponse'
+            $ref: '#/definitions/presentation_user.UserDetailResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
       summary: 単一のユーザーを取得する
       tags:
       - User

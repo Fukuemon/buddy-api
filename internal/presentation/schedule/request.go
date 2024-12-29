@@ -7,7 +7,7 @@ import (
 
 type CreateScheduleRequest struct {
 	ScheduleTypeID string                 `json:"schedule_type_id" validate:"required,ulid"`
-	Date           common.Date            `json:"date" validate:"required"`
+	Date           common.Date            `json:"date" validate:"required" swaggertype:"string" format:"date"`
 	StartTime      common.Time            `json:"start_time" validate:"required"`
 	EndTime        common.Time            `json:"end_time" validate:"required"`
 	StaffID        string                 `json:"staff_id" validate:"required,ulid"`
@@ -18,7 +18,7 @@ type CreateScheduleRequest struct {
 
 type CreateRecurringScheduleRequest struct {
 	ScheduleTypeID     string                     `json:"schedule_type_id" validate:"required,ulid"`
-	Date               common.Date                `json:"date" validate:"required"`
+	Date               common.Date                `json:"date" validate:"required" swaggertype:"string" format:"date"`
 	StartTime          common.Time                `json:"start_time" validate:"required"`
 	EndTime            common.Time                `json:"end_time" validate:"required"`
 	StaffID            string                     `json:"staff_id" validate:"required,ulid"`
@@ -30,7 +30,7 @@ type CreateRecurringScheduleRequest struct {
 
 type CreateChangeRecurringScheduleRequest struct {
 	ScheduleTypeID          string                 `json:"schedule_type_id" validate:"required,ulid"`
-	Date                    common.Date            `json:"date" validate:"required"`
+	Date                    common.Date            `json:"date" validate:"required" swaggertype:"string" format:"date"`
 	StartTime               common.Time            `json:"start_time" validate:"required"`
 	EndTime                 common.Time            `json:"end_time" validate:"required"`
 	StaffID                 string                 `json:"staff_id" validate:"required,ulid"`
@@ -38,7 +38,7 @@ type CreateChangeRecurringScheduleRequest struct {
 	Title                   *string                `json:"title" validate:"omitempty"`
 	Description             *string                `json:"description" validate:"omitempty"`
 	RecurringScheduleID     *string                `json:"recurring_schedule_id" validate:"recurring,ulid"`
-	BeforeChangeDate        common.Date            `json:"before_change_date" validate:"required"`
+	BeforeChangeDate        common.Date            `json:"before_change_date" validate:"required" swaggertype:"string" format:"date"`
 	BeforeChangeStartTime   common.Time            `json:"before_change_start_time" validate:"required"`
 	RecurringExclusionDates []int                  `json:"recurring_exclusion_dates" validate:"omitempty"`
 }
@@ -63,6 +63,6 @@ type RecurringRuleRequestModel struct {
 	DaysOfWeek  *int                                  `json:"days_of_week" validate:"omitempty"`
 	DayOfMonth  *int                                  `json:"day_of_month" validate:"omitempty"`
 	WeekOfMonth *int                                  `json:"week_of_month" validate:"omitempty"`
-	StartDate   common.Date                           `json:"start_date" validate:"required"`
-	EndDate     *common.Date                          `json:"end_date" validate:"omitempty"`
+	StartDate   common.Date                           `json:"start_date" validate:"required" swaggertype:"string" format:"date"`
+	EndDate     *common.Date                          `json:"end_date" validate:"omitempty" swaggertype:"string" format:"date"`
 }
