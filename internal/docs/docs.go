@@ -762,6 +762,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/facilities/{facility_id}/schedules/schedule_types": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ScheduleType"
+                ],
+                "summary": "予定種別一覧を取得する",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/presentation_schedule_schedule_type.ScheduleTypeResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/facilities/{facility_id}/teams": {
             "get": {
                 "consumes": [
@@ -1277,6 +1320,92 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/visit_infos/service_codes": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ServiceCode"
+                ],
+                "summary": "サービスコード一覧を取得する",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/presentation_visit_info_service_code.ServiceCodeResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/visit_infos/visit_categories": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "VisitCategory"
+                ],
+                "summary": "訪問カテゴリ一覧を取得する",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/presentation_visit_info_visit_category.VisitCategoryResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1314,6 +1443,17 @@ const docTemplate = `{
             "x-enum-varnames": [
                 "FrequencyMonthly",
                 "FrequencyWeekly"
+            ]
+        },
+        "api-buddy_domain_schedule_schedule_type.ScheduleTypeEnum": {
+            "type": "string",
+            "enum": [
+                "通常",
+                "訪問"
+            ],
+            "x-enum-varnames": [
+                "Normal",
+                "Visit"
             ]
         },
         "api-buddy_domain_visit_info_visit_category.VisitCategoryType": {
@@ -2038,6 +2178,17 @@ const docTemplate = `{
                 }
             }
         },
+        "presentation_schedule_schedule_type.ScheduleTypeResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "$ref": "#/definitions/api-buddy_domain_schedule_schedule_type.ScheduleTypeEnum"
+                }
+            }
+        },
         "presentation_user.PolicyModel": {
             "type": "object",
             "properties": {
@@ -2113,6 +2264,34 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "presentation_visit_info_service_code.ServiceCodeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "service_time_range_end": {
+                    "type": "integer"
+                },
+                "service_time_range_start": {
+                    "type": "integer"
+                }
+            }
+        },
+        "presentation_visit_info_visit_category.VisitCategoryResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "$ref": "#/definitions/api-buddy_domain_visit_info_visit_category.VisitCategoryType"
                 }
             }
         }
