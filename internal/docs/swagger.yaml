@@ -24,6 +24,14 @@ definitions:
     x-enum-varnames:
     - FrequencyMonthly
     - FrequencyWeekly
+  api-buddy_domain_schedule_schedule_type.ScheduleTypeEnum:
+    enum:
+    - 通常
+    - 訪問
+    type: string
+    x-enum-varnames:
+    - Normal
+    - Visit
   api-buddy_domain_visit_info_visit_category.VisitCategoryType:
     enum:
     - 夜勤
@@ -505,6 +513,13 @@ definitions:
           $ref: '#/definitions/presentation_schedule.VisitCategoryResponseModel'
         type: array
     type: object
+  presentation_schedule_schedule_type.ScheduleTypeResponse:
+    properties:
+      id:
+        type: string
+      name:
+        $ref: '#/definitions/api-buddy_domain_schedule_schedule_type.ScheduleTypeEnum'
+    type: object
   presentation_user.PolicyModel:
     properties:
       id:
@@ -555,6 +570,24 @@ definitions:
         type: string
       username:
         type: string
+    type: object
+  presentation_visit_info_service_code.ServiceCodeResponse:
+    properties:
+      code:
+        type: string
+      id:
+        type: string
+      service_time_range_end:
+        type: integer
+      service_time_range_start:
+        type: integer
+    type: object
+  presentation_visit_info_visit_category.VisitCategoryResponse:
+    properties:
+      id:
+        type: string
+      name:
+        $ref: '#/definitions/api-buddy_domain_visit_info_visit_category.VisitCategoryType'
     type: object
 host: localhost:8080
 info:
@@ -1051,6 +1084,34 @@ paths:
       summary: 繰り返し予定を作成する
       tags:
       - Schedule
+  /facilities/{facility_id}/schedules/schedule_types:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/presentation_schedule_schedule_type.ScheduleTypeResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+      summary: 予定種別一覧を取得する
+      tags:
+      - ScheduleType
   /facilities/{facility_id}/teams:
     get:
       consumes:
@@ -1388,4 +1449,60 @@ paths:
       summary: 単一のユーザーを取得する
       tags:
       - User
+  /visit_infos/service_codes:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/presentation_visit_info_service_code.ServiceCodeResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+      summary: サービスコード一覧を取得する
+      tags:
+      - ServiceCode
+  /visit_infos/visit_categories:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/presentation_visit_info_visit_category.VisitCategoryResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+      summary: 訪問カテゴリ一覧を取得する
+      tags:
+      - VisitCategory
 swagger: "2.0"
