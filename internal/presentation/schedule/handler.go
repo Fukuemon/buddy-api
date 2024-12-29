@@ -4,6 +4,7 @@ import (
 	errorDomain "api-buddy/domain/error"
 	visitInfoDomain "api-buddy/domain/visit_info"
 	routeDomain "api-buddy/domain/visit_info/route"
+	_ "api-buddy/presentation/common"
 	"api-buddy/presentation/settings"
 	"api-buddy/usecase/schedule"
 	recurringSchedule "api-buddy/usecase/schedule/recurring_schedule"
@@ -75,13 +76,47 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		},
 	}
 
-	schedule, err := h.createScheduleUseCase.Run(ctx, input)
+	output, err := h.createScheduleUseCase.Run(ctx, input)
+
 	if err != nil {
 		ctx.Error(err)
 		return
 	}
 
-	settings.ReturnStatusCreated(ctx, schedule)
+	response := CreateScheduleResponse{
+		ID:             output.ID,
+		ScheduleTypeID: output.ScheduleTypeID,
+		Date:           output.Date,
+		StartTime:      output.StartTime,
+		EndTime:        output.EndTime,
+		StaffID:        output.StaffID,
+		VisitInfo: &VisitInfoResponseModel{
+			ID:              output.VisitInfo.ID,
+			PatientID:       output.VisitInfo.PatientID,
+			AssignedStaffID: output.VisitInfo.AssignedStaffID,
+			CompanionID:     output.VisitInfo.CompanionID,
+			Route: &RouteResponseModel{
+				TravelTime:    output.VisitInfo.Route.TravelTime,
+				AddressID:     output.VisitInfo.Route.AddressID,
+				DestinationID: output.VisitInfo.Route.DestinationID,
+			},
+			ServiceCodeID: output.VisitInfo.ServiceCodeID,
+			VisitCategories: func() []VisitCategoryResponseModel {
+				var categories []VisitCategoryResponseModel
+				for _, category := range output.VisitInfo.VisitCategories {
+					categories = append(categories, VisitCategoryResponseModel{
+						ID:   category.ID,
+						Name: category.Name,
+					})
+				}
+				return categories
+			}(),
+		},
+		Title:       output.Title,
+		Description: output.Description,
+	}
+
+	settings.ReturnStatusCreated(ctx, response)
 
 }
 
@@ -141,13 +176,53 @@ func (h *handler) CreateRecurringSchedule(ctx *gin.Context) {
 		},
 	}
 
-	schedule, err := h.createRecurringScheduleUseCase.Run(ctx, input)
+	output, err := h.createRecurringScheduleUseCase.Run(ctx, input)
 	if err != nil {
 		ctx.Error(err)
 		return
 	}
 
-	settings.ReturnStatusCreated(ctx, schedule)
+	response := CreateRecurringScheduleResponse{
+		ID:             output.ID,
+		ScheduleTypeID: output.ScheduleTypeID,
+		Date:           output.Date,
+		StartTime:      output.StartTime,
+		EndTime:        output.EndTime,
+		StaffID:        output.StaffID,
+		VisitInfo: &VisitInfoResponseModel{
+			ID:              output.VisitInfo.ID,
+			PatientID:       output.VisitInfo.PatientID,
+			AssignedStaffID: output.VisitInfo.AssignedStaffID,
+			CompanionID:     output.VisitInfo.CompanionID,
+			Route: &RouteResponseModel{
+				TravelTime:    output.VisitInfo.Route.TravelTime,
+				AddressID:     output.VisitInfo.Route.AddressID,
+				DestinationID: output.VisitInfo.Route.DestinationID,
+			},
+			ServiceCodeID: output.VisitInfo.ServiceCodeID,
+			VisitCategories: func() []VisitCategoryResponseModel {
+				var categories []VisitCategoryResponseModel
+				for _, category := range output.VisitInfo.VisitCategories {
+					categories = append(categories, VisitCategoryResponseModel{
+						ID:   category.ID,
+						Name: category.Name,
+					})
+				}
+				return categories
+			}(),
+		},
+		Title:       output.Title,
+		Description: output.Description,
+		RecurringRule: &RecurringRuleResponseModel{
+			Frequency:   output.RecurringRule.Frequency,
+			DaysOfWeek:  output.RecurringRule.DaysOfWeek,
+			DayOfMonth:  output.RecurringRule.DayOfMonth,
+			WeekOfMonth: output.RecurringRule.WeekOfMonth,
+			StartDate:   output.RecurringRule.StartDate,
+			EndDate:     output.RecurringRule.EndDate,
+		},
+	}
+	settings.ReturnStatusCreated(ctx, response)
 }
 
 // GetSchedule godoc
