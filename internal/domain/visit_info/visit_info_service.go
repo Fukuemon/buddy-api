@@ -7,6 +7,8 @@ import (
 	serviceCodeDomain "api-buddy/domain/visit_info/service_code"
 	visitCategoryDomain "api-buddy/domain/visit_info/visit_category"
 	"context"
+
+	"gorm.io/gorm"
 )
 
 type VisitInfoService struct {
@@ -45,10 +47,7 @@ type VisitInfoModel struct {
 	VisitCategoryIDs []*string
 }
 
-func (s *VisitInfoService) CreateVisitInfo(
-	ctx context.Context,
-	visitInfoModel VisitInfoModel,
-) (*VisitInfo, error) {
+func (s *VisitInfoService) CreateVisitInfo(ctx context.Context, tx *gorm.DB, visitInfoModel VisitInfoModel) (*VisitInfo, error) {
 	patient, err := s.patientRepository.FindByID(ctx, visitInfoModel.PatientID)
 	if err != nil {
 		return nil, err
@@ -70,7 +69,7 @@ func (s *VisitInfoService) CreateVisitInfo(
 	options := []VisitInfoOption{}
 	if visitInfoModel.Route != nil {
 		// ルートの作成
-		route, err := s.routeService.CreateRoute(ctx, visitInfoModel.Route)
+		route, err := s.routeService.CreateRoute(ctx, tx, visitInfoModel.Route)
 		if err != nil {
 			return nil, err
 		}
@@ -108,7 +107,7 @@ func (s *VisitInfoService) CreateVisitInfo(
 	}
 
 	// 訪問情報の保存
-	if err := s.visitInfoRepository.Create(ctx, visitInfo); err != nil {
+	if err := s.visitInfoRepository.Create(ctx, tx, visitInfo); err != nil {
 		return nil, err
 	}
 

@@ -3,6 +3,8 @@ package route
 import (
 	addressDomain "api-buddy/domain/address"
 	"context"
+
+	"gorm.io/gorm"
 )
 
 type RouteService struct {
@@ -29,10 +31,10 @@ type RouteModel struct {
 
 func (s *RouteService) CreateRoute(
 	ctx context.Context,
+	tx *gorm.DB,
 	routeModel *RouteModel,
 ) (*Route, error) {
 
-	// 住所の再構築または新規作成
 	fromAddress, err := s.addressRepository.FindByID(ctx, routeModel.FromAddressID)
 	if err != nil {
 		return nil, err
@@ -49,7 +51,7 @@ func (s *RouteService) CreateRoute(
 		return nil, err
 	}
 
-	err = s.routeRepository.Create(ctx, route)
+	err = s.routeRepository.Create(ctx, tx, route)
 	if err != nil {
 		return nil, err
 	}
