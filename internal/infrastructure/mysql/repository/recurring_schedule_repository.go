@@ -21,12 +21,15 @@ func NewRecurringScheduleRepository() recurringScheduleDomain.RecurringScheduleR
 	}
 }
 
-func (r *RecurringScheduleRepository) Create(ctx context.Context, recurringSchedule *recurringScheduleDomain.RecurringSchedule) error {
-	err := r.db.Create(recurringSchedule).Error
+func (r *RecurringScheduleRepository) Create(ctx context.Context, tx *gorm.DB, recurringSchedule *recurringScheduleDomain.RecurringSchedule) error {
+	db := tx
+	if db == nil {
+		db = r.db
+	}
+	err := db.Create(recurringSchedule).Error
 	if err != nil {
 		return errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
-
 	return nil
 }
 
