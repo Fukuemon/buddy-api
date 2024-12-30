@@ -122,6 +122,12 @@ func newUser(
 	// Optionがnilでない場合のみ、EmailとPhoneNumberを設定
 	if options != nil {
 		if options.Email != nil {
+			// Emailが正しい形式かチェック
+			if !common.IsEmail(*options.Email) {
+				err := errorDomain.NewError("Emailの形式が正しくありません")
+				return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+			}
+			// Emailが320文字以上の場合はエラーを返す
 			if len(*options.Email) > 320 {
 				err := errorDomain.NewError("Emailは320文字以内です")
 				return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
@@ -130,11 +136,17 @@ func newUser(
 		}
 
 		if options.PhoneNumber != nil {
+			// phoneNumberは数字のみで構成されているかチェック
+			if !common.IsPhoneNumber(*options.PhoneNumber) {
+				err := errorDomain.NewError("電話番号は数字のみで構成されています")
+				return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+			}
+			// 電話番号が11文字以上の場合はエラーを返す
 			if len(*options.PhoneNumber) > 11 {
 				err := errorDomain.NewError("電話番号は11文字以内です")
 				return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 			}
-			// 先頭に"+"を加える処理を追加
+			// 先頭に"+"がない場合、"+"を加える処理を追加
 			*options.PhoneNumber = common.AddPlusToPhoneNumber(*options.PhoneNumber)
 			user.PhoneNumber = *options.PhoneNumber
 		}
