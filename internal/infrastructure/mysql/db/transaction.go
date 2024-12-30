@@ -6,13 +6,11 @@ import (
 	"gorm.io/gorm"
 )
 
-// TransactionHandler はトランザクション内での処理を定義する関数
 type TransactionHandler func(tx *gorm.DB) error
 
-// WithTransaction はトランザクションを開始し、指定されたハンドラーを実行します。
 func WithTransaction(ctx context.Context, handler TransactionHandler) error {
 	db := GetDB()
-	tx := db.Begin() // トランザクション開始
+	tx := db.Begin()
 	if tx.Error != nil {
 		return tx.Error
 	}
