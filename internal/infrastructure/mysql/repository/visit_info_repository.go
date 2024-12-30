@@ -21,8 +21,13 @@ func NewVisitInfoRepository() visitInfoDomain.VisitInfoRepository {
 	}
 }
 
-func (r *VisitInfoRepository) Create(ctx context.Context, visitInfo *visitInfoDomain.VisitInfo) error {
-	err := r.db.Create(visitInfo).Error
+func (r *VisitInfoRepository) Create(ctx context.Context, tx *gorm.DB, visitInfo *visitInfoDomain.VisitInfo) error {
+	db := tx
+	if db == nil {
+		db = r.db
+	}
+
+	err := db.Create(visitInfo).Error
 	if err != nil {
 		return errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}

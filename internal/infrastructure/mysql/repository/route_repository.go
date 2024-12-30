@@ -19,8 +19,12 @@ func NewRouteRepository() routeDomain.RouteRepository {
 	}
 }
 
-func (r *RouteRepository) Create(ctx context.Context, route *routeDomain.Route) error {
-	err := r.db.Create(route).Error
+func (r *RouteRepository) Create(ctx context.Context, tx *gorm.DB, route *routeDomain.Route) error {
+	db := tx
+	if db == nil {
+		db = r.db
+	}
+	err := db.Create(route).Error
 	if err != nil {
 		return errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}

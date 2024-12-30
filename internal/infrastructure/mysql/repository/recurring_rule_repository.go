@@ -19,12 +19,15 @@ func NewRecurringRuleRepository() recurringRuleDomain.RecurringRuleRepository {
 	}
 }
 
-func (r *RecurringRuleRepository) Create(ctx context.Context, recurringRule *recurringRuleDomain.RecurringRule) error {
-	err := r.db.Create(recurringRule).Error
+func (r *RecurringRuleRepository) Create(ctx context.Context, tx *gorm.DB, recurringRule *recurringRuleDomain.RecurringRule) error {
+	db := tx
+	if db == nil {
+		db = r.db
+	}
+	err := db.Create(recurringRule).Error
 	if err != nil {
 		return errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
-
 	return nil
 }
 

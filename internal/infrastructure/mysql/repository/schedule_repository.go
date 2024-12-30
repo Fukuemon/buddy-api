@@ -20,8 +20,14 @@ func NewScheduleRepository() scheduleDomain.ScheduleRepository {
 	}
 }
 
-func (r *ScheduleRepository) Create(ctx context.Context, schedule *scheduleDomain.Schedule) error {
-	err := r.db.Create(schedule).Error
+func (r *ScheduleRepository) Create(ctx context.Context, tx *gorm.DB, schedule *scheduleDomain.Schedule) error {
+	// トランザクションが渡されていない場合、通常のDB接続を使用
+	db := tx
+	if db == nil {
+		db = r.db
+	}
+
+	err := db.Create(schedule).Error
 	if err != nil {
 		return errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
