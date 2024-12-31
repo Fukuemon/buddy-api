@@ -130,6 +130,13 @@ func NewSchedule(
 		}
 	}
 
+	// 予定種別が通常の場合、タイトルは必須
+	if schedule.ScheduleType.Name == scheduleTypeDomain.Normal {
+		if schedule.Title == "" {
+			return nil, errorDomain.NewError("通常の予定の場合、タイトルは必須です")
+		}
+	}
+
 	common.InitializeCommonModel(&schedule.CommonModel)
 	return schedule, nil
 }

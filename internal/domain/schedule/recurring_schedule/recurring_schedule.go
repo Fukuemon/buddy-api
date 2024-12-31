@@ -141,6 +141,14 @@ func newRecurringSchedule(
 		}
 	}
 
+	// 通常予定の場合、タイトルは必須
+	// 予定種別が通常の場合、タイトルは必須
+	if recurringSchedule.ScheduleType.Name == scheduleTypeDomain.Normal {
+		if recurringSchedule.Title == "" {
+			return nil, errorDomain.NewError("通常の予定の場合、タイトルは必須です")
+		}
+	}
+
 	return recurringSchedule, nil
 }
 
