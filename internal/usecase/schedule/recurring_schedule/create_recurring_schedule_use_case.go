@@ -56,7 +56,7 @@ type CreateRecurringScheduleUseCaseInputDto struct {
 
 type RecurringRuleModel struct {
 	Frequency   recurringRuleDomain.FrequencyEnum
-	DaysOfWeek  *int
+	DayOfWeek   *int
 	DayOfMonth  *int
 	WeekOfMonth *int
 	StartDate   common.Date
@@ -90,8 +90,8 @@ func (uc *CreateRecurringScheduleUseCase) Run(ctx context.Context, input CreateR
 		recurringScheduleRuleOptions := []recurringRuleDomain.RecurringRuleOption{}
 
 		// 曜日が指定されている場合
-		if input.RecurringRule.DaysOfWeek != nil {
-			recurringScheduleRuleOptions = append(recurringScheduleRuleOptions, recurringRuleDomain.WithDaysOfWeek(*input.RecurringRule.DaysOfWeek))
+		if input.RecurringRule.DayOfWeek != nil {
+			recurringScheduleRuleOptions = append(recurringScheduleRuleOptions, recurringRuleDomain.WithDayOfWeek(*input.RecurringRule.DayOfWeek))
 		}
 
 		// 月の日が指定されている場合

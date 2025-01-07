@@ -18,7 +18,7 @@ const (
 type RecurringRule struct {
 	ID          string `grom:"primaryKey"`
 	Frequency   FrequencyEnum
-	DaysOfWeek  int
+	DayOfWeek   int
 	DayOfMonth  int
 	WeekOfMonth int
 	StartDate   common.Date
@@ -28,9 +28,9 @@ type RecurringRule struct {
 
 type RecurringRuleOption func(*RecurringRule) error
 
-func WithDaysOfWeek(daysOfWeek int) RecurringRuleOption {
+func WithDayOfWeek(daysOfWeek int) RecurringRuleOption {
 	return func(r *RecurringRule) error {
-		r.DaysOfWeek = daysOfWeek
+		r.DayOfWeek = daysOfWeek
 		return nil
 	}
 }

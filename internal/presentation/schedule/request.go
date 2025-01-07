@@ -61,7 +61,7 @@ type RouteRequestModel struct {
 
 type RecurringRuleRequestModel struct {
 	Frequency   recurringScheduleDomain.FrequencyEnum `json:"frequency" validate:"required"`
-	DaysOfWeek  *int                                  `json:"days_of_week" validate:"omitempty"`
+	DayOfWeek   *int                                  `json:"day_of_week" validate:"omitempty"`
 	DayOfMonth  *int                                  `json:"day_of_month" validate:"omitempty"`
 	WeekOfMonth *int                                  `json:"week_of_month" validate:"omitempty"`
 	StartDate   common.Date                           `json:"start_date" validate:"required" swaggertype:"string" format:"date"`

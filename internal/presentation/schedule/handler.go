@@ -175,11 +175,32 @@ func (h *handler) CreateRecurringSchedule(ctx *gin.Context) {
 		return
 	}
 
+	var visitInfo *visitInfoDomain.VisitInfoModel
+	if params.VisitInfo != nil {
+		visitInfo = &visitInfoDomain.VisitInfoModel{
+			PatientID:     params.VisitInfo.PatientID,
+			AssignStaffID: params.VisitInfo.AssignStaffID,
+			CompanionID:   params.VisitInfo.CompanionID,
+			Route: func() *routeDomain.RouteModel {
+				if params.VisitInfo.Route != nil {
+					return &routeDomain.RouteModel{
+						TravelTime:    params.VisitInfo.Route.TravelTime,
+						FromAddressID: params.VisitInfo.Route.FromAddressID,
+						DestinationID: params.VisitInfo.Route.DestinationID,
+					}
+				}
+				return nil
+			}(),
+			ServiceCodeID:    params.VisitInfo.ServiceCodeID,
+			VisitCategoryIDs: params.VisitInfo.VisitCategoryIDs,
+		}
+	}
+
 	input := recurringSchedule.CreateRecurringScheduleUseCaseInputDto{
 		ScheduleTypeID: params.ScheduleTypeID,
 		RecurringRule: recurringSchedule.RecurringRuleModel{
 			Frequency:   params.RecurringRuleModel.Frequency,
-			DaysOfWeek:  params.RecurringRuleModel.DaysOfWeek,
+			DayOfWeek:   params.RecurringRuleModel.DayOfWeek,
 			DayOfMonth:  params.RecurringRuleModel.DayOfMonth,
 			WeekOfMonth: params.RecurringRuleModel.WeekOfMonth,
 			StartDate:   params.RecurringRuleModel.StartDate,
@@ -192,18 +213,7 @@ func (h *handler) CreateRecurringSchedule(ctx *gin.Context) {
 		FacilityID:  facilityID,
 		Title:       params.Title,
 		Description: params.Description,
-		VisitInfo: &visitInfoDomain.VisitInfoModel{
-			PatientID:     params.VisitInfo.PatientID,
-			AssignStaffID: params.VisitInfo.AssignStaffID,
-			CompanionID:   params.VisitInfo.CompanionID,
-			Route: &routeDomain.RouteModel{
-				TravelTime:    params.VisitInfo.Route.TravelTime,
-				FromAddressID: params.VisitInfo.Route.FromAddressID,
-				DestinationID: params.VisitInfo.Route.DestinationID,
-			},
-			ServiceCodeID:    params.VisitInfo.ServiceCodeID,
-			VisitCategoryIDs: params.VisitInfo.VisitCategoryIDs,
-		},
+		VisitInfo:   visitInfo,
 	}
 
 	output, err := h.createRecurringScheduleUseCase.Run(ctx, input)
@@ -219,39 +229,52 @@ func (h *handler) CreateRecurringSchedule(ctx *gin.Context) {
 		StartTime:      output.StartTime,
 		EndTime:        output.EndTime,
 		StaffID:        output.StaffID,
-		VisitInfo: &VisitInfoResponseModel{
-			ID:                output.VisitInfo.ID,
-			PatientName:       output.VisitInfo.Patient.Name,
-			AssignedStaffName: output.VisitInfo.AssignedStaff.Username,
-			CompanionName:     output.VisitInfo.Companion.Username,
-			Route: &RouteResponseModel{
-				TravelTime:    output.VisitInfo.Route.TravelTime,
-				AddressID:     output.VisitInfo.Route.AddressID,
-				DestinationID: output.VisitInfo.Route.DestinationID,
-			},
-			ServiceCode: output.VisitInfo.ServiceCode.Code,
-			VisitCategories: func() []VisitCategoryResponseModel {
-				var categories []VisitCategoryResponseModel
-				for _, category := range output.VisitInfo.VisitCategories {
-					categories = append(categories, VisitCategoryResponseModel{
-						ID:   category.ID,
-						Name: category.Name,
-					})
-				}
-				return categories
-			}(),
-		},
+		VisitInfo: func() *VisitInfoResponseModel {
+			if output.VisitInfo == nil {
+				return nil
+			}
+			return &VisitInfoResponseModel{
+				ID:                output.VisitInfo.ID,
+				PatientName:       output.VisitInfo.Patient.Name,
+				AssignedStaffName: output.VisitInfo.AssignedStaff.Username,
+				CompanionName:     output.VisitInfo.Companion.Username,
+				Route: func() *RouteResponseModel {
+					if output.VisitInfo.Route != nil {
+						return &RouteResponseModel{
+							TravelTime:    output.VisitInfo.Route.TravelTime,
+							AddressID:     output.VisitInfo.Route.AddressID,
+							DestinationID: output.VisitInfo.Route.DestinationID,
+						}
+					}
+					return nil
+				}(),
+				ServiceCode: output.VisitInfo.ServiceCode.Code,
+				VisitCategories: func() []VisitCategoryResponseModel {
+					var categories []VisitCategoryResponseModel
+					if output.VisitInfo.VisitCategories != nil {
+						for _, category := range output.VisitInfo.VisitCategories {
+							categories = append(categories, VisitCategoryResponseModel{
+								ID:   category.ID,
+								Name: category.Name,
+							})
+						}
+					}
+					return categories
+				}(),
+			}
+		}(),
 		Title:       output.Title,
 		Description: output.Description,
 		RecurringRule: &RecurringRuleResponseModel{
 			Frequency:   output.RecurringRule.Frequency,
-			DaysOfWeek:  output.RecurringRule.DaysOfWeek,
+			DaysOfWeek:  output.RecurringRule.DayOfWeek,
 			DayOfMonth:  output.RecurringRule.DayOfMonth,
 			WeekOfMonth: output.RecurringRule.WeekOfMonth,
 			StartDate:   output.RecurringRule.StartDate,
 			EndDate:     output.RecurringRule.EndDate,
 		},
 	}
+
 	settings.ReturnStatusCreated(ctx, response)
 }
 

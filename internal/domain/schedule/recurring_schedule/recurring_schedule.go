@@ -27,11 +27,11 @@ type RecurringSchedule struct {
 	StaffID                 string `gorm:"foreignKey::StaffID"`
 	Facility                *facilityDomain.Facility
 	FacilityID              string
-	VisitInfoID             string
+	VisitInfoID             *string
 	VisitInfo               *visitInfoDomain.VisitInfo `gorm:"foreignKey:VisitInfoID"`
 	Title                   string
 	Description             string
-	RecurringExclusionDates common.JSONSlice[int]
+	RecurringExclusionDates *common.JSONSlice[int]
 	common.CommonModel
 }
 
@@ -63,7 +63,7 @@ func WithVisitInfo(visitInfo *visitInfoDomain.VisitInfo) RecurringScheduleOption
 			return errorDomain.NewError("訪問情報が含まれていません")
 		}
 		s.VisitInfo = visitInfo
-		s.VisitInfoID = visitInfo.ID
+		s.VisitInfoID = &visitInfo.ID
 		return nil
 	}
 }
@@ -73,7 +73,7 @@ func WithRecurringExclusionDates(recurring_exclusion_dates common.JSONSlice[int]
 		if len(recurring_exclusion_dates) == 0 {
 			return errorDomain.NewError("除外日が含まれていません")
 		}
-		s.RecurringExclusionDates = recurring_exclusion_dates
+		s.RecurringExclusionDates = &recurring_exclusion_dates
 		return nil
 	}
 }
@@ -94,7 +94,7 @@ func NewRecurringSchedule(
 		scheduleType,
 		date,
 		startTime,
-		startTime,
+		endTime,
 		staff,
 		facility,
 		options...,
@@ -120,19 +120,24 @@ func newRecurringSchedule(
 	}
 
 	recurringSchedule := &RecurringSchedule{
-		ID:              id,
-		RecurringRule:   recurringRule,
-		RecurringRuleID: recurringRule.ID,
-		ScheduleType:    scheduleType,
-		ScheduleTypeID:  scheduleType.ID,
-		Date:            date,
-		StartTime:       startTime,
-		EndTime:         endTime,
-		IsOverTimeWork:  startTime.Hour() >= 17,
-		Staff:           staff,
-		StaffID:         staff.ID,
-		Facility:        facility,
-		FacilityID:      facility.ID,
+		ID:                      id,
+		RecurringRule:           recurringRule,
+		RecurringRuleID:         recurringRule.ID,
+		ScheduleType:            scheduleType,
+		ScheduleTypeID:          scheduleType.ID,
+		Date:                    date,
+		StartTime:               startTime,
+		EndTime:                 endTime,
+		IsOverTimeWork:          startTime.Hour() >= 17,
+		Staff:                   staff,
+		StaffID:                 staff.ID,
+		Facility:                facility,
+		FacilityID:              facility.ID,
+		VisitInfo:               nil,
+		VisitInfoID:             nil,
+		Title:                   "",
+		Description:             "",
+		RecurringExclusionDates: nil,
 	}
 
 	for _, option := range options {
