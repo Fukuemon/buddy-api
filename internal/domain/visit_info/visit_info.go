@@ -18,9 +18,9 @@ type VisitInfo struct {
 	Patient         *patientDomain.Patient `gorm:"foreignKey:PatientID"`
 	AssignedStaffID string
 	AssignedStaff   *userDomain.User `gorm:"foreignKey:AssignedStaffID"`
-	CompanionID     string
+	CompanionID     *string
 	Companion       *userDomain.User `gorm:"foreignKey:CompanionID"`
-	RouteID         string
+	RouteID         *string
 	Route           *routeDomain.Route `gorm:"foreignKey:RouteID"`
 	ServiceCodeID   string
 	ServiceCode     *serviceCodeDomain.ServiceCode       `gorm:"foreignKey:ServiceCodeID"`
@@ -35,7 +35,7 @@ type VisitInfoOption func(*VisitInfo)
 func WithCompanion(companion *userDomain.User) VisitInfoOption {
 	return func(vi *VisitInfo) {
 		if companion != nil {
-			vi.CompanionID = companion.ID
+			vi.CompanionID = &companion.ID
 			vi.Companion = companion
 		}
 	}
@@ -45,7 +45,7 @@ func WithCompanion(companion *userDomain.User) VisitInfoOption {
 func WithRoute(route *routeDomain.Route) VisitInfoOption {
 	return func(vi *VisitInfo) {
 		if route != nil {
-			vi.RouteID = route.ID
+			vi.RouteID = &route.ID
 			vi.Route = route
 		}
 	}
@@ -75,6 +75,11 @@ func NewVisitInfo(
 		AssignedStaff:   assignedStaff,
 		ServiceCodeID:   serviceCode.ID,
 		ServiceCode:     serviceCode,
+		RouteID:         nil,
+		Route:           nil,
+		CompanionID:     nil,
+		Companion:       nil,
+		VisitCategories: nil,
 	}
 
 	// Apply options

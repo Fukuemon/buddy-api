@@ -28,12 +28,12 @@ type Schedule struct {
 	FacilityID          string
 	Title               string
 	VisitInfo           *visitInfoDomain.VisitInfo `gorm:"foreignKey:VisitInfoID"`
-	VisitInfoID         string
+	VisitInfoID         *string
 	RecurringSchedule   *recurringScheduleDomain.RecurringSchedule `gorm:"foreignKey:RecurringScheduleID"`
-	RecurringScheduleID string
+	RecurringScheduleID *string
 	Description         string
 	ScheduleCancel      *scheduleCancelDomain.ScheduleCancel `gorm:"foreignKey:ScheduleCancelID"`
-	ScheduleCancelID    string
+	ScheduleCancelID    *string
 	common.CommonModel
 }
 
@@ -42,7 +42,8 @@ type ScheduleOption func(*Schedule) error
 func WithTitle(title string) ScheduleOption {
 	return func(s *Schedule) error {
 		if title == "" {
-			return errorDomain.NewError("タイトルが含まれていません")
+			err := errorDomain.NewError("タイトルが含まれていません")
+			return errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 		}
 		s.Title = title
 		return nil
@@ -52,10 +53,11 @@ func WithTitle(title string) ScheduleOption {
 func WithVisitInfo(visitInfo *visitInfoDomain.VisitInfo) ScheduleOption {
 	return func(s *Schedule) error {
 		if visitInfo == nil {
-			return errorDomain.NewError("訪問情報が含まれていません")
+			err := errorDomain.NewError("訪問情報が含まれていません")
+			return errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 		}
 		s.VisitInfo = visitInfo
-		s.VisitInfoID = visitInfo.ID
+		s.VisitInfoID = &visitInfo.ID
 		return nil
 	}
 }
@@ -65,10 +67,11 @@ func WithRecurringSchedule(
 ) ScheduleOption {
 	return func(s *Schedule) error {
 		if recurringSchedule == nil {
-			return errorDomain.NewError("繰り返し予定の情報が含まれていません")
+			err := errorDomain.NewError("繰り返し予定の情報が含まれていません")
+			return errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 		}
 		s.RecurringSchedule = recurringSchedule
-		s.RecurringScheduleID = recurringSchedule.ID
+		s.RecurringScheduleID = &recurringSchedule.ID
 		return nil
 	}
 }
@@ -83,10 +86,11 @@ func WithDescription(description string) ScheduleOption {
 func WithScheduleCancel(scheduleCancel *scheduleCancelDomain.ScheduleCancel) ScheduleOption {
 	return func(s *Schedule) error {
 		if scheduleCancel == nil {
-			return errorDomain.NewError("キャンセル情報が含まれていません")
+			err := errorDomain.NewError("キャンセル情報が含まれていません")
+			return errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 		}
 		s.ScheduleCancel = scheduleCancel
-		s.ScheduleCancelID = scheduleCancel.ID
+		s.ScheduleCancelID = &scheduleCancel.ID
 		return nil
 	}
 }
@@ -103,24 +107,33 @@ func NewSchedule(
 ) (*Schedule, error) {
 	// Validate start and end times
 	if endTime.Before(startTime.Time) {
-		return nil, errorDomain.NewError("終了時間が開始時間より前です")
+		err := errorDomain.NewError("終了時間が開始時間より前です")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 	}
 	if endTime.Equal(startTime.Time) {
-		return nil, errorDomain.NewError("終了時間が開始時間と同じです")
+		err := errorDomain.NewError("終了時間が開始時間と同じです")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 	}
 
 	schedule := &Schedule{
-		ID:             ulid.NewULID(),
-		ScheduleType:   scheduleType,
-		ScheduleTypeID: scheduleType.ID,
-		Date:           date,
-		StartTime:      startTime,
-		EndTime:        endTime,
-		IsOverTimeWork: startTime.Hour() >= 17,
-		Staff:          staff,
-		StaffID:        staff.ID,
-		Facility:       facility,
-		FacilityID:     facility.ID,
+		ID:                  ulid.NewULID(),
+		ScheduleType:        scheduleType,
+		ScheduleTypeID:      scheduleType.ID,
+		Date:                date,
+		StartTime:           startTime,
+		EndTime:             endTime,
+		IsOverTimeWork:      startTime.Hour() >= 17,
+		Staff:               staff,
+		StaffID:             staff.ID,
+		Facility:            facility,
+		FacilityID:          facility.ID,
+		RecurringSchedule:   nil,
+		RecurringScheduleID: nil,
+		VisitInfo:           nil,
+		VisitInfoID:         nil,
+		Description:         "",
+		ScheduleCancel:      nil,
+		ScheduleCancelID:    nil,
 	}
 
 	// Apply options
@@ -133,7 +146,16 @@ func NewSchedule(
 	// 予定種別が通常の場合、タイトルは必須
 	if schedule.ScheduleType.Name == scheduleTypeDomain.Normal {
 		if schedule.Title == "" {
-			return nil, errorDomain.NewError("通常の予定の場合、タイトルは必須です")
+			err := errorDomain.NewError("通常の予定の場合、タイトルは必須です")
+			return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+		}
+	}
+
+	// 予定種別が訪問の場合、訪問情報は必須
+	if schedule.ScheduleType.Name == scheduleTypeDomain.Visit {
+		if schedule.VisitInfo == nil {
+			err := errorDomain.NewError("訪問の予定の場合、訪問情報は必須です")
+			return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 		}
 	}
 

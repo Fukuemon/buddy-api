@@ -52,7 +52,6 @@ type CreateUseCaseInputDto struct {
 	Description         *string
 	VisitInfo           *visitInfoDomain.VisitInfoModel
 	RecurringScheduleID *string
-	ScheduleCancelID    *string
 }
 
 func (uc *CreateScheduleUseCase) Run(ctx context.Context, input CreateUseCaseInputDto) (*scheduleDomain.Schedule, error) {
