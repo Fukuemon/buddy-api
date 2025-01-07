@@ -87,9 +87,46 @@ func newRecurringRule(
 		}
 	}
 	// Todo: 繰り返しルールの制約
-	//DaysOfWeek, DayOfMonth, WeekOfMonthのいずれかが設定されているか確認
-	if recurring_rule.DaysOfWeek == 0 && recurring_rule.DayOfMonth == 0 && recurring_rule.WeekOfMonth == 0 {
-		return nil, errorDomain.NewError("繰り返しルールが不正です")
+	//DayOfWeek, DayOfMonth, WeekOfMonthのいずれかが設定されているか確認
+	if recurring_rule.DayOfWeek == 0 && recurring_rule.DayOfMonth == 0 && recurring_rule.WeekOfMonth == 0 {
+		err := errorDomain.NewError("繰り返しルールが不正です")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+	}
+
+	if recurring_rule.Frequency == FrequencyMonthly && recurring_rule.DayOfMonth == 0 {
+		err := errorDomain.NewError("月の日を指定してください")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+	}
+
+	if recurring_rule.Frequency == FrequencyWeekly && recurring_rule.DayOfWeek == 0 {
+		err := errorDomain.NewError("曜日を指定してください")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+	}
+
+	//DayOfWeek, DayOfMonth, WeekOfMonthのいずれかが重複していないか確認
+	if recurring_rule.DayOfWeek != 0 && recurring_rule.DayOfMonth != 0 {
+		err := errorDomain.NewError("曜日と月の日が重複しています")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+	}
+
+	if recurring_rule.WeekOfMonth != 0 && recurring_rule.DayOfMonth != 0 {
+		err := errorDomain.NewError("週の日と月の日が重複しています")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+	}
+
+	if recurring_rule.DayOfWeek != 0 && (recurring_rule.DayOfWeek < 1 || recurring_rule.DayOfWeek > 7) {
+		err := errorDomain.NewError("曜日が不正です")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+	}
+
+	if recurring_rule.DayOfMonth != 0 && (recurring_rule.DayOfMonth < 1 || recurring_rule.DayOfMonth > 31) {
+		err := errorDomain.NewError("月の日が不正です")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
+	}
+
+	if recurring_rule.WeekOfMonth != 0 && (recurring_rule.WeekOfMonth < 1 || recurring_rule.WeekOfMonth > 5) {
+		err := errorDomain.NewError("週の日が不正です")
+		return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 	}
 
 	common.InitializeCommonModel(&recurring_rule.CommonModel)
