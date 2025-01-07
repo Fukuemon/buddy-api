@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS visit_infos (
     patient_id VARCHAR(255) NOT NULL,
     assigned_staff_id VARCHAR(255) NOT NULL,
     companion_id VARCHAR(255),
-    route_id VARCHAR(255) NOT NULL,
+    route_id VARCHAR(255),
     service_code_id VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -214,8 +214,7 @@ CREATE TABLE IF NOT EXISTS recurring_schedules (
     id VARCHAR(255) PRIMARY KEY,
     staff_id VARCHAR(255) NOT NULL,
     schedule_type_id VARCHAR(255) NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
+    date DATE NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     visit_info_id VARCHAR(255),
@@ -223,11 +222,15 @@ CREATE TABLE IF NOT EXISTS recurring_schedules (
     description VARCHAR(255),
     is_over_time_work BOOLEAN NOT NULL DEFAULT FALSE,
     recurring_exclusion_dates JSON,
+    recurring_rule_id VARCHAR(255),
+    facility_id VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (staff_id) REFERENCES users(id),
     FOREIGN KEY (schedule_type_id) REFERENCES schedule_types(id),
-    FOREIGN KEY (visit_info_id) REFERENCES visit_infos(id)
+    FOREIGN KEY (visit_info_id) REFERENCES visit_infos(id),
+    FOREIGN KEY (recurring_rule_id) REFERENCES recurring_rules(id),
+    FOREIGN KEY (facility_id) REFERENCES facilities(id)
 );
 
 CREATE TABLE IF NOT EXISTS schedules (
@@ -243,13 +246,15 @@ CREATE TABLE IF NOT EXISTS schedules (
     title VARCHAR(255),
     description VARCHAR(255),
     is_over_time_work BOOLEAN NOT NULL DEFAULT FALSE,
+    facility_id VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (staff_id) REFERENCES users(id),
     FOREIGN KEY (recurring_schedule_id) REFERENCES recurring_schedules(id),
     FOREIGN KEY (schedule_type_id) REFERENCES schedule_types(id),
     FOREIGN KEY (schedule_cancel_id) REFERENCES schedule_cancels(id),
-    FOREIGN KEY (visit_info_id) REFERENCES visit_infos(id)
+    FOREIGN KEY (visit_info_id) REFERENCES visit_infos(id),
+    FOREIGN KEY (facility_id) REFERENCES facilities(id)
 );
 
 
