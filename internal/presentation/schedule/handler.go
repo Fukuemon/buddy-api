@@ -53,27 +53,38 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		return
 	}
 
-	input := schedule.CreateUseCaseInputDto{
-		ScheduleTypeID: params.ScheduleTypeID,
-		Date:           params.Date,
-		StartTime:      params.StartTime,
-		EndTime:        params.EndTime,
-		StaffID:        params.StaffID,
-		FacilityID:     facilityID,
-		Title:          params.Title,
-		Description:    params.Description,
-		VisitInfo: &visitInfoDomain.VisitInfoModel{
+	var visitInfo *visitInfoDomain.VisitInfoModel
+	if params.VisitInfo != nil {
+		visitInfo = &visitInfoDomain.VisitInfoModel{
 			PatientID:     params.VisitInfo.PatientID,
 			AssignStaffID: params.VisitInfo.AssignStaffID,
 			CompanionID:   params.VisitInfo.CompanionID,
-			Route: &routeDomain.RouteModel{
-				TravelTime:    params.VisitInfo.Route.TravelTime,
-				FromAddressID: params.VisitInfo.Route.FromAddressID,
-				DestinationID: params.VisitInfo.Route.DestinationID,
-			},
+			Route: func() *routeDomain.RouteModel {
+				if params.VisitInfo.Route != nil {
+					return &routeDomain.RouteModel{
+						TravelTime:    params.VisitInfo.Route.TravelTime,
+						FromAddressID: params.VisitInfo.Route.FromAddressID,
+						DestinationID: params.VisitInfo.Route.DestinationID,
+					}
+				}
+				return nil
+			}(),
 			ServiceCodeID:    params.VisitInfo.ServiceCodeID,
 			VisitCategoryIDs: params.VisitInfo.VisitCategoryIDs,
-		},
+		}
+	}
+
+	input := schedule.CreateUseCaseInputDto{
+		ScheduleTypeID:      params.ScheduleTypeID,
+		Date:                params.Date,
+		StartTime:           params.StartTime,
+		EndTime:             params.EndTime,
+		StaffID:             params.StaffID,
+		FacilityID:          facilityID,
+		Title:               params.Title,
+		Description:         params.Description,
+		VisitInfo:           visitInfo,
+		RecurringScheduleID: params.RecurringScheduleID,
 	}
 
 	output, err := h.createScheduleUseCase.Run(ctx, input)
@@ -84,36 +95,55 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	}
 
 	response := CreateScheduleResponse{
-		ID:             output.ID,
-		ScheduleTypeID: output.ScheduleTypeID,
-		Date:           output.Date,
-		StartTime:      output.StartTime,
-		EndTime:        output.EndTime,
-		StaffID:        output.StaffID,
-		VisitInfo: &VisitInfoResponseModel{
-			ID:              output.VisitInfo.ID,
-			PatientID:       output.VisitInfo.PatientID,
-			AssignedStaffID: output.VisitInfo.AssignedStaffID,
-			CompanionID:     output.VisitInfo.CompanionID,
-			Route: &RouteResponseModel{
-				TravelTime:    output.VisitInfo.Route.TravelTime,
-				AddressID:     output.VisitInfo.Route.AddressID,
-				DestinationID: output.VisitInfo.Route.DestinationID,
-			},
-			ServiceCodeID: output.VisitInfo.ServiceCodeID,
-			VisitCategories: func() []VisitCategoryResponseModel {
-				var categories []VisitCategoryResponseModel
-				for _, category := range output.VisitInfo.VisitCategories {
-					categories = append(categories, VisitCategoryResponseModel{
-						ID:   category.ID,
-						Name: category.Name,
-					})
-				}
-				return categories
-			}(),
-		},
+		ID:           output.ID,
+		ScheduleType: string(output.ScheduleType.Name),
+		Date:         output.Date,
+		StartTime:    output.StartTime,
+		EndTime:      output.EndTime,
+		StaffName:    output.Staff.Username,
+		VisitInfo: func() *VisitInfoResponseModel {
+			if output.VisitInfo == nil {
+				return nil
+			}
+			return &VisitInfoResponseModel{
+				ID:                output.VisitInfo.ID,
+				PatientName:       output.VisitInfo.Patient.Name,
+				AssignedStaffName: output.VisitInfo.AssignedStaff.Username,
+				CompanionName:     output.VisitInfo.Companion.Username,
+				Route: func() *RouteResponseModel {
+					if output.VisitInfo.Route != nil {
+						return &RouteResponseModel{
+							TravelTime:    output.VisitInfo.Route.TravelTime,
+							AddressID:     output.VisitInfo.Route.AddressID,
+							DestinationID: output.VisitInfo.Route.DestinationID,
+						}
+					}
+					return nil
+				}(),
+				ServiceCode: output.VisitInfo.ServiceCode.Code,
+				VisitCategories: func() []VisitCategoryResponseModel {
+					var categories []VisitCategoryResponseModel
+					if output.VisitInfo.VisitCategories != nil {
+						for _, category := range output.VisitInfo.VisitCategories {
+							categories = append(categories, VisitCategoryResponseModel{
+								ID:   category.ID,
+								Name: category.Name,
+							})
+						}
+					}
+					return categories
+				}(),
+			}
+		}(),
 		Title:       output.Title,
 		Description: output.Description,
+		RecurringScheduleID: func() string {
+			if output.RecurringScheduleID == nil {
+				return ""
+			} else {
+				return *output.RecurringScheduleID
+			}
+		}(),
 	}
 
 	settings.ReturnStatusCreated(ctx, response)
@@ -190,16 +220,16 @@ func (h *handler) CreateRecurringSchedule(ctx *gin.Context) {
 		EndTime:        output.EndTime,
 		StaffID:        output.StaffID,
 		VisitInfo: &VisitInfoResponseModel{
-			ID:              output.VisitInfo.ID,
-			PatientID:       output.VisitInfo.PatientID,
-			AssignedStaffID: output.VisitInfo.AssignedStaffID,
-			CompanionID:     output.VisitInfo.CompanionID,
+			ID:                output.VisitInfo.ID,
+			PatientName:       output.VisitInfo.Patient.Name,
+			AssignedStaffName: output.VisitInfo.AssignedStaff.Username,
+			CompanionName:     output.VisitInfo.Companion.Username,
 			Route: &RouteResponseModel{
 				TravelTime:    output.VisitInfo.Route.TravelTime,
 				AddressID:     output.VisitInfo.Route.AddressID,
 				DestinationID: output.VisitInfo.Route.DestinationID,
 			},
-			ServiceCodeID: output.VisitInfo.ServiceCodeID,
+			ServiceCode: output.VisitInfo.ServiceCode.Code,
 			VisitCategories: func() []VisitCategoryResponseModel {
 				var categories []VisitCategoryResponseModel
 				for _, category := range output.VisitInfo.VisitCategories {

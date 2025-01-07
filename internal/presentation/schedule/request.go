@@ -6,14 +6,15 @@ import (
 )
 
 type CreateScheduleRequest struct {
-	ScheduleTypeID string                 `json:"schedule_type_id" validate:"required,ulid"`
-	Date           common.Date            `json:"date" validate:"required" swaggertype:"string" format:"date"`
-	StartTime      common.Time            `json:"start_time" validate:"required"`
-	EndTime        common.Time            `json:"end_time" validate:"required"`
-	StaffID        string                 `json:"staff_id" validate:"required,ulid"`
-	VisitInfo      *VisitInfoRequestModel `json:"visit_info" validate:"omitempty"`
-	Title          *string                `json:"title" validate:"omitempty"`
-	Description    *string                `json:"description" validate:"omitempty"`
+	ScheduleTypeID      string                 `json:"schedule_type_id" validate:"required,ulid"`
+	Date                common.Date            `json:"date" validate:"required" swaggertype:"string" format:"date"`
+	StartTime           common.Time            `json:"start_time" validate:"required"`
+	EndTime             common.Time            `json:"end_time" validate:"required"`
+	StaffID             string                 `json:"staff_id" validate:"required,ulid"`
+	VisitInfo           *VisitInfoRequestModel `json:"visit_info" validate:"omitempty"`
+	Title               *string                `json:"title" validate:"omitempty"`
+	Description         *string                `json:"description" validate:"omitempty"`
+	RecurringScheduleID *string                `json:"recurring_schedule_id" validate:"omitempty,ulid"`
 }
 
 type CreateRecurringScheduleRequest struct {

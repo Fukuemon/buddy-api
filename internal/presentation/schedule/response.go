@@ -7,25 +7,26 @@ import (
 )
 
 type CreateScheduleResponse struct {
-	ID             string                  `json:"id"`
-	ScheduleTypeID string                  `json:"schedule_type_id"`
-	Date           common.Date             `json:"date"`
-	StartTime      common.Time             `json:"start_time"`
-	EndTime        common.Time             `json:"end_time"`
-	StaffID        string                  `json:"staff_id"`
-	VisitInfo      *VisitInfoResponseModel `json:"visit_info"`
-	Title          string                  `json:"title"`
-	Description    string                  `json:"description"`
+	ID                  string                  `json:"id"`
+	ScheduleType        string                  `json:"schedule_type"`
+	Date                common.Date             `json:"date"`
+	StartTime           common.Time             `json:"start_time"`
+	EndTime             common.Time             `json:"end_time"`
+	StaffName           string                  `json:"staff_name"`
+	VisitInfo           *VisitInfoResponseModel `json:"visit_info"`
+	Title               string                  `json:"title"`
+	Description         string                  `json:"description"`
+	RecurringScheduleID string                  `json:"recurring_schedule_id"`
 }
 
 type VisitInfoResponseModel struct {
-	ID              string                       `json:"id"`
-	PatientID       string                       `json:"patient_id"`
-	AssignedStaffID string                       `json:"assigned_staff_id"`
-	CompanionID     string                       `json:"companion_id"`
-	Route           *RouteResponseModel          `json:"route"`
-	ServiceCodeID   string                       `json:"service_code_id"`
-	VisitCategories []VisitCategoryResponseModel `json:"visit_categories"`
+	ID                string                       `json:"id"`
+	PatientName       string                       `json:"patient_name"`
+	AssignedStaffName string                       `json:"assigned_staff_name"`
+	CompanionName     string                       `json:"companion_name"`
+	Route             *RouteResponseModel          `json:"route"`
+	ServiceCode       string                       `json:"service_code"`
+	VisitCategories   []VisitCategoryResponseModel `json:"visit_categories"`
 }
 
 type VisitCategoryResponseModel struct {
