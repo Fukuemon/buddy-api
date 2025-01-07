@@ -64,7 +64,7 @@ services:
       sh -c "
         go mod download &&
         go install github.com/swaggo/swag/cmd/swag@latest &&
-        swag init -g cmd/api-server/main.go"
+        swag init --parseDependency --parseInternal -g cmd/api-server/main.go"
     profiles:
       - manual
 

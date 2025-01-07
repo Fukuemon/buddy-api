@@ -10,15 +10,27 @@ import (
 	teamPre "api-buddy/presentation/facility/team"
 	"api-buddy/presentation/health_handler"
 	policyPre "api-buddy/presentation/policy"
+	schedulePre "api-buddy/presentation/schedule"
+	scheduleTypePre "api-buddy/presentation/schedule/schedule_type"
 	"api-buddy/presentation/settings"
 	userPre "api-buddy/presentation/user"
+	serviceCodePre "api-buddy/presentation/visit_info/service_code"
+	visitCategoryPre "api-buddy/presentation/visit_info/visit_category"
 	addressUse "api-buddy/usecase/address"
 	areaUse "api-buddy/usecase/facility/area"
 	departmentUse "api-buddy/usecase/facility/department"
 	positionUse "api-buddy/usecase/facility/position"
 	teamUse "api-buddy/usecase/facility/team"
 	policyUse "api-buddy/usecase/policy"
+	scheduleUse "api-buddy/usecase/schedule"
+	recurringScheduleUse "api-buddy/usecase/schedule/recurring_schedule"
+	scheduleTypeUse "api-buddy/usecase/schedule/schedule_type"
 	userUse "api-buddy/usecase/user"
+	serviceCodeUse "api-buddy/usecase/visit_info/service_code"
+	visitCategoryUse "api-buddy/usecase/visit_info/visit_category"
+
+	visitInfoDomain "api-buddy/domain/visit_info"
+	routeDomain "api-buddy/domain/visit_info/route"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -41,6 +53,10 @@ func InitRoute(api *gin.Engine) {
 		userRoute(v1)
 		addressRoute(v1)
 		areaRoute(v1)
+		scheduleRoute(v1)
+		scheduleTypeRoute(v1)
+		serviceCodeRoute(v1)
+		visitCategoryRoute(v1)
 	}
 
 	// Swagger
@@ -160,4 +176,67 @@ func areaRoute(r *gin.RouterGroup) {
 
 	group = r.Group("/facilities/:facility_id/areas")
 	group.GET("", h.FetchByFacilityId)
+}
+
+func scheduleRoute(r *gin.RouterGroup) {
+	scheduleRepository := repository.NewScheduleRepository()
+	facilityRepository := repository.NewFacilityRepository()
+	scheduleTypeRepository := repository.NewScheduleTypeRepository()
+	userRepository := repository.NewUserRepository()
+	recurringScheduleRepository := repository.NewRecurringScheduleRepository()
+	recurringRuleRepository := repository.NewRecurringRuleRepository()
+	addressRepository := repository.NewAddressRepository()
+	routeRepository := repository.NewRouteRepository()
+	patientRepository := repository.NewPatientRepository()
+	visitInfoRepository := repository.NewVisitInfoRepository()
+	serviceCodeRepository := repository.NewServiceCodeRepository()
+	visitCategoryRepository := repository.NewVisitCategoryRepository()
+	routeService := routeDomain.NewRouteService(
+		routeRepository,
+		addressRepository,
+	)
+	visitInfoService := visitInfoDomain.NewVisitInfoService(
+		visitInfoRepository,
+		patientRepository,
+		userRepository,
+		serviceCodeRepository,
+		routeService,
+		visitCategoryRepository,
+	)
+	h := schedulePre.NewHandler(
+		scheduleUse.NewCreateScheduleUseCase(scheduleRepository, facilityRepository, scheduleTypeRepository, userRepository, recurringScheduleRepository, visitInfoService),
+		recurringScheduleUse.NewCreateRecurringScheduleUseCase(recurringRuleRepository, facilityRepository, scheduleTypeRepository, userRepository, recurringScheduleRepository, visitInfoService),
+	)
+	group := r.Group("/facilities/:facility_id/schedules")
+	group.POST("", h.CreateSchedule)
+
+	group = r.Group("/facilities/:facility_id/schedules/recurring")
+	group.POST("", h.CreateRecurringSchedule)
+}
+
+func scheduleTypeRoute(r *gin.RouterGroup) {
+	scheduleTypeRepository := repository.NewScheduleTypeRepository()
+	h := scheduleTypePre.NewHandler(
+		scheduleTypeUse.NewFetchScheduleTypesUseCase(scheduleTypeRepository),
+	)
+	group := r.Group("/facilities/:facility_id/schedules/schedule_types")
+	group.GET("", h.FetchScheduleTypes)
+}
+
+func serviceCodeRoute(r *gin.RouterGroup) {
+	serviceCodeRepository := repository.NewServiceCodeRepository()
+	h := serviceCodePre.NewHandler(
+		serviceCodeUse.NewFetchServiceCodesUseCase(serviceCodeRepository),
+	)
+	group := r.Group("/visit_infos/service_codes")
+	group.GET("", h.FetchServiceCodes)
+}
+
+func visitCategoryRoute(r *gin.RouterGroup) {
+	visitCategoryRepository := repository.NewVisitCategoryRepository()
+	h := visitCategoryPre.NewHandler(
+		visitCategoryUse.NewFetchVisitCategoriesUseCase(visitCategoryRepository),
+	)
+	group := r.Group("/visit_infos/visit_categories")
+	group.GET("", h.FetchVisitCategories)
 }

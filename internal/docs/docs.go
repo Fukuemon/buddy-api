@@ -77,32 +77,32 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/address.AddressDetailResponse"
+                                "$ref": "#/definitions/presentation_address.AddressDetailResponse"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -122,31 +122,31 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/address.CreateAddressResponse"
+                            "$ref": "#/definitions/presentation_address.CreateAddressResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -177,31 +177,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/address.AddressDetailResponse"
+                            "$ref": "#/definitions/presentation_address.AddressDetailResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -232,31 +232,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/area.AreaResponse"
+                            "$ref": "#/definitions/presentation_facility_area.AreaResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -281,7 +281,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.SignInRequest"
+                            "$ref": "#/definitions/presentation_auth.SignInRequest"
                         }
                     }
                 ],
@@ -289,19 +289,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/auth.SignInResponse"
+                            "$ref": "#/definitions/presentation_auth.SignInResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -326,7 +326,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.SignUpRequest"
+                            "$ref": "#/definitions/presentation_auth.SignUpRequest"
                         }
                     }
                 ],
@@ -334,19 +334,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/auth.SignUpResponse"
+                            "$ref": "#/definitions/presentation_auth.SignUpResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -377,25 +377,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/department.DepartmentResponse"
+                            "$ref": "#/definitions/presentation_facility_department.DepartmentResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -426,25 +426,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/area.AreaResponse"
+                            "$ref": "#/definitions/presentation_facility_area.AreaResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -467,7 +467,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/area.CreateAreaRequest"
+                            "$ref": "#/definitions/presentation_facility_area.CreateAreaRequest"
                         }
                     }
                 ],
@@ -475,25 +475,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/area.AreaResponse"
+                            "$ref": "#/definitions/presentation_facility_area.AreaResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -524,25 +524,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/department.DepartmentResponse"
+                            "$ref": "#/definitions/presentation_facility_department.DepartmentResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -573,25 +573,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/position.PositionResponse"
+                            "$ref": "#/definitions/presentation_facility_position.PositionResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -614,7 +614,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/position.CreatePositionRequest"
+                            "$ref": "#/definitions/presentation_facility_position.CreatePositionRequest"
                         }
                     }
                 ],
@@ -622,25 +622,184 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/position.PositionResponse"
+                            "$ref": "#/definitions/presentation_facility_position.PositionResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/facilities/{facility_id}/schedules": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Schedule"
+                ],
+                "summary": "予定を作成する",
+                "parameters": [
+                    {
+                        "description": "予定作成リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/presentation_schedule.CreateScheduleRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "施設ID",
+                        "name": "facility_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/presentation_schedule.CreateScheduleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/facilities/{facility_id}/schedules/recurring": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Schedule"
+                ],
+                "summary": "繰り返し予定を作成する",
+                "parameters": [
+                    {
+                        "description": "予定作成リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/presentation_schedule.CreateRecurringScheduleRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "施設ID",
+                        "name": "facility_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/presentation_schedule.CreateRecurringScheduleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/facilities/{facility_id}/schedules/schedule_types": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ScheduleType"
+                ],
+                "summary": "予定種別一覧を取得する",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/presentation_schedule_schedule_type.ScheduleTypeResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -672,26 +831,26 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/team.TeamResponse"
+                                "$ref": "#/definitions/presentation_facility_team.TeamResponse"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -714,7 +873,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/team.CreateTeamRequest"
+                            "$ref": "#/definitions/presentation_facility_team.CreateTeamRequest"
                         }
                     }
                 ],
@@ -722,25 +881,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/team.TeamResponse"
+                            "$ref": "#/definitions/presentation_facility_team.TeamResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -815,20 +974,20 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/user.UserResponse"
+                                "$ref": "#/definitions/presentation_user.UserResponse"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -850,7 +1009,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/health_handler.HealthResponse"
+                            "$ref": "#/definitions/presentation_health_handler.HealthResponse"
                         }
                     }
                 }
@@ -874,26 +1033,26 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/policy.PolicyResponse"
+                                "$ref": "#/definitions/presentation_policy.PolicyResponse"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -916,7 +1075,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/policy.CreatePolicyRequest"
+                            "$ref": "#/definitions/presentation_policy.CreatePolicyRequest"
                         }
                     }
                 ],
@@ -924,19 +1083,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/policy.CreatePolicyResponse"
+                            "$ref": "#/definitions/presentation_policy.CreatePolicyResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -967,31 +1126,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/policy.PolicyResponse"
+                            "$ref": "#/definitions/presentation_policy.PolicyResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -1022,31 +1181,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/position.PositionResponse"
+                            "$ref": "#/definitions/presentation_facility_position.PositionResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -1077,31 +1236,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/team.TeamResponse"
+                            "$ref": "#/definitions/presentation_facility_team.TeamResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -1132,31 +1291,117 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UserDetailResponse"
+                            "$ref": "#/definitions/presentation_user.UserDetailResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/visit_infos/service_codes": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ServiceCode"
+                ],
+                "summary": "サービスコード一覧を取得する",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/presentation_visit_info_service_code.ServiceCodeResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/visit_infos/visit_categories": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "VisitCategory"
+                ],
+                "summary": "訪問カテゴリ一覧を取得する",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/presentation_visit_info_visit_category.VisitCategoryResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
                         }
                     }
                 }
@@ -1164,112 +1409,18 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "address.AddressDetailResponse": {
+        "api-buddy_domain_common.Date": {
             "type": "object",
             "properties": {
-                "addressLine1": {
-                    "type": "string"
-                },
-                "addressLine2": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "latitude": {
-                    "type": "number"
-                },
-                "longitude": {
-                    "type": "number"
-                },
-                "prefecture": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "zipCode": {
+                "time.Time": {
                     "type": "string"
                 }
             }
         },
-        "address.CreateAddressResponse": {
+        "api-buddy_domain_policy.Policy": {
             "type": "object",
             "properties": {
-                "addressLine1": {
-                    "type": "string"
-                },
-                "addressLine2": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "latitude": {
-                    "type": "number"
-                },
-                "longitude": {
-                    "type": "number"
-                },
-                "prefecture": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "zipCode": {
-                    "type": "string"
-                }
-            }
-        },
-        "area.AddressModel": {
-            "type": "object",
-            "properties": {
-                "address_line1": {
-                    "type": "string"
-                },
-                "address_line2": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "latitude": {
-                    "type": "number"
-                },
-                "longitude": {
-                    "type": "number"
-                },
-                "prefecture": {
-                    "type": "string"
-                }
-            }
-        },
-        "area.AreaResponse": {
-            "type": "object",
-            "properties": {
-                "addresses": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/area.AddressModel"
-                    }
-                },
-                "facility_id": {
+                "created_at": {
                     "type": "string"
                 },
                 "id": {
@@ -1277,24 +1428,65 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
-        "area.CreateAreaRequest": {
-            "type": "object",
-            "required": [
-                "address_ids",
-                "facility_id",
-                "name"
+        "api-buddy_domain_schedule_recurring_rule.FrequencyEnum": {
+            "type": "string",
+            "enum": [
+                "monthly",
+                "weekly"
             ],
+            "x-enum-varnames": [
+                "FrequencyMonthly",
+                "FrequencyWeekly"
+            ]
+        },
+        "api-buddy_domain_schedule_schedule_type.ScheduleTypeEnum": {
+            "type": "string",
+            "enum": [
+                "通常",
+                "訪問"
+            ],
+            "x-enum-varnames": [
+                "Normal",
+                "Visit"
+            ]
+        },
+        "api-buddy_domain_visit_info_visit_category.VisitCategoryType": {
+            "type": "string",
+            "enum": [
+                "夜勤",
+                "緊急",
+                "入院"
+            ],
+            "x-enum-varnames": [
+                "NightShift",
+                "Emergency",
+                "Hospital"
+            ]
+        },
+        "api-buddy_presentation_common.ErrorResponse": {
+            "type": "object",
             "properties": {
-                "address_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "code": {
+                    "type": "string"
                 },
-                "facility_id": {
+                "description": {
+                    "type": "string"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "api-buddy_usecase_facility_position.PolicyDto": {
+            "type": "object",
+            "properties": {
+                "id": {
                     "type": "string"
                 },
                 "name": {
@@ -1302,7 +1494,77 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.SignInRequest": {
+        "presentation_address.AddressDetailResponse": {
+            "type": "object",
+            "properties": {
+                "addressLine1": {
+                    "type": "string"
+                },
+                "addressLine2": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "prefecture": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "zipCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "presentation_address.CreateAddressResponse": {
+            "type": "object",
+            "properties": {
+                "addressLine1": {
+                    "type": "string"
+                },
+                "addressLine2": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "prefecture": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "zipCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "presentation_auth.SignInRequest": {
             "type": "object",
             "required": [
                 "password",
@@ -1317,7 +1579,7 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.SignInResponse": {
+        "presentation_auth.SignInResponse": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -1328,7 +1590,7 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.SignUpRequest": {
+        "presentation_auth.SignUpRequest": {
             "type": "object",
             "required": [
                 "area_id",
@@ -1369,7 +1631,7 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.SignUpResponse": {
+        "presentation_auth.SignUpResponse": {
             "type": "object",
             "properties": {
                 "area": {
@@ -1396,7 +1658,7 @@ const docTemplate = `{
                 "policies": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/policy.Policy"
+                        "$ref": "#/definitions/api-buddy_domain_policy.Policy"
                     }
                 },
                 "position": {
@@ -1407,21 +1669,75 @@ const docTemplate = `{
                 }
             }
         },
-        "common.ErrorResponse": {
+        "presentation_facility_area.AddressModel": {
             "type": "object",
             "properties": {
-                "code": {
+                "address_line1": {
                     "type": "string"
                 },
-                "description": {
+                "address_line2": {
                     "type": "string"
                 },
-                "msg": {
+                "city": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "prefecture": {
                     "type": "string"
                 }
             }
         },
-        "department.DepartmentResponse": {
+        "presentation_facility_area.AreaResponse": {
+            "type": "object",
+            "properties": {
+                "addresses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/presentation_facility_area.AddressModel"
+                    }
+                },
+                "facility_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "presentation_facility_area.CreateAreaRequest": {
+            "type": "object",
+            "required": [
+                "address_ids",
+                "facility_id",
+                "name"
+            ],
+            "properties": {
+                "address_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "facility_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "presentation_facility_department.DepartmentResponse": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1441,71 +1757,7 @@ const docTemplate = `{
                 }
             }
         },
-        "health_handler.HealthResponse": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "type": "string"
-                }
-            }
-        },
-        "policy.CreatePolicyRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "policy.CreatePolicyResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "policy.Policy": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "policy.PolicyResponse": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "position.CreatePositionRequest": {
+        "presentation_facility_position.CreatePositionRequest": {
             "type": "object",
             "required": [
                 "name",
@@ -1523,18 +1775,7 @@ const docTemplate = `{
                 }
             }
         },
-        "position.PolicyDto": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "position.PositionResponse": {
+        "presentation_facility_position.PositionResponse": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1552,7 +1793,7 @@ const docTemplate = `{
                 "policies": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/position.PolicyDto"
+                        "$ref": "#/definitions/api-buddy_usecase_facility_position.PolicyDto"
                     }
                 },
                 "updated_at": {
@@ -1560,7 +1801,7 @@ const docTemplate = `{
                 }
             }
         },
-        "team.CreateTeamRequest": {
+        "presentation_facility_team.CreateTeamRequest": {
             "type": "object",
             "required": [
                 "name"
@@ -1571,7 +1812,7 @@ const docTemplate = `{
                 }
             }
         },
-        "team.TeamResponse": {
+        "presentation_facility_team.TeamResponse": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1591,7 +1832,26 @@ const docTemplate = `{
                 }
             }
         },
-        "user.PolicyModel": {
+        "presentation_health_handler.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "presentation_policy.CreatePolicyRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "presentation_policy.CreatePolicyResponse": {
             "type": "object",
             "properties": {
                 "id": {
@@ -1602,7 +1862,345 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserDetailResponse": {
+        "presentation_policy.PolicyResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "presentation_schedule.CreateRecurringScheduleRequest": {
+            "type": "object",
+            "required": [
+                "date",
+                "end_time",
+                "schedule_type_id",
+                "staff_id",
+                "start_time"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "recurring_rule": {
+                    "$ref": "#/definitions/presentation_schedule.RecurringRuleRequestModel"
+                },
+                "schedule_type_id": {
+                    "type": "string"
+                },
+                "staff_id": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "visit_info": {
+                    "$ref": "#/definitions/presentation_schedule.VisitInfoRequestModel"
+                }
+            }
+        },
+        "presentation_schedule.CreateRecurringScheduleResponse": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "$ref": "#/definitions/api-buddy_domain_common.Date"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "recurring_rule": {
+                    "$ref": "#/definitions/presentation_schedule.RecurringRuleResponseModel"
+                },
+                "schedule_type_id": {
+                    "type": "string"
+                },
+                "staff_id": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "visit_info": {
+                    "$ref": "#/definitions/presentation_schedule.VisitInfoResponseModel"
+                }
+            }
+        },
+        "presentation_schedule.CreateScheduleRequest": {
+            "type": "object",
+            "required": [
+                "date",
+                "end_time",
+                "schedule_type_id",
+                "staff_id",
+                "start_time"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "schedule_type_id": {
+                    "type": "string"
+                },
+                "staff_id": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "visit_info": {
+                    "$ref": "#/definitions/presentation_schedule.VisitInfoRequestModel"
+                }
+            }
+        },
+        "presentation_schedule.CreateScheduleResponse": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "$ref": "#/definitions/api-buddy_domain_common.Date"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "schedule_type_id": {
+                    "type": "string"
+                },
+                "staff_id": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "visit_info": {
+                    "$ref": "#/definitions/presentation_schedule.VisitInfoResponseModel"
+                }
+            }
+        },
+        "presentation_schedule.RecurringRuleRequestModel": {
+            "type": "object",
+            "required": [
+                "frequency",
+                "start_date"
+            ],
+            "properties": {
+                "day_of_month": {
+                    "type": "integer"
+                },
+                "days_of_week": {
+                    "type": "integer"
+                },
+                "end_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "frequency": {
+                    "$ref": "#/definitions/api-buddy_domain_schedule_recurring_rule.FrequencyEnum"
+                },
+                "start_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "week_of_month": {
+                    "type": "integer"
+                }
+            }
+        },
+        "presentation_schedule.RecurringRuleResponseModel": {
+            "type": "object",
+            "properties": {
+                "day_of_month": {
+                    "type": "integer"
+                },
+                "days_of_week": {
+                    "type": "integer"
+                },
+                "end_date": {
+                    "$ref": "#/definitions/api-buddy_domain_common.Date"
+                },
+                "frequency": {
+                    "$ref": "#/definitions/api-buddy_domain_schedule_recurring_rule.FrequencyEnum"
+                },
+                "start_date": {
+                    "$ref": "#/definitions/api-buddy_domain_common.Date"
+                },
+                "week_of_month": {
+                    "type": "integer"
+                }
+            }
+        },
+        "presentation_schedule.RouteRequestModel": {
+            "type": "object",
+            "required": [
+                "destination_id",
+                "from_address_id"
+            ],
+            "properties": {
+                "destination_id": {
+                    "type": "string"
+                },
+                "from_address_id": {
+                    "type": "string"
+                },
+                "travel_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "presentation_schedule.RouteResponseModel": {
+            "type": "object",
+            "properties": {
+                "address_id": {
+                    "type": "string"
+                },
+                "destination_id": {
+                    "type": "string"
+                },
+                "travel_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "presentation_schedule.VisitCategoryResponseModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "$ref": "#/definitions/api-buddy_domain_visit_info_visit_category.VisitCategoryType"
+                }
+            }
+        },
+        "presentation_schedule.VisitInfoRequestModel": {
+            "type": "object",
+            "required": [
+                "assign_staff_id",
+                "patient_id",
+                "service_code_id"
+            ],
+            "properties": {
+                "assign_staff_id": {
+                    "type": "string"
+                },
+                "companion_id": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "string"
+                },
+                "route": {
+                    "$ref": "#/definitions/presentation_schedule.RouteRequestModel"
+                },
+                "service_code_id": {
+                    "type": "string"
+                },
+                "visit_category_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "presentation_schedule.VisitInfoResponseModel": {
+            "type": "object",
+            "properties": {
+                "assigned_staff_id": {
+                    "type": "string"
+                },
+                "companion_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "string"
+                },
+                "route": {
+                    "$ref": "#/definitions/presentation_schedule.RouteResponseModel"
+                },
+                "service_code_id": {
+                    "type": "string"
+                },
+                "visit_categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/presentation_schedule.VisitCategoryResponseModel"
+                    }
+                }
+            }
+        },
+        "presentation_schedule_schedule_type.ScheduleTypeResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "$ref": "#/definitions/api-buddy_domain_schedule_schedule_type.ScheduleTypeEnum"
+                }
+            }
+        },
+        "presentation_user.PolicyModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "presentation_user.UserDetailResponse": {
             "type": "object",
             "properties": {
                 "area": {
@@ -1629,7 +2227,7 @@ const docTemplate = `{
                 "policies": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user.PolicyModel"
+                        "$ref": "#/definitions/presentation_user.PolicyModel"
                     }
                 },
                 "position": {
@@ -1646,7 +2244,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserResponse": {
+        "presentation_user.UserResponse": {
             "type": "object",
             "properties": {
                 "area": {
@@ -1666,6 +2264,34 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "presentation_visit_info_service_code.ServiceCodeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "service_time_range_end": {
+                    "type": "integer"
+                },
+                "service_time_range_start": {
+                    "type": "integer"
+                }
+            }
+        },
+        "presentation_visit_info_visit_category.VisitCategoryResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "$ref": "#/definitions/api-buddy_domain_visit_info_visit_category.VisitCategoryType"
                 }
             }
         }

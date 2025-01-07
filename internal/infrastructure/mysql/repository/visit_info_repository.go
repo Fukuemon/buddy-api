@@ -21,8 +21,13 @@ func NewVisitInfoRepository() visitInfoDomain.VisitInfoRepository {
 	}
 }
 
-func (r *VisitInfoRepository) Create(ctx context.Context, visitInfo *visitInfoDomain.VisitInfo) error {
-	err := r.db.Create(visitInfo).Error
+func (r *VisitInfoRepository) Create(ctx context.Context, tx *gorm.DB, visitInfo *visitInfoDomain.VisitInfo) error {
+	db := tx
+	if db == nil {
+		db = r.db
+	}
+
+	err := db.Create(visitInfo).Error
 	if err != nil {
 		return errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
@@ -63,7 +68,8 @@ func (r *VisitInfoRepository) FindAll(ctx context.Context, filters []query.Filte
 	}
 
 	var visitInfos []*visitInfoDomain.VisitInfo
-	err := dbQuery.Preload("Patient").Preload("User").Preload("Route").Find(&visitInfos).Error
+	err := dbQuery.Preload("Patient").Preload("AssignedStaff").Preload("Route").Preload("VisitCategories").Preload("ServiceCode").
+		Find(&visitInfos).Error
 	if err != nil {
 		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)
 	}
@@ -72,7 +78,8 @@ func (r *VisitInfoRepository) FindAll(ctx context.Context, filters []query.Filte
 
 func (r *VisitInfoRepository) FindByID(ctx context.Context, id string) (*visitInfoDomain.VisitInfo, error) {
 	var visitInfo visitInfoDomain.VisitInfo
-	err := r.db.Preload("Patient").Preload("User").Preload("Route").Where("id = ?", id).First(&visitInfo).Error
+	err := r.db.Preload("Patient").Preload("AssignedStaff").Preload("Route").Preload("VisitCategories").Preload("ServiceCode").
+		Where("id = ?", id).First(&visitInfo).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errorDomain.WrapError(errorDomain.NotFoundErr, err)

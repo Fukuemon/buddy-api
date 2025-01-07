@@ -1,16 +1,17 @@
+-- 施設情報
 CREATE TABLE IF NOT EXISTS facilities (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    created_at DATETIME,
-    updated_at DATETIME
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS departments (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     facility_id VARCHAR(255) NOT NULL,
-    created_at DATETIME,
-    updated_at DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (facility_id) REFERENCES facilities(id)
 );
 
@@ -18,24 +19,26 @@ CREATE TABLE IF NOT EXISTS teams (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     facility_id VARCHAR(255) NOT NULL,
-    created_at DATETIME,
-    updated_at DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (facility_id) REFERENCES facilities(id)
 );
+
+-- 権限
 
 CREATE TABLE IF NOT EXISTS policies (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    created_at DATETIME,
-    updated_at DATETIME
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS positions (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     facility_id VARCHAR(255) NOT NULL,
-    created_at DATETIME,
-    updated_at DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (facility_id) REFERENCES facilities(id)
 );
 
@@ -47,6 +50,8 @@ CREATE TABLE IF NOT EXISTS position_policies (
     FOREIGN KEY (policy_id) REFERENCES policies(id)
 );
 
+-- 住所
+
 CREATE TABLE IF NOT EXISTS addresses (
     id VARCHAR(255) PRIMARY KEY,
     zip_code VARCHAR(255),
@@ -56,19 +61,18 @@ CREATE TABLE IF NOT EXISTS addresses (
     address_line2 VARCHAR(255),
     latitude DECIMAL(10, 8),
     longitude DECIMAL(11, 8),
-    created_at DATETIME,
-    updated_at DATETIME
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS areas (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255),
     facility_id VARCHAR(255),
-    created_at DATETIME,
-    updated_at DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (facility_id) REFERENCES facilities(id)
 );
-
 
 CREATE TABLE IF NOT EXISTS area_addresses (
     address_id VARCHAR(255),
@@ -78,6 +82,7 @@ CREATE TABLE IF NOT EXISTS area_addresses (
     FOREIGN KEY (area_id) REFERENCES areas(id)
 );
 
+-- 職員
 
 CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(255) PRIMARY KEY,
@@ -89,8 +94,8 @@ CREATE TABLE IF NOT EXISTS users (
     team_id VARCHAR(255) NOT NULL,
     area_id VARCHAR(255) NOT NULL,
     facility_id VARCHAR(255) NOT NULL,
-    created_at DATETIME,
-    updated_at DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (position_id) REFERENCES positions(id),
     FOREIGN KEY (department_id) REFERENCES departments(id),
     FOREIGN KEY (team_id) REFERENCES teams(id),
@@ -106,13 +111,15 @@ CREATE TABLE IF NOT EXISTS user_policies (
     FOREIGN KEY (policy_id) REFERENCES policies(id)
 );
 
+-- 訪問情報
+
 CREATE TABLE IF NOT EXISTS service_codes (
     id VARCHAR(255) PRIMARY KEY,
     code VARCHAR(255) NOT NULL,
-    service_time_range_start int,
-    service_time_range_end int,
-    created_at DATETIME,
-    updated_at DATETIME
+    service_time_range_start INT,
+    service_time_range_end INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS patients (
@@ -125,8 +132,8 @@ CREATE TABLE IF NOT EXISTS patients (
     area_id VARCHAR(255) NOT NULL,
     assigned_staff_id VARCHAR(255) NOT NULL,
     facility_id VARCHAR(255) NOT NULL,
-    created_at DATETIME,
-    updated_at DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (service_code_id) REFERENCES service_codes(id),
     FOREIGN KEY (address_id) REFERENCES addresses(id),
     FOREIGN KEY (area_id) REFERENCES areas(id),
@@ -136,13 +143,20 @@ CREATE TABLE IF NOT EXISTS patients (
 
 CREATE TABLE IF NOT EXISTS routes (
     id VARCHAR(255) PRIMARY KEY,
-    travel_time int,
+    travel_time INT,
     address_id VARCHAR(255) NOT NULL,
     destination_id VARCHAR(255) NOT NULL,
-    created_at DATETIME,
-    updated_at DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (address_id) REFERENCES addresses(id),
     FOREIGN KEY (destination_id) REFERENCES addresses(id)
+);
+
+CREATE TABLE IF NOT EXISTS visit_categories (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS visit_infos (
@@ -150,16 +164,99 @@ CREATE TABLE IF NOT EXISTS visit_infos (
     patient_id VARCHAR(255) NOT NULL,
     assigned_staff_id VARCHAR(255) NOT NULL,
     companion_id VARCHAR(255),
-    route_id VARCHAR(255) NOT NULL,
+    route_id VARCHAR(255),
     service_code_id VARCHAR(255) NOT NULL,
-    created_at DATETIME,
-    updated_at DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (patient_id) REFERENCES patients(id),
     FOREIGN KEY (assigned_staff_id) REFERENCES users(id),
     FOREIGN KEY (companion_id) REFERENCES users(id),
     FOREIGN KEY (route_id) REFERENCES routes(id),
     FOREIGN KEY (service_code_id) REFERENCES service_codes(id)
 );
+
+CREATE TABLE `visit_info_visit_categories` (
+    `visit_info_id` CHAR(26) NOT NULL,
+    `visit_category_id` CHAR(26) NOT NULL,
+    PRIMARY KEY (`visit_info_id`, `visit_category_id`),
+    FOREIGN KEY (`visit_info_id`) REFERENCES `visit_infos` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`visit_category_id`) REFERENCES `visit_categories` (`id`) ON DELETE CASCADE
+);
+
+-- 予定関係
+CREATE TABLE IF NOT EXISTS schedule_types (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recurring_rules (
+    id VARCHAR(255) PRIMARY KEY,
+    frequency VARCHAR(255) NOT NULL,
+    day_of_week VARCHAR(255),
+    day_of_month VARCHAR(255),
+    week_of_month VARCHAR(255),
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS schedule_cancels (
+    id VARCHAR(255) PRIMARY KEY,
+    reason VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recurring_schedules (
+    id VARCHAR(255) PRIMARY KEY,
+    staff_id VARCHAR(255) NOT NULL,
+    schedule_type_id VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    visit_info_id VARCHAR(255),
+    title VARCHAR(255),
+    description VARCHAR(255),
+    is_over_time_work BOOLEAN NOT NULL DEFAULT FALSE,
+    recurring_exclusion_dates JSON,
+    recurring_rule_id VARCHAR(255),
+    facility_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (staff_id) REFERENCES users(id),
+    FOREIGN KEY (schedule_type_id) REFERENCES schedule_types(id),
+    FOREIGN KEY (visit_info_id) REFERENCES visit_infos(id),
+    FOREIGN KEY (recurring_rule_id) REFERENCES recurring_rules(id),
+    FOREIGN KEY (facility_id) REFERENCES facilities(id)
+);
+
+CREATE TABLE IF NOT EXISTS schedules (
+    id VARCHAR(255) PRIMARY KEY,
+    staff_id VARCHAR(255) NOT NULL,
+    schedule_type_id VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    schedule_cancel_id VARCHAR(255),
+    recurring_schedule_id VARCHAR(255),
+    visit_info_id VARCHAR(255),
+    title VARCHAR(255),
+    description VARCHAR(255),
+    is_over_time_work BOOLEAN NOT NULL DEFAULT FALSE,
+    facility_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (staff_id) REFERENCES users(id),
+    FOREIGN KEY (recurring_schedule_id) REFERENCES recurring_schedules(id),
+    FOREIGN KEY (schedule_type_id) REFERENCES schedule_types(id),
+    FOREIGN KEY (schedule_cancel_id) REFERENCES schedule_cancels(id),
+    FOREIGN KEY (visit_info_id) REFERENCES visit_infos(id),
+    FOREIGN KEY (facility_id) REFERENCES facilities(id)
+);
+
 
 
 -- Insert data
@@ -248,3 +345,20 @@ INSERT INTO service_codes (id, code, service_time_range_start, service_time_rang
 ('01JBVE7Z0K4KJ7G9C4Y8AWSVB7', '基本療養費', 30, 90, NOW(), NOW()),
 ('01JBVE7Z0K9VT9ZYJRE6YFARFX', '医', 30, 90, NOW(), NOW()),
 ('01JBVE7Z0KCS5C4ATYW3WPDHYN', '難病等複数回訪問加算(２回)', 30, 90, NOW(), NOW());
+
+-- patients
+INSERT INTO patients (id, name, preferred_time, preferred_gender, service_code_id, address_id, area_id, assigned_staff_id, facility_id, created_at, updated_at) VALUES
+('01JG8Y2DBN9X0RFG6D9WE2SNEN', '患者A', '朝', '男性', '01JBVE7Z0H0E0M6BX3FV1DK69A', '01JBBCQ314307YD69N89XT9WBN', '01JBBCQ867SR9Y001CR5HD6DNJ', '01J71685CQ0ZKYEHBRADF1Q8B4', '01J6SMYDSKKKNJCR2Y3242T7YX', NOW(), NOW()),
+('01JG8Y318VHVY1VH1H7BK7YG1C', '患者B', '昼', '女性', '01JBVE7Z0JQ9VG0E9SBSAQPYK3', '01JBBCPQ5SKAMZNDE9PY940ZZN', '01JBBCQ867SR9Y001CR5HD6DNJ', '01J71685CQ2JCBA6SAFTQ5MC87', '01J6SMYDSKKKNJCR2Y3242T7YX', NOW(), NOW()),
+('01JG8Y318VCR4ZZ0NW7SJ65F13', '患者C', '夜', '男性', '01JBVE7Z0JVGPNAZBD6QEES9XP', '01JBBCPX6RJPK18T4B7CAJG6F3', '01JBBCQP71J81VFQB2NRX77VDJ', '01J71685CQ5GXXEE7EN2ECVQR6', '01J6SMYDSKKKNJCR2Y3242T7YX', NOW(), NOW());
+
+-- visit_categories
+INSERT INTO visit_categories (id, name, created_at, updated_at) VALUES
+('01JG8Y318V1EFEGX96VC6NKMRD', '夜勤', NOW(), NOW()),
+('01JG8Y318V9KEYK76VVKHNZJCF', '緊急', NOW(), NOW()),
+('01JG8Y3QEMHHY4KR85FQJHJNQH', '入院', NOW(), NOW());
+
+-- schedule_types
+INSERT INTO schedule_types (id, name, created_at, updated_at) VALUES
+('01JG8Z3XZVD7M11CGETHQNAA6W', '訪問', NOW(), NOW()),
+('01JG8Z4740VMSJXKXPRV3NDR2R', '通常', NOW(), NOW());
