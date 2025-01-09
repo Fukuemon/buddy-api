@@ -287,6 +287,69 @@ definitions:
       status:
         type: string
     type: object
+  presentation_patient.CreatePatientRequest:
+    properties:
+      address_id:
+        type: string
+      area_id:
+        type: string
+      assigned_staff_id:
+        type: string
+      name:
+        type: string
+      preferred_gender:
+        type: string
+      preferred_time:
+        type: string
+      service_code_id:
+        type: string
+    required:
+    - address_id
+    - area_id
+    - assigned_staff_id
+    - name
+    - preferred_gender
+    - preferred_time
+    - service_code_id
+    type: object
+  presentation_patient.CreatePatientResponse:
+    properties:
+      address:
+        type: string
+      area:
+        type: string
+      assigned_staff:
+        type: string
+      facility:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      preferred_gender:
+        type: string
+      preferred_time:
+        type: string
+      service_code:
+        type: string
+    type: object
+  presentation_patient.PatientResponse:
+    properties:
+      address:
+        type: string
+      area:
+        type: string
+      assigned_staff:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      preferred_gender:
+        type: string
+      preferred_time:
+        type: string
+    type: object
   presentation_policy.CreatePolicyRequest:
     properties:
       name:
@@ -372,6 +435,8 @@ definitions:
         type: string
       end_time:
         type: string
+      recurring_schedule_id:
+        type: string
       schedule_type_id:
         type: string
       staff_id:
@@ -399,9 +464,11 @@ definitions:
         type: string
       id:
         type: string
-      schedule_type_id:
+      recurring_schedule_id:
         type: string
-      staff_id:
+      schedule_type:
+        type: string
+      staff_name:
         type: string
       start_time:
         type: string
@@ -414,7 +481,7 @@ definitions:
     properties:
       day_of_month:
         type: integer
-      days_of_week:
+      day_of_week:
         type: integer
       end_date:
         format: date
@@ -496,17 +563,17 @@ definitions:
     type: object
   presentation_schedule.VisitInfoResponseModel:
     properties:
-      assigned_staff_id:
+      assigned_staff_name:
         type: string
-      companion_id:
+      companion_name:
         type: string
       id:
         type: string
-      patient_id:
+      patient_name:
         type: string
       route:
         $ref: '#/definitions/presentation_schedule.RouteResponseModel'
-      service_code_id:
+      service_code:
         type: string
       visit_categories:
         items:
@@ -944,6 +1011,102 @@ paths:
       summary: 施設IDに紐づく部署を取得する
       tags:
       - Department
+  /facilities/{facility_id}/patients:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Facility ID
+        in: path
+        name: facility_id
+        required: true
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Preferred Time
+        in: query
+        name: preferred_time
+        type: string
+      - description: Preferred Gender
+        in: query
+        name: preferred_gender
+        type: string
+      - description: Assigned Staff
+        in: query
+        name: assigned_staff
+        type: string
+      - description: Zip Code
+        in: query
+        name: zip_code
+        type: string
+      - description: Sort Field
+        in: query
+        name: sort_field
+        type: string
+      - description: Sort Order (asc or desc)
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/presentation_patient.PatientResponse'
+              type: array
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+      summary: 施設IDに紐づく患者を取得する
+      tags:
+      - Patient
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient
+        in: body
+        name: patient
+        required: true
+        schema:
+          $ref: '#/definitions/presentation_patient.CreatePatientRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/presentation_patient.CreatePatientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+      summary: 患者を作成する
+      tags:
+      - Patient
   /facilities/{facility_id}/positions:
     get:
       consumes:
