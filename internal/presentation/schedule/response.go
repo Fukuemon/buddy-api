@@ -19,6 +19,40 @@ type CreateScheduleResponse struct {
 	RecurringScheduleID string                  `json:"recurring_schedule_id"`
 }
 
+type ScheduleResponse struct {
+	ID             string                  `json:"id"`
+	ScheduleType   string                  `json:"schedule_type"`
+	Date           common.Date             `json:"date"`
+	StartTime      common.Time             `json:"start_time"`
+	EndTime        common.Time             `json:"end_time"`
+	IsOverTimeWork bool                    `json:"is_over_time_work"`
+	StaffName      string                  `json:"staff_name"`
+	VisitInfo      *VisitInfoResponseModel `json:"visit_info"`
+	Title          string                  `json:"title"`
+	Description    string                  `json:"description"`
+	CancelReason   string                  `json:"cancel_reason"`
+}
+
+type RecurringScheduleResponse struct {
+	ID             string                      `json:"id"`
+	RecurringRule  *RecurringRuleResponseModel `json:"recurring_rule"`
+	ScheduleType   string                      `json:"schedule_type"`
+	Date           common.Date                 `json:"date"`
+	StartTime      common.Time                 `json:"start_time"`
+	EndTime        common.Time                 `json:"end_time"`
+	IsOverTimeWork bool                        `json:"is_over_time_work"`
+	StaffName      string                      `json:"staff_name"`
+	VisitInfo      *VisitInfoResponseModel     `json:"visit_info"`
+	Title          string                      `json:"title"`
+	Description    string                      `json:"description"`
+	ExclusionDates common.JSONSlice[int]       `json:"exclusion_dates"`
+}
+
+type ScheduleListResponse struct {
+	Schedules          []*ScheduleResponse          `json:"schedules"`
+	RecurringSchedules []*RecurringScheduleResponse `json:"recurring_schedules"`
+}
+
 type VisitInfoResponseModel struct {
 	ID                string                       `json:"id"`
 	PatientName       string                       `json:"patient_name"`
