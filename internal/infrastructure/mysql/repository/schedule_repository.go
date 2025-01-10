@@ -35,46 +35,28 @@ func (r *ScheduleRepository) Create(ctx context.Context, tx *gorm.DB, schedule *
 }
 
 func (r *ScheduleRepository) FindByFacilityID(ctx context.Context, facility_id string, filters []query.Filter, sort query.SortOption) ([]*scheduleDomain.Schedule, error) {
-	// Queryオブジェクトを初期化
-	q := query.NewQuery()
+	dbQuery := r.db.Table("schedules") // 明示的にテーブルを指定
 
-	// Queryオブジェクトにフィルターを適用
-	for _, filter := range filters {
-		filter.Apply(q)
-	}
-
-	dbQuery := r.db
-
-	// リレーションテーブルに基づいたフィルタリングのQueryを適用
-	for _, mapping := range scheduleDomain.ScheduleRelationMappings {
-		if value, exists := q.Filters[mapping.FilterField]; exists {
-			dbQuery = dbQuery.Joins("JOIN "+mapping.TableName+" ON "+mapping.JoinKey).
-				Where(mapping.FilterField+" = ?", value)
-		}
-	}
-
-	// 残りのフィルタリング（`schedules` テーブルに対するフィルター）を適用
-	for key, value := range q.Filters {
-		if _, isRelationField := scheduleDomain.ScheduleRelationMappings[key]; !isRelationField {
-			dbQuery = dbQuery.Where(key, value)
-		}
-	}
-
-	// ソートオプションの適用
-	if sort.Field != "" {
-		if mapping, exists := scheduleDomain.ScheduleRelationMappings[sort.Field]; exists {
-			dbQuery = dbQuery.Joins("JOIN " + mapping.TableName + " ON " + mapping.JoinKey).
-				Order(mapping.TableName + "." + sort.Field + " " + sort.Order)
-		} else {
-			dbQuery = dbQuery.Order(sort.Field + " " + sort.Order)
-		}
-	} else {
-		dbQuery = dbQuery.Order(sort.Field + " " + sort.Order)
-	}
+	// フィルタとソートを適用
+	dbQuery = db.ApplyFiltersAndSort(dbQuery, filters, sort, scheduleDomain.ScheduleRelationMappings)
 
 	var schedules []*scheduleDomain.Schedule
-	err := dbQuery.Preload("Facility").Preload("RecurringSchedule").Preload("VisitInfo").Preload("ScheduleType").Preload("Staff").Preload("ScheduleCancel").
-		Find(&schedules).Error
+	err := dbQuery.
+		Preload("Facility").
+		Preload("RecurringSchedule").
+		Preload("VisitInfo").
+		Preload("VisitInfo.Patient").
+		Preload("VisitInfo.AssignedStaff").
+		Preload("VisitInfo.Companion").
+		Preload("VisitInfo.Route").
+		Preload("VisitInfo.Route.Address").
+		Preload("VisitInfo.Route.Destination").
+		Preload("VisitInfo.ServiceCode").
+		Preload("VisitInfo.VisitCategories").
+		Preload("ScheduleType").
+		Preload("Staff").
+		Preload("ScheduleCancel").
+		Where("schedules.facility_id = ?", facility_id).Find(&schedules).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
@@ -86,7 +68,21 @@ func (r *ScheduleRepository) FindByFacilityID(ctx context.Context, facility_id s
 
 func (r *ScheduleRepository) FindByID(ctx context.Context, id string) (*scheduleDomain.Schedule, error) {
 	var schedule *scheduleDomain.Schedule
-	err := r.db.Preload("Facility").Preload("RecurringSchedule").Preload("VisitInfo").Preload("ScheduleType").Preload("Staff").Preload("ScheduleCancel").
+	err := r.db.
+		Preload("Facility").
+		Preload("RecurringSchedule").
+		Preload("VisitInfo").
+		Preload("VisitInfo.Patient").
+		Preload("VisitInfo.AssignedStaff").
+		Preload("VisitInfo.Companion").
+		Preload("VisitInfo.Route").
+		Preload("VisitInfo.Route.Address").
+		Preload("VisitInfo.Route.Destination").
+		Preload("VisitInfo.ServiceCode").
+		Preload("VisitInfo.VisitCategories").
+		Preload("ScheduleType").
+		Preload("Staff").
+		Preload("ScheduleCancel").
 		Where("id = ?", id).First(&schedule).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
