@@ -542,6 +542,152 @@
                 }
             }
         },
+        "/facilities/{facility_id}/patients": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient"
+                ],
+                "summary": "施設IDに紐づく患者を取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "facility_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Preferred Time",
+                        "name": "preferred_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Preferred Gender",
+                        "name": "preferred_gender",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Assigned Staff",
+                        "name": "assigned_staff",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Zip Code",
+                        "name": "zip_code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort Field",
+                        "name": "sort_field",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort Order (asc or desc)",
+                        "name": "sort_order",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/presentation_patient.PatientResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient"
+                ],
+                "summary": "患者を作成する",
+                "parameters": [
+                    {
+                        "description": "Patient",
+                        "name": "patient",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/presentation_patient.CreatePatientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/presentation_patient.CreatePatientResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/facilities/{facility_id}/positions": {
             "get": {
                 "consumes": [
@@ -1834,6 +1980,99 @@
                 }
             }
         },
+        "presentation_patient.CreatePatientRequest": {
+            "type": "object",
+            "required": [
+                "address_id",
+                "area_id",
+                "assigned_staff_id",
+                "name",
+                "preferred_gender",
+                "preferred_time",
+                "service_code_id"
+            ],
+            "properties": {
+                "address_id": {
+                    "type": "string"
+                },
+                "area_id": {
+                    "type": "string"
+                },
+                "assigned_staff_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "preferred_gender": {
+                    "type": "string"
+                },
+                "preferred_time": {
+                    "type": "string"
+                },
+                "service_code_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "presentation_patient.CreatePatientResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "area": {
+                    "type": "string"
+                },
+                "assigned_staff": {
+                    "type": "string"
+                },
+                "facility": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "preferred_gender": {
+                    "type": "string"
+                },
+                "preferred_time": {
+                    "type": "string"
+                },
+                "service_code": {
+                    "type": "string"
+                }
+            }
+        },
+        "presentation_patient.PatientResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "area": {
+                    "type": "string"
+                },
+                "assigned_staff": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "preferred_gender": {
+                    "type": "string"
+                },
+                "preferred_time": {
+                    "type": "string"
+                }
+            }
+        },
         "presentation_policy.CreatePolicyRequest": {
             "type": "object",
             "required": [
@@ -1968,6 +2207,9 @@
                 "end_time": {
                     "type": "string"
                 },
+                "recurring_schedule_id": {
+                    "type": "string"
+                },
                 "schedule_type_id": {
                     "type": "string"
                 },
@@ -2000,10 +2242,13 @@
                 "id": {
                     "type": "string"
                 },
-                "schedule_type_id": {
+                "recurring_schedule_id": {
                     "type": "string"
                 },
-                "staff_id": {
+                "schedule_type": {
+                    "type": "string"
+                },
+                "staff_name": {
                     "type": "string"
                 },
                 "start_time": {
@@ -2027,7 +2272,7 @@
                 "day_of_month": {
                     "type": "integer"
                 },
-                "days_of_week": {
+                "day_of_week": {
                     "type": "integer"
                 },
                 "end_date": {
@@ -2146,22 +2391,22 @@
         "presentation_schedule.VisitInfoResponseModel": {
             "type": "object",
             "properties": {
-                "assigned_staff_id": {
+                "assigned_staff_name": {
                     "type": "string"
                 },
-                "companion_id": {
+                "companion_name": {
                     "type": "string"
                 },
                 "id": {
                     "type": "string"
                 },
-                "patient_id": {
+                "patient_name": {
                     "type": "string"
                 },
                 "route": {
                     "$ref": "#/definitions/presentation_schedule.RouteResponseModel"
                 },
-                "service_code_id": {
+                "service_code": {
                     "type": "string"
                 },
                 "visit_categories": {

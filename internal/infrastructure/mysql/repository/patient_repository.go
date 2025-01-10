@@ -63,8 +63,8 @@ func (r *PatientRepository) FindByFacilityID(ctx context.Context, facility_id st
 	}
 
 	var patients []*patientDomain.Patient
-	err := dbQuery.Preload("ServiceCode").Preload("Address").Preload("Area").Preload("Assigned_Staff").
-		Where("facility_id = ?", facility_id).
+	err := dbQuery.Preload("ServiceCode").Preload("Address").Preload("Area").Preload("AssignedStaff").
+		Where("patients.facility_id = ?", facility_id).
 		Find(&patients).Error
 	if err != nil {
 		return nil, errorDomain.WrapError(errorDomain.GeneralDBError, err)

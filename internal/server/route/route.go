@@ -35,6 +35,9 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	patientPre "api-buddy/presentation/patient"
+	patientUse "api-buddy/usecase/patient"
 )
 
 func InitRoute(api *gin.Engine) {
@@ -57,6 +60,7 @@ func InitRoute(api *gin.Engine) {
 		scheduleTypeRoute(v1)
 		serviceCodeRoute(v1)
 		visitCategoryRoute(v1)
+		patientRoute(v1)
 	}
 
 	// Swagger
@@ -239,4 +243,21 @@ func visitCategoryRoute(r *gin.RouterGroup) {
 	)
 	group := r.Group("/visit_infos/visit_categories")
 	group.GET("", h.FetchVisitCategories)
+}
+
+func patientRoute(r *gin.RouterGroup) {
+	patientRepository := repository.NewPatientRepository()
+	facilityRepository := repository.NewFacilityRepository()
+	areaREpository := repository.NewAreaRepository()
+	addressRepository := repository.NewAddressRepository()
+	userRepository := repository.NewUserRepository()
+	serviceCodeRepository := repository.NewServiceCodeRepository()
+
+	h := patientPre.NewHandler(
+		patientUse.NewCreatePatientUseCase(patientRepository, facilityRepository, areaREpository, addressRepository, userRepository, serviceCodeRepository),
+		patientUse.NewFetchPatientUseCase(patientRepository),
+	)
+	group := r.Group("/facilities/:facility_id/patients")
+	group.POST("", h.CreatePatient)
+	group.GET("", h.FetchByFacilityId)
 }

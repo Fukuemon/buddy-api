@@ -63,3 +63,7 @@ func newAddress(
 	common.InitializeCommonModel(&address.CommonModel)
 	return address, nil
 }
+
+func (address *Address) JoinAddress() string {
+	return address.ZipCode + address.Prefecture + address.City + address.AddressLine1 + address.AddressLine2
+}
