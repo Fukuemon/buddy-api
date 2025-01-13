@@ -5,6 +5,22 @@ definitions:
       time.Time:
         type: string
     type: object
+  api-buddy_domain_patient.PreferredGender:
+    enum:
+    - 男性
+    - 女性
+    type: string
+    x-enum-varnames:
+    - Man
+    - Woman
+  api-buddy_domain_patient.PreferredTime:
+    enum:
+    - 午後
+    - 午前
+    type: string
+    x-enum-varnames:
+    - PM
+    - AM
   api-buddy_domain_policy.Policy:
     properties:
       created_at:
@@ -298,9 +314,9 @@ definitions:
       name:
         type: string
       preferred_gender:
-        type: string
+        $ref: '#/definitions/api-buddy_domain_patient.PreferredGender'
       preferred_time:
-        type: string
+        $ref: '#/definitions/api-buddy_domain_patient.PreferredTime'
       service_code_id:
         type: string
     required:
@@ -327,9 +343,9 @@ definitions:
       name:
         type: string
       preferred_gender:
-        type: string
+        $ref: '#/definitions/api-buddy_domain_patient.PreferredGender'
       preferred_time:
-        type: string
+        $ref: '#/definitions/api-buddy_domain_patient.PreferredTime'
       service_code:
         type: string
     type: object
@@ -346,9 +362,9 @@ definitions:
       name:
         type: string
       preferred_gender:
-        type: string
+        $ref: '#/definitions/api-buddy_domain_patient.PreferredGender'
       preferred_time:
-        type: string
+        $ref: '#/definitions/api-buddy_domain_patient.PreferredTime'
     type: object
   presentation_policy.CreatePolicyRequest:
     properties:
@@ -512,6 +528,35 @@ definitions:
       week_of_month:
         type: integer
     type: object
+  presentation_schedule.RecurringScheduleResponse:
+    properties:
+      date:
+        $ref: '#/definitions/api-buddy_domain_common.Date'
+      description:
+        type: string
+      end_time:
+        type: string
+      exclusion_dates:
+        items:
+          type: integer
+        type: array
+      id:
+        type: string
+      is_over_time_work:
+        type: boolean
+      recurring_rule:
+        $ref: '#/definitions/presentation_schedule.RecurringRuleResponseModel'
+      schedule_type:
+        type: string
+      staff_name:
+        type: string
+      start_time:
+        type: string
+      title:
+        type: string
+      visit_info:
+        $ref: '#/definitions/presentation_schedule.VisitInfoResponseModel'
+    type: object
   presentation_schedule.RouteRequestModel:
     properties:
       destination_id:
@@ -532,6 +577,42 @@ definitions:
         type: string
       travel_time:
         type: integer
+    type: object
+  presentation_schedule.ScheduleListResponse:
+    properties:
+      recurring_schedules:
+        items:
+          $ref: '#/definitions/presentation_schedule.RecurringScheduleResponse'
+        type: array
+      schedules:
+        items:
+          $ref: '#/definitions/presentation_schedule.ScheduleResponse'
+        type: array
+    type: object
+  presentation_schedule.ScheduleResponse:
+    properties:
+      cancel_reason:
+        type: string
+      date:
+        $ref: '#/definitions/api-buddy_domain_common.Date'
+      description:
+        type: string
+      end_time:
+        type: string
+      id:
+        type: string
+      is_over_time_work:
+        type: boolean
+      schedule_type:
+        type: string
+      staff_name:
+        type: string
+      start_time:
+        type: string
+      title:
+        type: string
+      visit_info:
+        $ref: '#/definitions/presentation_schedule.VisitInfoResponseModel'
     type: object
   presentation_schedule.VisitCategoryResponseModel:
     properties:
@@ -1172,6 +1253,37 @@ paths:
       tags:
       - Position
   /facilities/{facility_id}/schedules:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facility_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/presentation_schedule.ScheduleListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+      summary: 施設に紐づく予定と繰り返し予定を全て取得する
+      tags:
+      - Schedule
     post:
       consumes:
       - application/json
@@ -1540,6 +1652,80 @@ paths:
       summary: 単一の役職を取得する
       tags:
       - Position
+  /schedules/{schedule_id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facility_id
+        required: true
+        type: string
+      - description: 予定ID
+        in: path
+        name: schedule_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/presentation_schedule.ScheduleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+      summary: 単一の予定を取得する
+      tags:
+      - Schedule
+  /schedules/recurring/{recurring_schedule_id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facility_id
+        required: true
+        type: string
+      - description: 繰り返し予定ID
+        in: path
+        name: recurring_schedule_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/presentation_schedule.RecurringScheduleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api-buddy_presentation_common.ErrorResponse'
+      summary: 単一の繰り返し予定を取得する
+      tags:
+      - Schedule
   /teams/{team_id}:
     get:
       consumes:

@@ -9,7 +9,6 @@ import (
 	visitInfoDomain "api-buddy/domain/visit_info"
 	visitCategoryDomain "api-buddy/domain/visit_info/visit_category"
 	"context"
-	"log"
 
 	"github.com/Fukuemon/go-pkg/query"
 )
@@ -40,13 +39,13 @@ type ScheduleModel struct {
 	EndTime        common.Time
 	IsOverTimeWork bool
 	StaffName      string
-	VisitInfo      *visitInfoModel
+	VisitInfo      *VisitInfoModel
 	Title          string
 	Description    string
 	CancelReason   string
 }
 
-type visitInfoModel struct {
+type VisitInfoModel struct {
 	Patient         string
 	AssignedStaff   string
 	Companion       string
@@ -75,7 +74,7 @@ type RecurringScheduleModel struct {
 	EndTime        common.Time
 	IsOverTimeWork bool
 	StaffName      string
-	VisitInfo      *visitInfoModel
+	VisitInfo      *VisitInfoModel
 	Title          string
 	Description    string
 	ExclusionDates *common.JSONSlice[int]
@@ -120,7 +119,6 @@ func (uc *FetchScheduleUseCase) Run(ctx context.Context, facilityID string, inpu
 	if err != nil {
 		return nil, err
 	}
-	log.Println("recurringSchedules", recurringSchedules)
 	recurringScheduleList := make([]recurringScheduleDomain.RecurringSchedule, len(recurringSchedules))
 	for i, recurringSchedule := range recurringSchedules {
 		recurringScheduleList[i] = *recurringSchedule
@@ -200,7 +198,7 @@ func (uc *FetchScheduleUseCase) buildRecurringScheduleModels(recurringSchedules 
 	return models
 }
 
-func (uc *FetchScheduleUseCase) buildVisitInfoModel(visitInfo *visitInfoDomain.VisitInfo) *visitInfoModel {
+func (uc *FetchScheduleUseCase) buildVisitInfoModel(visitInfo *visitInfoDomain.VisitInfo) *VisitInfoModel {
 	if visitInfo == nil {
 		return nil // visitInfoがnilの場合、nilを返す
 	}
@@ -224,7 +222,7 @@ func (uc *FetchScheduleUseCase) buildVisitInfoModel(visitInfo *visitInfoDomain.V
 		}
 	}
 
-	return &visitInfoModel{
+	return &VisitInfoModel{
 		Patient:       visitInfo.Patient.Name,
 		AssignedStaff: visitInfo.AssignedStaff.Username,
 		Companion: func() string {

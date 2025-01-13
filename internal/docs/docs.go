@@ -793,6 +793,53 @@ const docTemplate = `{
             }
         },
         "/facilities/{facility_id}/schedules": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Schedule"
+                ],
+                "summary": "施設に紐づく予定と繰り返し予定を全て取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "施設ID",
+                        "name": "facility_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/presentation_schedule.ScheduleListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -1357,6 +1404,118 @@ const docTemplate = `{
                 }
             }
         },
+        "/schedules/recurring/{recurring_schedule_id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Schedule"
+                ],
+                "summary": "単一の繰り返し予定を取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "施設ID",
+                        "name": "facility_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "繰り返し予定ID",
+                        "name": "recurring_schedule_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/presentation_schedule.RecurringScheduleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/schedules/{schedule_id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Schedule"
+                ],
+                "summary": "単一の予定を取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "施設ID",
+                        "name": "facility_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "予定ID",
+                        "name": "schedule_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/presentation_schedule.ScheduleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api-buddy_presentation_common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/teams/{team_id}": {
             "get": {
                 "consumes": [
@@ -1562,6 +1721,28 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "api-buddy_domain_patient.PreferredGender": {
+            "type": "string",
+            "enum": [
+                "男性",
+                "女性"
+            ],
+            "x-enum-varnames": [
+                "Man",
+                "Woman"
+            ]
+        },
+        "api-buddy_domain_patient.PreferredTime": {
+            "type": "string",
+            "enum": [
+                "午後",
+                "午前"
+            ],
+            "x-enum-varnames": [
+                "PM",
+                "AM"
+            ]
         },
         "api-buddy_domain_policy.Policy": {
             "type": "object",
@@ -2011,10 +2192,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "preferred_gender": {
-                    "type": "string"
+                    "$ref": "#/definitions/api-buddy_domain_patient.PreferredGender"
                 },
                 "preferred_time": {
-                    "type": "string"
+                    "$ref": "#/definitions/api-buddy_domain_patient.PreferredTime"
                 },
                 "service_code_id": {
                     "type": "string"
@@ -2043,10 +2224,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "preferred_gender": {
-                    "type": "string"
+                    "$ref": "#/definitions/api-buddy_domain_patient.PreferredGender"
                 },
                 "preferred_time": {
-                    "type": "string"
+                    "$ref": "#/definitions/api-buddy_domain_patient.PreferredTime"
                 },
                 "service_code": {
                     "type": "string"
@@ -2072,10 +2253,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "preferred_gender": {
-                    "type": "string"
+                    "$ref": "#/definitions/api-buddy_domain_patient.PreferredGender"
                 },
                 "preferred_time": {
-                    "type": "string"
+                    "$ref": "#/definitions/api-buddy_domain_patient.PreferredTime"
                 }
             }
         },
@@ -2320,6 +2501,50 @@ const docTemplate = `{
                 }
             }
         },
+        "presentation_schedule.RecurringScheduleResponse": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "$ref": "#/definitions/api-buddy_domain_common.Date"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "exclusion_dates": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_over_time_work": {
+                    "type": "boolean"
+                },
+                "recurring_rule": {
+                    "$ref": "#/definitions/presentation_schedule.RecurringRuleResponseModel"
+                },
+                "schedule_type": {
+                    "type": "string"
+                },
+                "staff_name": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "visit_info": {
+                    "$ref": "#/definitions/presentation_schedule.VisitInfoResponseModel"
+                }
+            }
+        },
         "presentation_schedule.RouteRequestModel": {
             "type": "object",
             "required": [
@@ -2349,6 +2574,61 @@ const docTemplate = `{
                 },
                 "travel_time": {
                     "type": "integer"
+                }
+            }
+        },
+        "presentation_schedule.ScheduleListResponse": {
+            "type": "object",
+            "properties": {
+                "recurring_schedules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/presentation_schedule.RecurringScheduleResponse"
+                    }
+                },
+                "schedules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/presentation_schedule.ScheduleResponse"
+                    }
+                }
+            }
+        },
+        "presentation_schedule.ScheduleResponse": {
+            "type": "object",
+            "properties": {
+                "cancel_reason": {
+                    "type": "string"
+                },
+                "date": {
+                    "$ref": "#/definitions/api-buddy_domain_common.Date"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_over_time_work": {
+                    "type": "boolean"
+                },
+                "schedule_type": {
+                    "type": "string"
+                },
+                "staff_name": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "visit_info": {
+                    "$ref": "#/definitions/presentation_schedule.VisitInfoResponseModel"
                 }
             }
         },
