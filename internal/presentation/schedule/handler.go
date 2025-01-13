@@ -10,21 +10,31 @@ import (
 	recurringSchedule "api-buddy/usecase/schedule/recurring_schedule"
 
 	"github.com/Fukuemon/go-pkg/validator"
+	pathValidator "github.com/Fukuemon/go-pkg/validator/gin"
 	"github.com/gin-gonic/gin"
 )
 
 type handler struct {
 	createScheduleUseCase          *schedule.CreateScheduleUseCase
 	createRecurringScheduleUseCase *recurringSchedule.CreateRecurringScheduleUseCase
+	fetchScheduleUseCase           *schedule.FetchScheduleUseCase
+	findScheduleUseCase            *schedule.FindScheduleUseCase
+	findREcurringScheduleUseCase   *recurringSchedule.FindRecurringScheduleUseCase
 }
 
 func NewHandler(
 	createScheduleUseCase *schedule.CreateScheduleUseCase,
 	createRecurringScheduleUseCase *recurringSchedule.CreateRecurringScheduleUseCase,
+	fetchScheduleUseCase *schedule.FetchScheduleUseCase,
+	findScheduleUseCase *schedule.FindScheduleUseCase,
+	findRecurringScheduleUseCase *recurringSchedule.FindRecurringScheduleUseCase,
 ) *handler {
 	return &handler{
 		createScheduleUseCase:          createScheduleUseCase,
 		createRecurringScheduleUseCase: createRecurringScheduleUseCase,
+		fetchScheduleUseCase:           fetchScheduleUseCase,
+		findScheduleUseCase:            findScheduleUseCase,
+		findREcurringScheduleUseCase:   findRecurringScheduleUseCase,
 	}
 }
 
@@ -278,10 +288,331 @@ func (h *handler) CreateRecurringSchedule(ctx *gin.Context) {
 	settings.ReturnStatusCreated(ctx, response)
 }
 
-// GetSchedule godoc
-// @Summary 予定を取得する
+// GetSchedule swagger
+// @Summary 施設に紐づく予定と繰り返し予定を全て取得する
 // @Tags Schedule
 // @Accept json
+// @Produce json
+// @Param facility_id path string true "施設ID"
+// @Success 200 {object} ScheduleListResponse
+// @Failure 400 {object} common.ErrorResponse
+// @Failure 403 {object} common.ErrorResponse
+// @Failure 500 {object} common.ErrorResponse
+// @Router /facilities/{facility_id}/schedules [get]
+func (h *handler) FetchByFacilityId(ctx *gin.Context) {
+	facilityID := pathValidator.Param(ctx, "facility_id", "required", "ulid")
+	err := facilityID.ParamValidate()
+	if err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	scheduleType := ctx.Query("schedule_type")
+	sortField := ctx.Query("sort_field")
+	sortOrder := ctx.Query("sort_order")
+
+	input := schedule.FetchScheduleUseCaseInputDto{
+		ScheduleType: scheduleType,
+		SortField:    sortField,
+		SortOrder:    sortOrder,
+	}
+
+	output, err := h.fetchScheduleUseCase.Run(ctx, facilityID.ParamValue, input)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	schedules := ScheduleListResponse{
+		Schedules: func() []*ScheduleResponse {
+			var schedules []*ScheduleResponse
+			for _, schedule := range output.Schedules {
+				schedules = append(schedules, &ScheduleResponse{
+					ID:           schedule.ID,
+					ScheduleType: string(schedule.ScheduleType),
+					Date:         schedule.Date,
+					StartTime:    schedule.StartTime,
+					EndTime:      schedule.EndTime,
+					StaffName:    schedule.StaffName,
+					VisitInfo: func() *VisitInfoResponseModel {
+						if schedule.VisitInfo == nil {
+							return nil
+						}
+						return &VisitInfoResponseModel{
+							PatientName:       schedule.VisitInfo.Patient,
+							AssignedStaffName: schedule.VisitInfo.AssignedStaff,
+							CompanionName:     schedule.VisitInfo.Companion,
+							Route: func() *RouteResponseModel {
+								if schedule.VisitInfo.Route != nil {
+									return &RouteResponseModel{
+										TravelTime:    schedule.VisitInfo.Route.TravelTime,
+										AddressID:     schedule.VisitInfo.Route.Address,
+										DestinationID: schedule.VisitInfo.Route.Destination,
+									}
+								}
+								return nil
+							}(),
+							ServiceCode: schedule.VisitInfo.ServiceCode,
+							VisitCategories: func() []VisitCategoryResponseModel {
+								var categories []VisitCategoryResponseModel
+								if schedule.VisitInfo.VisitCategories != nil {
+									for _, category := range schedule.VisitInfo.VisitCategories {
+										categories = append(categories, VisitCategoryResponseModel{
+											ID:   category.ID,
+											Name: category.Name,
+										})
+									}
+								}
+								return categories
+							}(),
+						}
+					}(),
+					Title:       schedule.Title,
+					Description: schedule.Description,
+				})
+			}
+			return schedules
+		}(),
+		RecurringSchedules: func() []*RecurringScheduleResponse {
+			var recurringSchedules []*RecurringScheduleResponse
+			for _, recurringSchedule := range output.RecurringSchedules {
+				recurringSchedules = append(recurringSchedules, &RecurringScheduleResponse{
+					ID: recurringSchedule.ID,
+					RecurringRule: func() *RecurringRuleResponseModel {
+						if recurringSchedule.RecurringRule != nil {
+							return &RecurringRuleResponseModel{
+								Frequency:   recurringSchedule.RecurringRule.Frequency,
+								DaysOfWeek:  recurringSchedule.RecurringRule.DayOfWeek,
+								DayOfMonth:  recurringSchedule.RecurringRule.DayOfMonth,
+								WeekOfMonth: recurringSchedule.RecurringRule.WeekOfMonth,
+								StartDate:   recurringSchedule.RecurringRule.StartDate,
+								EndDate:     recurringSchedule.RecurringRule.EndDate,
+							}
+						}
+						return nil
+					}(),
+					ScheduleType: string(recurringSchedule.ScheduleType),
+					Date:         recurringSchedule.Date,
+					StartTime:    recurringSchedule.StartTime,
+					EndTime:      recurringSchedule.EndTime,
+					StaffName:    recurringSchedule.StaffName,
+					VisitInfo: func() *VisitInfoResponseModel {
+						if recurringSchedule.VisitInfo == nil {
+							return nil
+						}
+						return &VisitInfoResponseModel{
+							PatientName:       recurringSchedule.VisitInfo.Patient,
+							AssignedStaffName: recurringSchedule.VisitInfo.AssignedStaff,
+							CompanionName:     recurringSchedule.VisitInfo.Companion,
+							Route: func() *RouteResponseModel {
+								if recurringSchedule.VisitInfo.Route != nil {
+									return &RouteResponseModel{
+										TravelTime:    recurringSchedule.VisitInfo.Route.TravelTime,
+										AddressID:     recurringSchedule.VisitInfo.Route.Address,
+										DestinationID: recurringSchedule.VisitInfo.Route.Destination,
+									}
+								}
+								return nil
+							}(),
+							ServiceCode: recurringSchedule.VisitInfo.ServiceCode,
+							VisitCategories: func() []VisitCategoryResponseModel {
+								var categories []VisitCategoryResponseModel
+								if recurringSchedule.VisitInfo.VisitCategories != nil {
+									for _, category := range recurringSchedule.VisitInfo.VisitCategories {
+										categories = append(categories, VisitCategoryResponseModel{
+											ID:   category.ID,
+											Name: category.Name,
+										})
+									}
+								}
+								return categories
+							}(),
+						}
+					}(),
+					Title:       recurringSchedule.Title,
+					Description: recurringSchedule.Description,
+					ExclusionDates: func() []int {
+						if recurringSchedule.ExclusionDates == nil {
+							return nil
+						}
+						return *recurringSchedule.ExclusionDates
+					}(),
+				})
+			}
+			return recurringSchedules
+		}(),
+	}
+
+	settings.ReturnStatusOK(ctx, schedules)
+}
+
+// FindSchedule godoc
+// @Summary 単一の予定を取得する
+// @Tags Schedule
+// @Accept json
+// @Produce json
+// @Param facility_id path string true "施設ID"
+// @Param schedule_id path string true "予定ID"
+// @Success 200 {object} ScheduleResponse
+// @Failure 400 {object} common.ErrorResponse
+// @Failure 403 {object} common.ErrorResponse
+// @Failure 500 {object} common.ErrorResponse
+// @Router /schedules/{schedule_id} [get]
+func (h *handler) FindScheduleByID(ctx *gin.Context) {
+	scheduleID := pathValidator.Param(ctx, "schedule_id", "required", "ulid")
+	err := scheduleID.ParamValidate()
+	if err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.findScheduleUseCase.Run(ctx, scheduleID.ParamValue)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	response := ScheduleResponse{
+		ID:             output.ID,
+		ScheduleType:   string(*output.ScheduleType),
+		Date:           output.Date,
+		StartTime:      output.StartTime,
+		EndTime:        output.EndTime,
+		IsOverTimeWork: output.IsOverTimeWork,
+		StaffName:      output.StaffName,
+		VisitInfo: func() *VisitInfoResponseModel {
+			if output.VisitInfo == nil {
+				return nil
+			}
+			return &VisitInfoResponseModel{
+				PatientName:       output.VisitInfo.Patient,
+				AssignedStaffName: output.VisitInfo.AssignedStaff,
+				CompanionName:     output.VisitInfo.Companion,
+				Route: func() *RouteResponseModel {
+					if output.VisitInfo.Route != nil {
+						return &RouteResponseModel{
+							TravelTime:    output.VisitInfo.Route.TravelTime,
+							AddressID:     output.VisitInfo.Route.Address,
+							DestinationID: output.VisitInfo.Route.Destination,
+						}
+					}
+					return nil
+				}(),
+				ServiceCode: output.VisitInfo.ServiceCode,
+				VisitCategories: func() []VisitCategoryResponseModel {
+					var categories []VisitCategoryResponseModel
+					if output.VisitInfo.VisitCategories != nil {
+						for _, category := range output.VisitInfo.VisitCategories {
+							categories = append(categories, VisitCategoryResponseModel{
+								ID:   category.ID,
+								Name: category.Name,
+							})
+						}
+					}
+					return categories
+				}(),
+			}
+		}(),
+		Title:       *output.Title,
+		Description: *output.Description,
+		CancelReason: func() string {
+			if output.CancelReason != nil {
+				return *output.CancelReason
+			}
+			return ""
+		}(),
+	}
+
+	settings.ReturnStatusOK(ctx, response)
+}
+
+// FindRecurringSchedule godoc
+// @Summary 単一の繰り返し予定を取得する
+// @Tags Schedule
+// @Accept json
+// @Produce json
+// @Param facility_id path string true "施設ID"
+// @Param recurring_schedule_id path string true "繰り返し予定ID"
+// @Success 200 {object} RecurringScheduleResponse
+// @Failure 400 {object} common.ErrorResponse
+// @Failure 403 {object} common.ErrorResponse
+// @Failure 500 {object} common.ErrorResponse
+// @Router /schedules/recurring/{recurring_schedule_id} [get]
+func (h *handler) FindRecurringScheduleByID(ctx *gin.Context) {
+	recurringScheduleID := pathValidator.Param(ctx, "recurring_schedule_id", "required", "ulid")
+	err := recurringScheduleID.ParamValidate()
+	if err != nil {
+		ctx.Error(errorDomain.ValidationError(err))
+		return
+	}
+
+	output, err := h.findREcurringScheduleUseCase.Run(ctx, recurringScheduleID.ParamValue)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	response := RecurringScheduleResponse{
+		ID: output.ID,
+		RecurringRule: &RecurringRuleResponseModel{
+			Frequency:   output.RecurringRule.Frequency,
+			DaysOfWeek:  output.RecurringRule.DayOfWeek,
+			DayOfMonth:  output.RecurringRule.DayOfMonth,
+			WeekOfMonth: output.RecurringRule.WeekOfMonth,
+			StartDate:   output.RecurringRule.StartDate,
+			EndDate:     output.RecurringRule.EndDate,
+		},
+		ScheduleType:   string(*output.ScheduleType),
+		Date:           output.Date,
+		StartTime:      output.StartTime,
+		EndTime:        output.EndTime,
+		IsOverTimeWork: output.IsOverTimeWork,
+		StaffName:      output.StaffName,
+		VisitInfo: func() *VisitInfoResponseModel {
+			if output.VisitInfo == nil {
+				return nil
+			}
+			return &VisitInfoResponseModel{
+				PatientName:       output.VisitInfo.Patient,
+				AssignedStaffName: output.VisitInfo.AssignedStaff,
+				CompanionName:     output.VisitInfo.Companion,
+				Route: func() *RouteResponseModel {
+					if output.VisitInfo.Route != nil {
+						return &RouteResponseModel{
+							TravelTime:    output.VisitInfo.Route.TravelTime,
+							AddressID:     output.VisitInfo.Route.Address,
+							DestinationID: output.VisitInfo.Route.Destination,
+						}
+					}
+					return nil
+				}(),
+				ServiceCode: output.VisitInfo.ServiceCode,
+				VisitCategories: func() []VisitCategoryResponseModel {
+					var categories []VisitCategoryResponseModel
+					if output.VisitInfo.VisitCategories != nil {
+						for _, category := range output.VisitInfo.VisitCategories {
+							categories = append(categories, VisitCategoryResponseModel{
+								ID:   category.ID,
+								Name: category.Name,
+							})
+						}
+					}
+					return categories
+				}(),
+			}
+		}(),
+		Title:       *output.Title,
+		Description: *output.Description,
+		ExclusionDates: func() []int {
+			if output.ExclusionDates == nil {
+				return nil
+			}
+			return *output.ExclusionDates
+		}(),
+	}
+
+	settings.ReturnStatusOK(ctx, response)
+}
 
 // CreateChangeRecurringSchedule godoc
 // @Summary 繰り返し予定を変更する

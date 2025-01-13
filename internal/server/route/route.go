@@ -210,12 +210,23 @@ func scheduleRoute(r *gin.RouterGroup) {
 	h := schedulePre.NewHandler(
 		scheduleUse.NewCreateScheduleUseCase(scheduleRepository, facilityRepository, scheduleTypeRepository, userRepository, recurringScheduleRepository, visitInfoService),
 		recurringScheduleUse.NewCreateRecurringScheduleUseCase(recurringRuleRepository, facilityRepository, scheduleTypeRepository, userRepository, recurringScheduleRepository, visitInfoService),
+		scheduleUse.NewFetchScheduleUseCase(scheduleRepository, recurringScheduleRepository),
+		scheduleUse.NewFindScheduleUseCase(scheduleRepository),
+		recurringScheduleUse.NewFindRecurringScheduleUseCase(recurringScheduleRepository),
 	)
 	group := r.Group("/facilities/:facility_id/schedules")
 	group.POST("", h.CreateSchedule)
+	group.GET("", h.FetchByFacilityId)
 
 	group = r.Group("/facilities/:facility_id/schedules/recurring")
 	group.POST("", h.CreateRecurringSchedule)
+
+	group = r.Group("/schedules/:schedule_id")
+	group.GET("", h.FindScheduleByID)
+
+	group = r.Group("/schedules/recurring/:recurring_schedule_id")
+	group.GET("", h.FindRecurringScheduleByID)
+
 }
 
 func scheduleTypeRoute(r *gin.RouterGroup) {
