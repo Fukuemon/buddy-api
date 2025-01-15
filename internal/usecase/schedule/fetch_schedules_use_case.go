@@ -38,6 +38,7 @@ type ScheduleModel struct {
 	StartTime      common.Time
 	EndTime        common.Time
 	IsOverTimeWork bool
+	StaffID        string
 	StaffName      string
 	VisitInfo      *VisitInfoModel
 	Title          string
@@ -73,6 +74,7 @@ type RecurringScheduleModel struct {
 	StartTime      common.Time
 	EndTime        common.Time
 	IsOverTimeWork bool
+	StaffID        string
 	StaffName      string
 	VisitInfo      *VisitInfoModel
 	Title          string
@@ -150,6 +152,7 @@ func (uc *FetchScheduleUseCase) buildScheduleModels(schedules []scheduleDomain.S
 			StartTime:      schedule.StartTime,
 			EndTime:        schedule.EndTime,
 			IsOverTimeWork: schedule.IsOverTimeWork,
+			StaffID:        schedule.Staff.ID,
 			StaffName:      schedule.Staff.Username,
 			VisitInfo:      uc.buildVisitInfoModel(schedule.VisitInfo),
 			Title:          schedule.Title,
@@ -175,6 +178,7 @@ func (uc *FetchScheduleUseCase) buildRecurringScheduleModels(recurringSchedules 
 			StartTime:      recurringSchedule.StartTime,
 			EndTime:        recurringSchedule.EndTime,
 			IsOverTimeWork: recurringSchedule.IsOverTimeWork,
+			StaffID:        recurringSchedule.Staff.ID,
 			StaffName:      recurringSchedule.Staff.Username,
 			VisitInfo:      uc.buildVisitInfoModel(recurringSchedule.VisitInfo),
 			Title:          recurringSchedule.Title,

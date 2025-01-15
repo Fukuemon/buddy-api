@@ -25,6 +25,7 @@ type FindScheduleUseCaseOutputDto struct {
 	StartTime      common.Time
 	EndTime        common.Time
 	IsOverTimeWork bool
+	StaffID        string
 	StaffName      string
 	VisitInfo      *VisitInfoModel
 	Title          *string
@@ -45,6 +46,7 @@ func (uc *FindScheduleUseCase) Run(ctx context.Context, scheduleID string) (*Fin
 		StartTime:      schedule.StartTime,
 		EndTime:        schedule.EndTime,
 		IsOverTimeWork: schedule.IsOverTimeWork,
+		StaffID:        schedule.Staff.ID,
 		StaffName:      schedule.Staff.Username,
 		VisitInfo:      BuildVisitInfoModel(schedule.VisitInfo),
 		Title:          &schedule.Title,

@@ -27,6 +27,7 @@ type FindRecurringScheduleUseCaseOutputDto struct {
 	StartTime      common.Time
 	EndTime        common.Time
 	IsOverTimeWork bool
+	StaffID        string
 	StaffName      string
 	VisitInfo      *scheduleUse.VisitInfoModel
 	Title          *string
@@ -48,6 +49,7 @@ func (uc *FindRecurringScheduleUseCase) Run(ctx context.Context, scheduleID stri
 		StartTime:      recurringSchedule.StartTime,
 		EndTime:        recurringSchedule.EndTime,
 		IsOverTimeWork: recurringSchedule.IsOverTimeWork,
+		StaffID:        recurringSchedule.Staff.ID,
 		StaffName:      recurringSchedule.Staff.Username,
 		VisitInfo:      scheduleUse.BuildVisitInfoModel(recurringSchedule.VisitInfo),
 		Title:          &recurringSchedule.Title,
