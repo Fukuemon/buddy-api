@@ -333,6 +333,7 @@ func (h *handler) FetchByFacilityId(ctx *gin.Context) {
 					Date:         schedule.Date,
 					StartTime:    schedule.StartTime,
 					EndTime:      schedule.EndTime,
+					StaffID:      schedule.StaffID,
 					StaffName:    schedule.StaffName,
 					VisitInfo: func() *VisitInfoResponseModel {
 						if schedule.VisitInfo == nil {
@@ -395,6 +396,7 @@ func (h *handler) FetchByFacilityId(ctx *gin.Context) {
 					Date:         recurringSchedule.Date,
 					StartTime:    recurringSchedule.StartTime,
 					EndTime:      recurringSchedule.EndTime,
+					StaffID:      recurringSchedule.StaffID,
 					StaffName:    recurringSchedule.StaffName,
 					VisitInfo: func() *VisitInfoResponseModel {
 						if recurringSchedule.VisitInfo == nil {
@@ -479,6 +481,7 @@ func (h *handler) FindScheduleByID(ctx *gin.Context) {
 		StartTime:      output.StartTime,
 		EndTime:        output.EndTime,
 		IsOverTimeWork: output.IsOverTimeWork,
+		StaffID:        output.StaffID,
 		StaffName:      output.StaffName,
 		VisitInfo: func() *VisitInfoResponseModel {
 			if output.VisitInfo == nil {
@@ -567,6 +570,7 @@ func (h *handler) FindRecurringScheduleByID(ctx *gin.Context) {
 		StartTime:      output.StartTime,
 		EndTime:        output.EndTime,
 		IsOverTimeWork: output.IsOverTimeWork,
+		StaffID:        output.StaffID,
 		StaffName:      output.StaffName,
 		VisitInfo: func() *VisitInfoResponseModel {
 			if output.VisitInfo == nil {

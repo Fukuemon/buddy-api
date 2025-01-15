@@ -26,6 +26,7 @@ type ScheduleResponse struct {
 	StartTime      common.Time             `json:"start_time"`
 	EndTime        common.Time             `json:"end_time"`
 	IsOverTimeWork bool                    `json:"is_over_time_work"`
+	StaffID        string                  `json:"staff_id"`
 	StaffName      string                  `json:"staff_name"`
 	VisitInfo      *VisitInfoResponseModel `json:"visit_info"`
 	Title          string                  `json:"title"`
@@ -41,7 +42,8 @@ type RecurringScheduleResponse struct {
 	StartTime      common.Time                 `json:"start_time"`
 	EndTime        common.Time                 `json:"end_time"`
 	IsOverTimeWork bool                        `json:"is_over_time_work"`
-	StaffName      string                      `json:"staff_name"`
+	StaffID        string                      `json:"staff_id"`
+	StaffName      string                      `json:"staff"`
 	VisitInfo      *VisitInfoResponseModel     `json:"visit_info"`
 	Title          string                      `json:"title"`
 	Description    string                      `json:"description"`
