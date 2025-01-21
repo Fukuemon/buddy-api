@@ -29,29 +29,23 @@ type RecurringSchedule struct {
 	FacilityID              string
 	VisitInfoID             *string
 	VisitInfo               *visitInfoDomain.VisitInfo `gorm:"foreignKey:VisitInfoID"`
-	Title                   string
-	Description             string
+	Title                   *string
+	Description             *string
 	RecurringExclusionDates *common.JSONSlice[int]
 	common.CommonModel
 }
 
 type RecurringScheduleOption func(*RecurringSchedule) error
 
-func WithTitle(title string) RecurringScheduleOption {
+func WithTitle(title *string) RecurringScheduleOption {
 	return func(s *RecurringSchedule) error {
-		if title == "" {
-			return errorDomain.NewError("タイトルが含まれていません")
-		}
 		s.Title = title
 		return nil
 	}
 }
 
-func WithDescription(description string) RecurringScheduleOption {
+func WithDescription(description *string) RecurringScheduleOption {
 	return func(s *RecurringSchedule) error {
-		if description == "" {
-			return errorDomain.NewError("説明が含まれていません")
-		}
 		s.Description = description
 		return nil
 	}
@@ -135,8 +129,8 @@ func newRecurringSchedule(
 		FacilityID:              facility.ID,
 		VisitInfo:               nil,
 		VisitInfoID:             nil,
-		Title:                   "",
-		Description:             "",
+		Title:                   nil,
+		Description:             nil,
 		RecurringExclusionDates: nil,
 	}
 
@@ -149,7 +143,7 @@ func newRecurringSchedule(
 	// 通常予定の場合、タイトルは必須
 	// 予定種別が通常の場合、タイトルは必須
 	if recurringSchedule.ScheduleType.Name == scheduleTypeDomain.Normal {
-		if recurringSchedule.Title == "" {
+		if recurringSchedule.Title == nil {
 			return nil, errorDomain.NewError("通常の予定の場合、タイトルは必須です")
 		}
 	}

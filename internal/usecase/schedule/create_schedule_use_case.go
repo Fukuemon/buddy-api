@@ -81,7 +81,7 @@ func (uc *CreateScheduleUseCase) Run(ctx context.Context, input CreateUseCaseInp
 
 		// 通常予定の場合
 		if scheduleType.Name == scheduleTypeDomain.Normal && input.Title != nil {
-			scheduleOptions = append(scheduleOptions, scheduleDomain.WithTitle(*input.Title))
+			scheduleOptions = append(scheduleOptions, scheduleDomain.WithTitle(input.Title))
 		}
 
 		// 訪問情報がある場合
@@ -95,7 +95,7 @@ func (uc *CreateScheduleUseCase) Run(ctx context.Context, input CreateUseCaseInp
 
 		// 予定の説明がある場合
 		if input.Description != nil {
-			scheduleOptions = append(scheduleOptions, scheduleDomain.WithDescription(*input.Description))
+			scheduleOptions = append(scheduleOptions, scheduleDomain.WithDescription(input.Description))
 		}
 
 		// 繰り返し予定の変更予定の場合

@@ -59,7 +59,6 @@ type RecurringRuleModel struct {
 	DayOfWeek   *int
 	DayOfMonth  *int
 	WeekOfMonth *int
-	StartDate   common.Date
 	EndDate     *common.Date
 }
 
@@ -91,28 +90,27 @@ func (uc *CreateRecurringScheduleUseCase) Run(ctx context.Context, input CreateR
 
 		// 曜日が指定されている場合
 		if input.RecurringRule.DayOfWeek != nil {
-			recurringScheduleRuleOptions = append(recurringScheduleRuleOptions, recurringRuleDomain.WithDayOfWeek(*input.RecurringRule.DayOfWeek))
+			recurringScheduleRuleOptions = append(recurringScheduleRuleOptions, recurringRuleDomain.WithDayOfWeek(input.RecurringRule.DayOfWeek))
 		}
 
 		// 月の日が指定されている場合
 		if input.RecurringRule.DayOfMonth != nil {
-			recurringScheduleRuleOptions = append(recurringScheduleRuleOptions, recurringRuleDomain.WithDayOfMonth(*input.RecurringRule.DayOfMonth))
+			recurringScheduleRuleOptions = append(recurringScheduleRuleOptions, recurringRuleDomain.WithDayOfMonth(input.RecurringRule.DayOfMonth))
 		}
 
 		// 週の日が指定されている場合
 		if input.RecurringRule.WeekOfMonth != nil {
-			recurringScheduleRuleOptions = append(recurringScheduleRuleOptions, recurringRuleDomain.WithWeekOfMonth(*input.RecurringRule.WeekOfMonth))
+			recurringScheduleRuleOptions = append(recurringScheduleRuleOptions, recurringRuleDomain.WithWeekOfMonth(input.RecurringRule.WeekOfMonth))
 		}
 
 		// 終了日が指定されている場合
 		if input.RecurringRule.EndDate != nil {
-			recurringScheduleRuleOptions = append(recurringScheduleRuleOptions, recurringRuleDomain.WithEndDate(*input.RecurringRule.EndDate))
+			recurringScheduleRuleOptions = append(recurringScheduleRuleOptions, recurringRuleDomain.WithEndDate(input.RecurringRule.EndDate))
 		}
 
 		// リクエストされた繰り返しルールを作成
 		recurringRule, err := recurringRuleDomain.NewRecurringRule(
 			input.RecurringRule.Frequency,
-			input.RecurringRule.StartDate,
 			recurringScheduleRuleOptions...,
 		)
 		if err != nil {
@@ -126,7 +124,7 @@ func (uc *CreateRecurringScheduleUseCase) Run(ctx context.Context, input CreateR
 
 		// 通常予定の場合
 		if scheduleType.Name == scheduleTypeDomain.Normal && input.Title != nil {
-			recurringScheduleOptions = append(recurringScheduleOptions, recurringScheduleDomain.WithTitle(*input.Title))
+			recurringScheduleOptions = append(recurringScheduleOptions, recurringScheduleDomain.WithTitle(input.Title))
 		}
 
 		// 訪問情報がある場合
@@ -141,7 +139,7 @@ func (uc *CreateRecurringScheduleUseCase) Run(ctx context.Context, input CreateR
 
 		// 予定の説明がある場合
 		if input.Description != nil {
-			recurringScheduleOptions = append(recurringScheduleOptions, recurringScheduleDomain.WithDescription(*input.Description))
+			recurringScheduleOptions = append(recurringScheduleOptions, recurringScheduleDomain.WithDescription(input.Description))
 		}
 
 		// 繰り返し予定の作成

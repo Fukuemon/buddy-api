@@ -197,8 +197,7 @@ CREATE TABLE IF NOT EXISTS recurring_rules (
     day_of_week VARCHAR(255),
     day_of_month VARCHAR(255),
     week_of_month VARCHAR(255),
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
+    end_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

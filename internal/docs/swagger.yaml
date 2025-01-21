@@ -504,14 +504,10 @@ definitions:
         type: string
       frequency:
         $ref: '#/definitions/api-buddy_domain_schedule_recurring_rule.FrequencyEnum'
-      start_date:
-        format: date
-        type: string
       week_of_month:
         type: integer
     required:
     - frequency
-    - start_date
     type: object
   presentation_schedule.RecurringRuleResponseModel:
     properties:
@@ -523,8 +519,6 @@ definitions:
         $ref: '#/definitions/api-buddy_domain_common.Date'
       frequency:
         $ref: '#/definitions/api-buddy_domain_schedule_recurring_rule.FrequencyEnum'
-      start_date:
-        $ref: '#/definitions/api-buddy_domain_common.Date'
       week_of_month:
         type: integer
     type: object
@@ -547,6 +541,8 @@ definitions:
       recurring_rule:
         $ref: '#/definitions/presentation_schedule.RecurringRuleResponseModel'
       schedule_type:
+        type: string
+      staff_id:
         type: string
       staff_name:
         type: string
@@ -604,6 +600,8 @@ definitions:
       is_over_time_work:
         type: boolean
       schedule_type:
+        type: string
+      staff_id:
         type: string
       staff_name:
         type: string

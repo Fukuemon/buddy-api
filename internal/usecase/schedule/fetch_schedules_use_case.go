@@ -41,15 +41,15 @@ type ScheduleModel struct {
 	StaffID        string
 	StaffName      string
 	VisitInfo      *VisitInfoModel
-	Title          string
-	Description    string
-	CancelReason   string
+	Title          *string
+	Description    *string
+	CancelReason   *string
 }
 
 type VisitInfoModel struct {
 	Patient         string
 	AssignedStaff   string
-	Companion       string
+	Companion       *string
 	Route           *routeModel
 	ServiceCode     string
 	VisitCategories []visitCategoryModel
@@ -77,18 +77,17 @@ type RecurringScheduleModel struct {
 	StaffID        string
 	StaffName      string
 	VisitInfo      *VisitInfoModel
-	Title          string
-	Description    string
+	Title          *string
+	Description    *string
 	ExclusionDates *common.JSONSlice[int]
 }
 
 type RecurringRuleModel struct {
 	Frequency   recurringRuleDomain.FrequencyEnum
-	DayOfWeek   int
-	DayOfMonth  int
-	WeekOfMonth int
-	StartDate   common.Date
-	EndDate     common.Date
+	DayOfWeek   *int
+	DayOfMonth  *int
+	WeekOfMonth *int
+	EndDate     *common.Date
 }
 
 // Input DTO
@@ -157,11 +156,11 @@ func (uc *FetchScheduleUseCase) buildScheduleModels(schedules []scheduleDomain.S
 			VisitInfo:      uc.buildVisitInfoModel(schedule.VisitInfo),
 			Title:          schedule.Title,
 			Description:    schedule.Description,
-			CancelReason: func() string {
+			CancelReason: func() *string {
 				if schedule.ScheduleCancel != nil {
-					return schedule.ScheduleCancel.Reason
+					return &schedule.ScheduleCancel.Reason
 				}
-				return ""
+				return nil
 			}(),
 		})
 	}
@@ -191,7 +190,6 @@ func (uc *FetchScheduleUseCase) buildRecurringScheduleModels(recurringSchedules 
 						DayOfWeek:   recurringSchedule.RecurringRule.DayOfWeek,
 						DayOfMonth:  recurringSchedule.RecurringRule.DayOfMonth,
 						WeekOfMonth: recurringSchedule.RecurringRule.WeekOfMonth,
-						StartDate:   recurringSchedule.RecurringRule.StartDate,
 						EndDate:     recurringSchedule.RecurringRule.EndDate,
 					}
 				}
@@ -229,11 +227,11 @@ func (uc *FetchScheduleUseCase) buildVisitInfoModel(visitInfo *visitInfoDomain.V
 	return &VisitInfoModel{
 		Patient:       visitInfo.Patient.Name,
 		AssignedStaff: visitInfo.AssignedStaff.Username,
-		Companion: func() string {
+		Companion: func() *string {
 			if visitInfo.Companion != nil {
-				return visitInfo.Companion.Username
+				return &visitInfo.Companion.Username
 			}
-			return ""
+			return nil
 		}(),
 		Route: route,
 		ServiceCode: func() string {

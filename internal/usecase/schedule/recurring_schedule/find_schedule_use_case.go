@@ -52,8 +52,8 @@ func (uc *FindRecurringScheduleUseCase) Run(ctx context.Context, scheduleID stri
 		StaffID:        recurringSchedule.Staff.ID,
 		StaffName:      recurringSchedule.Staff.Username,
 		VisitInfo:      scheduleUse.BuildVisitInfoModel(recurringSchedule.VisitInfo),
-		Title:          &recurringSchedule.Title,
-		Description:    &recurringSchedule.Description,
+		Title:          recurringSchedule.Title,
+		Description:    recurringSchedule.Description,
 		ExclusionDates: recurringSchedule.RecurringExclusionDates,
 	}
 

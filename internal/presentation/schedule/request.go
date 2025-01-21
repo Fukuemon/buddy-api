@@ -64,6 +64,5 @@ type RecurringRuleRequestModel struct {
 	DayOfWeek   *int                                  `json:"day_of_week" validate:"omitempty"`
 	DayOfMonth  *int                                  `json:"day_of_month" validate:"omitempty"`
 	WeekOfMonth *int                                  `json:"week_of_month" validate:"omitempty"`
-	StartDate   common.Date                           `json:"start_date" validate:"required" swaggertype:"string" format:"date"`
 	EndDate     *common.Date                          `json:"end_date" validate:"omitempty" swaggertype:"string" format:"date"`
 }

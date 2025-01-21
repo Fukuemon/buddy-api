@@ -49,8 +49,8 @@ func (uc *FindScheduleUseCase) Run(ctx context.Context, scheduleID string) (*Fin
 		StaffID:        schedule.Staff.ID,
 		StaffName:      schedule.Staff.Username,
 		VisitInfo:      BuildVisitInfoModel(schedule.VisitInfo),
-		Title:          &schedule.Title,
-		Description:    &schedule.Description,
+		Title:          schedule.Title,
+		Description:    schedule.Description,
 		CancelReason: func() *string {
 			if schedule.ScheduleCancel != nil {
 				return &schedule.ScheduleCancel.Reason
@@ -89,11 +89,11 @@ func BuildVisitInfoModel(visitInfo *visitInfoDomain.VisitInfo) *VisitInfoModel {
 	return &VisitInfoModel{
 		Patient:       visitInfo.Patient.Name,
 		AssignedStaff: visitInfo.AssignedStaff.Username,
-		Companion: func() string {
+		Companion: func() *string {
 			if visitInfo.Companion != nil {
-				return visitInfo.Companion.Username
+				return &visitInfo.Companion.Username
 			}
-			return ""
+			return nil
 		}(),
 		Route: route,
 		ServiceCode: func() string {
