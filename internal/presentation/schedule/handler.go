@@ -120,7 +120,12 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 				ID:                output.VisitInfo.ID,
 				PatientName:       output.VisitInfo.Patient.Name,
 				AssignedStaffName: output.VisitInfo.AssignedStaff.Username,
-				CompanionName:     output.VisitInfo.Companion.Username,
+				CompanionName: func() string {
+					if output.VisitInfo.Companion != nil {
+						return output.VisitInfo.Companion.Username
+					}
+					return ""
+				}(),
 				Route: func() *RouteResponseModel {
 					if output.VisitInfo.Route != nil {
 						return &RouteResponseModel{
@@ -320,11 +325,11 @@ func (h *handler) CreateRecurringSchedule(ctx *gin.Context) {
 				}
 				return 0
 			}(),
-			EndDate: func() common.Date {
+			EndDate: func() *common.Date {
 				if output.RecurringRule.EndDate != nil {
-					return *output.RecurringRule.EndDate
+					return output.RecurringRule.EndDate
 				}
-				return common.Date{}
+				return nil
 			}(),
 		},
 	}
@@ -386,7 +391,12 @@ func (h *handler) FetchByFacilityId(ctx *gin.Context) {
 						return &VisitInfoResponseModel{
 							PatientName:       schedule.VisitInfo.Patient,
 							AssignedStaffName: schedule.VisitInfo.AssignedStaff,
-							CompanionName:     *schedule.VisitInfo.Companion,
+							CompanionName: func() string {
+								if schedule.VisitInfo.Companion != nil {
+									return *schedule.VisitInfo.Companion
+								}
+								return ""
+							}(),
 							Route: func() *RouteResponseModel {
 								if schedule.VisitInfo.Route != nil {
 									return &RouteResponseModel{
@@ -412,8 +422,18 @@ func (h *handler) FetchByFacilityId(ctx *gin.Context) {
 							}(),
 						}
 					}(),
-					Title:       *schedule.Title,
-					Description: *schedule.Description,
+					Title: func() string {
+						if schedule.Title != nil {
+							return *schedule.Title
+						}
+						return ""
+					}(),
+					Description: func() string {
+						if schedule.Description != nil {
+							return *schedule.Description
+						}
+						return ""
+					}(),
 				})
 			}
 			return schedules
@@ -426,11 +446,31 @@ func (h *handler) FetchByFacilityId(ctx *gin.Context) {
 					RecurringRule: func() *RecurringRuleResponseModel {
 						if recurringSchedule.RecurringRule != nil {
 							return &RecurringRuleResponseModel{
-								Frequency:   recurringSchedule.RecurringRule.Frequency,
-								DaysOfWeek:  *recurringSchedule.RecurringRule.DayOfWeek,
-								DayOfMonth:  *recurringSchedule.RecurringRule.DayOfMonth,
-								WeekOfMonth: *recurringSchedule.RecurringRule.WeekOfMonth,
-								EndDate:     *recurringSchedule.RecurringRule.EndDate,
+								Frequency: recurringSchedule.RecurringRule.Frequency,
+								DaysOfWeek: func() int {
+									if recurringSchedule.RecurringRule.DayOfWeek != nil {
+										return *recurringSchedule.RecurringRule.DayOfWeek
+									}
+									return 0
+								}(),
+								DayOfMonth: func() int {
+									if recurringSchedule.RecurringRule.DayOfMonth != nil {
+										return *recurringSchedule.RecurringRule.DayOfMonth
+									}
+									return 0
+								}(),
+								WeekOfMonth: func() int {
+									if recurringSchedule.RecurringRule.WeekOfMonth != nil {
+										return *recurringSchedule.RecurringRule.WeekOfMonth
+									}
+									return 0
+								}(),
+								EndDate: func() *common.Date {
+									if recurringSchedule.RecurringRule.EndDate != nil {
+										return recurringSchedule.RecurringRule.EndDate
+									}
+									return nil
+								}(),
 							}
 						}
 						return nil
@@ -448,7 +488,12 @@ func (h *handler) FetchByFacilityId(ctx *gin.Context) {
 						return &VisitInfoResponseModel{
 							PatientName:       recurringSchedule.VisitInfo.Patient,
 							AssignedStaffName: recurringSchedule.VisitInfo.AssignedStaff,
-							CompanionName:     *recurringSchedule.VisitInfo.Companion,
+							CompanionName: func() string {
+								if recurringSchedule.VisitInfo.Companion != nil {
+									return *recurringSchedule.VisitInfo.Companion
+								}
+								return ""
+							}(),
 							Route: func() *RouteResponseModel {
 								if recurringSchedule.VisitInfo.Route != nil {
 									return &RouteResponseModel{
@@ -474,8 +519,18 @@ func (h *handler) FetchByFacilityId(ctx *gin.Context) {
 							}(),
 						}
 					}(),
-					Title:       *recurringSchedule.Title,
-					Description: *recurringSchedule.Description,
+					Title: func() string {
+						if recurringSchedule.Title != nil {
+							return *recurringSchedule.Title
+						}
+						return ""
+					}(),
+					Description: func() string {
+						if recurringSchedule.Description != nil {
+							return *recurringSchedule.Description
+						}
+						return ""
+					}(),
 					ExclusionDates: func() []int {
 						if recurringSchedule.ExclusionDates == nil {
 							return nil
@@ -533,7 +588,12 @@ func (h *handler) FindScheduleByID(ctx *gin.Context) {
 			return &VisitInfoResponseModel{
 				PatientName:       output.VisitInfo.Patient,
 				AssignedStaffName: output.VisitInfo.AssignedStaff,
-				CompanionName:     *output.VisitInfo.Companion,
+				CompanionName: func() string {
+					if output.VisitInfo.Companion != nil {
+						return *output.VisitInfo.Companion
+					}
+					return ""
+				}(),
 				Route: func() *RouteResponseModel {
 					if output.VisitInfo.Route != nil {
 						return &RouteResponseModel{
@@ -601,11 +661,31 @@ func (h *handler) FindRecurringScheduleByID(ctx *gin.Context) {
 	response := RecurringScheduleResponse{
 		ID: output.ID,
 		RecurringRule: &RecurringRuleResponseModel{
-			Frequency:   output.RecurringRule.Frequency,
-			DaysOfWeek:  *output.RecurringRule.DayOfWeek,
-			DayOfMonth:  *output.RecurringRule.DayOfMonth,
-			WeekOfMonth: *output.RecurringRule.WeekOfMonth,
-			EndDate:     *output.RecurringRule.EndDate,
+			Frequency: output.RecurringRule.Frequency,
+			DaysOfWeek: func() int {
+				if output.RecurringRule.DayOfWeek != nil {
+					return *output.RecurringRule.DayOfWeek
+				}
+				return 0
+			}(),
+			DayOfMonth: func() int {
+				if output.RecurringRule.DayOfMonth != nil {
+					return *output.RecurringRule.DayOfMonth
+				}
+				return 0
+			}(),
+			WeekOfMonth: func() int {
+				if output.RecurringRule.WeekOfMonth != nil {
+					return *output.RecurringRule.WeekOfMonth
+				}
+				return 0
+			}(),
+			EndDate: func() *common.Date {
+				if output.RecurringRule.EndDate != nil {
+					return output.RecurringRule.EndDate
+				}
+				return nil
+			}(),
 		},
 		ScheduleType:   string(*output.ScheduleType),
 		Date:           output.Date,
@@ -621,7 +701,12 @@ func (h *handler) FindRecurringScheduleByID(ctx *gin.Context) {
 			return &VisitInfoResponseModel{
 				PatientName:       output.VisitInfo.Patient,
 				AssignedStaffName: output.VisitInfo.AssignedStaff,
-				CompanionName:     *output.VisitInfo.Companion,
+				CompanionName: func() string {
+					if output.VisitInfo.Companion != nil {
+						return *output.VisitInfo.Companion
+					}
+					return ""
+				}(),
 				Route: func() *RouteResponseModel {
 					if output.VisitInfo.Route != nil {
 						return &RouteResponseModel{
@@ -647,8 +732,18 @@ func (h *handler) FindRecurringScheduleByID(ctx *gin.Context) {
 				}(),
 			}
 		}(),
-		Title:       *output.Title,
-		Description: *output.Description,
+		Title: func() string {
+			if output.Title != nil {
+				return *output.Title
+			}
+			return ""
+		}(),
+		Description: func() string {
+			if output.Description != nil {
+				return *output.Description
+			}
+			return ""
+		}(),
 		ExclusionDates: func() []int {
 			if output.ExclusionDates == nil {
 				return nil

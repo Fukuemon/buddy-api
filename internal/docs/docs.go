@@ -2452,8 +2452,7 @@ const docTemplate = `{
         "presentation_schedule.RecurringRuleRequestModel": {
             "type": "object",
             "required": [
-                "frequency",
-                "start_date"
+                "frequency"
             ],
             "properties": {
                 "day_of_month": {
@@ -2468,10 +2467,6 @@ const docTemplate = `{
                 },
                 "frequency": {
                     "$ref": "#/definitions/api-buddy_domain_schedule_recurring_rule.FrequencyEnum"
-                },
-                "start_date": {
-                    "type": "string",
-                    "format": "date"
                 },
                 "week_of_month": {
                     "type": "integer"
@@ -2492,9 +2487,6 @@ const docTemplate = `{
                 },
                 "frequency": {
                     "$ref": "#/definitions/api-buddy_domain_schedule_recurring_rule.FrequencyEnum"
-                },
-                "start_date": {
-                    "$ref": "#/definitions/api-buddy_domain_common.Date"
                 },
                 "week_of_month": {
                     "type": "integer"
@@ -2529,6 +2521,9 @@ const docTemplate = `{
                     "$ref": "#/definitions/presentation_schedule.RecurringRuleResponseModel"
                 },
                 "schedule_type": {
+                    "type": "string"
+                },
+                "staff_id": {
                     "type": "string"
                 },
                 "staff_name": {
@@ -2616,6 +2611,9 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "schedule_type": {
+                    "type": "string"
+                },
+                "staff_id": {
                     "type": "string"
                 },
                 "staff_name": {

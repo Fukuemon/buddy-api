@@ -13,44 +13,70 @@ type Date struct {
 	time.Time
 }
 
+// JSONへの出力 (yyyy-mm-dd形式)
 func (d Date) MarshalJSON() ([]byte, error) {
+	// Time がゼロ値の場合は空文字列を返す
+	if d.Time.IsZero() {
+		return json.Marshal("")
+	}
 	return json.Marshal(d.Format("2006-01-02"))
 }
 
-// Date型のカスタムフォーマット
+// JSONからの入力 (yyyy-mm-dd形式)
 func (d *Date) UnmarshalJSON(data []byte) error {
 	var dateStr string
 	if err := json.Unmarshal(data, &dateStr); err != nil {
 		return err
 	}
+
+	// 空文字列や "null" をゼロ値として扱う
+	if dateStr == "" || dateStr == "null" {
+		d.Time = time.Time{}
+		return nil
+	}
+
+	// yyyy-mm-dd形式の解析
 	parsed, err := time.Parse("2006-01-02", dateStr)
 	if err != nil {
-		return err
+		return errorDomain.NewError("無効な日付形式です。yyyy-mm-dd形式である必要があります")
 	}
 	d.Time = parsed
 	return nil
 }
 
-// Date型: データベースへの保存
+// データベースへの保存 (yyyy-mm-dd形式)
 func (d Date) Value() (driver.Value, error) {
+	// Time がゼロ値の場合はNULLを返す
+	if d.Time.IsZero() {
+		return nil, nil
+	}
 	return d.Format("2006-01-02"), nil
 }
 
-// Date型: データベースからの読み取り
+// データベースからの読み取り
 func (d *Date) Scan(value interface{}) error {
 	switch v := value.(type) {
 	case time.Time:
 		d.Time = v
 		return nil
 	case string:
+		// 空文字列をゼロ値として扱う
+		if v == "" {
+			d.Time = time.Time{}
+			return nil
+		}
 		parsed, err := time.Parse("2006-01-02", v)
 		if err != nil {
-			return err
+			return errorDomain.NewError("無効な日付形式です。yyyy-mm-dd形式である必要があります")
 		}
 		d.Time = parsed
 		return nil
+	case nil:
+		// NULL 値の場合はゼロ値に設定
+		d.Time = time.Time{}
+		return nil
 	default:
-		return errorDomain.NewError("Date型に変換できません")
+		return errorDomain.NewError("日付をスキャンできません。互換性のない型です")
 	}
 }
 

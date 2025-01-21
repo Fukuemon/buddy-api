@@ -94,5 +94,5 @@ type RecurringRuleResponseModel struct {
 	DaysOfWeek  int                               `json:"days_of_week"`
 	DayOfMonth  int                               `json:"day_of_month"`
 	WeekOfMonth int                               `json:"week_of_month"`
-	EndDate     common.Date                       `json:"end_date"`
+	EndDate     *common.Date                      `json:"end_date"`
 }
