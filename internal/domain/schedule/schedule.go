@@ -26,12 +26,12 @@ type Schedule struct {
 	StaffID             string
 	Facility            *facilityDomain.Facility `gorm:"foreignKey:FacilityID"`
 	FacilityID          string
-	Title               string
+	Title               *string
 	VisitInfo           *visitInfoDomain.VisitInfo `gorm:"foreignKey:VisitInfoID"`
 	VisitInfoID         *string
 	RecurringSchedule   *recurringScheduleDomain.RecurringSchedule `gorm:"foreignKey:RecurringScheduleID"`
 	RecurringScheduleID *string
-	Description         string
+	Description         *string
 	ScheduleCancel      *scheduleCancelDomain.ScheduleCancel `gorm:"foreignKey:ScheduleCancelID"`
 	ScheduleCancelID    *string
 	common.CommonModel
@@ -39,9 +39,9 @@ type Schedule struct {
 
 type ScheduleOption func(*Schedule) error
 
-func WithTitle(title string) ScheduleOption {
+func WithTitle(title *string) ScheduleOption {
 	return func(s *Schedule) error {
-		if title == "" {
+		if title == nil {
 			err := errorDomain.NewError("タイトルが含まれていません")
 			return errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 		}
@@ -76,7 +76,7 @@ func WithRecurringSchedule(
 	}
 }
 
-func WithDescription(description string) ScheduleOption {
+func WithDescription(description *string) ScheduleOption {
 	return func(s *Schedule) error {
 		s.Description = description
 		return nil
@@ -131,7 +131,7 @@ func NewSchedule(
 		RecurringScheduleID: nil,
 		VisitInfo:           nil,
 		VisitInfoID:         nil,
-		Description:         "",
+		Description:         nil,
 		ScheduleCancel:      nil,
 		ScheduleCancelID:    nil,
 	}
@@ -145,7 +145,7 @@ func NewSchedule(
 
 	// 予定種別が通常の場合、タイトルは必須
 	if schedule.ScheduleType.Name == scheduleTypeDomain.Normal {
-		if schedule.Title == "" {
+		if schedule.Title == nil {
 			err := errorDomain.NewError("通常の予定の場合、タイトルは必須です")
 			return nil, errorDomain.WrapError(errorDomain.InvalidInputErr, err)
 		}
